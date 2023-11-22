@@ -41,6 +41,7 @@ private:
     void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s);
     void wait_some_time_for_one_launch(const uint16_t& wait_s);
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi);
+    void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     shared_ptr<WorkWithStruct> m_wws;
     std::vector<shared_ptr<Timer>> m_timer;
     std::vector<shared_ptr<Kia_synch_timer>> m_kia_synch_timer;

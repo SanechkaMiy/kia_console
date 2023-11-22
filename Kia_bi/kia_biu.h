@@ -43,6 +43,7 @@ signals:
     void send_to_client(quint16, QStringList);
 private:
     void (Kia_biu::*m_func)();
+    void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void wait_1s_biu_0();
     void wait_1s_biu_1();
     void wait_1s_biu_2();

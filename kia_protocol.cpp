@@ -16,10 +16,6 @@ void Kia_protocol::create_dir_for_protocols()
 {
     m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol = KiaS_SUCCESS;
     m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols = m_wws->current_hours();
-    for (uint16_t type_protocol = 0; type_protocol < constants::protocol_count; ++type_protocol)
-    {
-        m_kia_settings->m_data_to_protocols->m_protocols[type_protocol].resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    }
     m_kia_settings->m_data_to_protocols->m_count_of_exc_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
@@ -49,7 +45,6 @@ void Kia_protocol::create_dir_for_protocols()
             m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][count_bokz]->open(QIODevice::Append | QIODevice::Text);
         }
     }
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
     //create_dir_for_sql_protocols();
     create_dir_for_frame_protocols();
 }
@@ -100,7 +95,9 @@ void Kia_protocol::close_dir_for_frame_protocols()
 }
 
 
-void Kia_protocol::save_to_protocols(uint16_t &num_bokz, const uint16_t &type_protocol)
+
+
+void Kia_protocol::save_to_protocols(uint16_t &num_bokz, const QString & data_to_out, const uint16_t &type_protocol)
 {
     uint16_t common_protocol = 0;
     if (m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol == KiaS_SUCCESS)
@@ -110,20 +107,19 @@ void Kia_protocol::save_to_protocols(uint16_t &num_bokz, const uint16_t &type_pr
             if (!m_kia_settings->m_data_to_protocols->m_save_binary)
             {
                 QTextStream stream(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][num_bokz + 1]);
-                stream << m_kia_settings->m_data_to_protocols->m_protocols[type_protocol][num_bokz];
+                stream << data_to_out;
                 QTextStream stream_common(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][common_protocol]);
-                stream_common << m_kia_settings->m_data_to_protocols->m_protocols[type_protocol][num_bokz];
+                stream_common << data_to_out;
             }
             else
             {
                 QDataStream stream(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][num_bokz + 1]);
-                stream << m_kia_settings->m_data_to_protocols->m_protocols[type_protocol][num_bokz];
+                stream << data_to_out;
                 QDataStream stream_common(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][common_protocol]);
-                stream_common << m_kia_settings->m_data_to_protocols->m_protocols[type_protocol][num_bokz];
+                stream_common << data_to_out;
             }
         }
     }
-    m_kia_settings->m_data_to_protocols->m_protocols[type_protocol][num_bokz].clear();
 }
 
 void Kia_protocol::save_to_sql_protocols(const QString &data_to_out)
@@ -154,42 +150,16 @@ void Kia_protocol::save_to_frames_protocols(uint16_t &num_bokz, uint32_t& bshv, 
 
 }
 
-void Kia_protocol::save_and_out_to_system_error_ai_protocols(uint16_t &num_bokz, const QString &data_to_out, uint16_t parametr)
+void Kia_protocol::preset_before_save_and_out(uint16_t& num_bokz, QString data_to_out, uint16_t type_window, uint16_t type_protocol, uint16_t parametr)
 {
     reset_protocol();
-    if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_SYSTEM] == KiaS_SUCCESS)
-    {
-        preset_before_save_and_out(num_bokz, data_to_out, SET_INFO_TO_WINDOW_INFO, SP_DO_SYSTEM, parametr);
-    }
-
-    if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] == KiaS_SUCCESS)
-    {
-        if ((m_kia_settings->m_wait_and_param_for_cyclogram->m_is_cyclogram_is_succesful != KiaS_SUCCESS))
-        {
-            preset_before_save_and_out(num_bokz, data_to_out, SET_INFO_TO_ERROR_WINDOW, SP_DO_ERROR, parametr);
-        }
-    }
-
-    if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] == KiaS_SUCCESS)
-    {
-        if ((m_kia_settings->m_wait_and_param_for_cyclogram->m_is_cyclogram_is_succesful != KiaS_SUCCESS))
-        {
-            preset_before_save_and_out(num_bokz, data_to_out, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
-        }
-    }
-
-}
-
-void Kia_protocol::preset_before_save_and_out(uint16_t& num_bokz, const QString &data_to_out, uint16_t type_window, uint16_t type_protocol, uint16_t parametr)
-{
     if (!data_to_out.isEmpty())
     {
-        m_kia_settings->m_data_to_protocols->m_protocols[type_protocol][num_bokz].push_back(data_to_out);
         QStringList list_protocol;
         list_protocol.push_back(QString::number(num_bokz));
-        list_protocol.push_back(m_kia_settings->m_data_to_protocols->m_protocols[type_protocol][num_bokz]);
+        list_protocol.push_back(data_to_out);
         emit send_to_client(type_window, list_protocol);
-        save_to_protocols(num_bokz, type_protocol);
+        save_to_protocols(num_bokz, data_to_out, type_protocol);
     }
 }
 
@@ -202,24 +172,28 @@ void Kia_protocol::reset_protocol()
     }
 }
 
-void Kia_protocol::save_and_out_to_dev_mko_protocols(uint16_t &num_bokz, const uint16_t &num_mpi_command, uint16_t parametr)
+void Kia_protocol::save_and_out_to_dev_protocols(uint16_t &num_bokz, const QString &data_to_out, const uint16_t &num_mpi_command, uint16_t parametr)
 {
-    QStringList list_mko_protocol;
-    list_mko_protocol.push_back(QString::number(num_bokz));
-    list_mko_protocol.push_back(m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz]);
-
-
     QStringList list_dev_protocol;
     list_dev_protocol.push_back(QString::number(num_mpi_command));
     list_dev_protocol.push_back(QString::number(num_bokz));
-    list_dev_protocol.push_back(m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_DEV][num_bokz]);
+    list_dev_protocol.push_back(data_to_out);
 
-    emit send_to_client(SET_WINDOW_INFO_MPI, list_mko_protocol);
+
     emit send_to_client(SET_WINDOW_INFO_DEVICE_PROTOCOL, list_dev_protocol);
 
-    save_to_protocols(num_bokz, SP_DO_MKO);
-    save_to_protocols(num_bokz, SP_DO_DEV);
 
+    save_to_protocols(num_bokz, data_to_out, SP_DO_DEV);
+
+}
+
+void Kia_protocol::save_and_out_to_mko_protocols(uint16_t &num_bokz, const QString &data_to_out, uint16_t parametr)
+{
+    QStringList list_mko_protocol;
+    list_mko_protocol.push_back(QString::number(num_bokz));
+    list_mko_protocol.push_back(data_to_out);
+    emit send_to_client(SET_WINDOW_INFO_MPI, list_mko_protocol);
+    save_to_protocols(num_bokz, data_to_out, SP_DO_MKO);
 }
 
 void Kia_protocol::reset_dir_for_protocols()

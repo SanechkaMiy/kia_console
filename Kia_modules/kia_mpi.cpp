@@ -1,7 +1,8 @@
 #include "kia_mpi.h"
 
-Kia_mpi::Kia_mpi(shared_ptr<WorkWithStruct> wws, std::shared_ptr<Kia_settings> kia_settings) :
+Kia_mpi::Kia_mpi(shared_ptr<WorkWithStruct> wws, shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings) :
     m_wws(wws),
+    m_kia_protocol(kia_protocol),
     m_kia_settings(kia_settings)
 {
     init();
@@ -88,14 +89,15 @@ void Kia_mpi::reset(std::shared_ptr<Kia_data> kia_data)
 
 void Kia_mpi::parse_mko_protocols(uint16_t &num_bokz, std::shared_ptr<Kia_data> kia_data)
 {
-    m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(m_wws->format("", m_kia_settings->m_format_for_desc->shift_for_numbers + 3, '-') + m_wws->format(" " + QString::fromStdString(kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
+    QString str_mpi_protocol;
+    str_mpi_protocol.push_back(m_wws->format("", m_kia_settings->m_format_for_desc->shift_for_numbers + 3, '-') + m_wws->format(" " + QString::fromStdString(kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
 
-    m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5).arg("БШВ", -11).arg("МПИ", -11).arg("ФОРМАТ",-11).arg("address", -11).arg("ЛПИ",-11).arg("ДАТА И ВРЕМЯ"));
-    m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5)
+    str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5).arg("БШВ", -11).arg("МПИ", -11).arg("ФОРМАТ",-11).arg("address", -11).arg("ЛПИ",-11).arg("ДАТА И ВРЕМЯ"));
+    str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5)
                                                                                     .arg(QString::number(m_kia_settings->m_data_for_db->bshv[kia_data->m_data_bi->m_num_used_bi]),-11).arg(QString::number(kia_data->m_data_mpi->m_mpi_index), -11)
             .arg(QString::number(kia_data->m_data_mpi->m_format), -11).arg(QString::number(kia_data->m_data_mpi->m_address),-11)
             .arg(QString::number(kia_data->m_data_mpi->m_lpi),-11).arg(QString::fromStdString(kia_data->m_data_db->m_datetime)));
-    m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2 %3\n").arg("КС:", -5)
+    str_mpi_protocol.push_back(QString("%1 %2 %3\n").arg("КС:", -5)
                                                                                     .arg(QString("0x%1")
                                                                                          .arg(QString::number(kia_data->m_data_mpi->m_code_word, 16), 4, '0'), -11)
                                                                                     .arg(QString("%1-%2-%3-%4").arg(QString::number(kia_data->m_data_mpi->m_address), 2, '0')
@@ -105,12 +107,12 @@ void Kia_mpi::parse_mko_protocols(uint16_t &num_bokz, std::shared_ptr<Kia_data> 
     if (kia_data->m_data_mpi->m_format == DATA_BC_RT)
     {
         for (uint16_t ind = 0; ind < kia_data->m_data_mpi->m_word_data; ++ind)
-            m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2").arg("", -5).arg(QString("0x%1").arg(QString::number(kia_data->m_data_mpi->m_data_to_exc[ind], 16), 4, '0')));
-        m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back("\n");
+            str_mpi_protocol.push_back(QString("%1 %2").arg("", -5).arg(QString("0x%1").arg(QString::number(kia_data->m_data_mpi->m_data_to_exc[ind], 16), 4, '0')));
+        str_mpi_protocol.push_back("\n");
     }
     if (kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
-        m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2 %3\n").arg("ОС:", -5)
+        str_mpi_protocol.push_back(QString("%1 %2 %3\n").arg("ОС:", -5)
                                                                                         .arg(QString("0x%1")
                                                                                              .arg(QString::number(kia_data->m_data_mpi->m_wOs, 16), 4, '0'), -11)
                                                                                         .arg(QString("%1-%2-%3-%4-%5-%6-%7-%8-%9-%10").arg(QString::number(kia_data->m_data_mpi->m_wOs >> 11), 2, '0')
@@ -124,7 +126,7 @@ void Kia_mpi::parse_mko_protocols(uint16_t &num_bokz, std::shared_ptr<Kia_data> 
                                                                                              .arg(QString::number((kia_data->m_data_mpi->m_wOs  & (0x0001 << 1)) >> 2), 1, '0')
                                                                                              .arg(QString::number((kia_data->m_data_mpi->m_wOs  & (0x0001 << 0)) >> 0), 1, '0')));
 
-        m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1").arg("ИС:"));
+        str_mpi_protocol.push_back(QString("%1").arg("ИС:"));
         uint16_t shift = 5;
         for (int i = 0; i<=3; i++)
         {
@@ -134,13 +136,13 @@ void Kia_mpi::parse_mko_protocols(uint16_t &num_bokz, std::shared_ptr<Kia_data> 
                     shift = 2;
                 else
                     shift = 5;
-                m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2").arg("", -shift)
+                str_mpi_protocol.push_back(QString("%1 %2").arg("", -shift)
                                                                                                 .arg(QString("0x%1").arg(QString::number(kia_data->m_data_mpi->m_data_word[i * 8 + j + 1 +
                                                                                                                          kia_data->m_data_mpi->m_format], 16), 4, '0')));
             }
-            m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back("\n");
+            str_mpi_protocol.push_back("\n");
         }
-        m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back("\n");
+        str_mpi_protocol.push_back("\n");
     }
     else
     {
@@ -153,15 +155,16 @@ void Kia_mpi::parse_mko_protocols(uint16_t &num_bokz, std::shared_ptr<Kia_data> 
             break;
         }
 
-        m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2 %3\n").arg("", -5)
+        str_mpi_protocol.push_back(QString("%1 %2 %3\n").arg("", -5)
                                                                                         .arg(QString("%1")
                                                                                              .arg(QString::number(kia_data->m_data_mpi->m_nInt)), -11)
                                                                                         .arg(QString("обмен с ошибками")));
-        m_kia_settings->m_data_to_protocols->m_protocols[SP_DO_MKO][num_bokz].push_back(QString("%1 %2 %3\n").arg("", -5)
+        str_mpi_protocol.push_back(QString("%1 %2 %3\n").arg("", -5)
                                                                                         .arg(QString("%1")
                                                                                              .arg(QString::number(kia_data->m_data_mpi->m_wResult)), -11)
                                                                                         .arg(error));
     }
+    m_kia_protocol->save_and_out_to_mko_protocols(num_bokz, str_mpi_protocol);
 }
 
 void Kia_mpi::send_data_from_mpi_num_mpi_to_table_settings()

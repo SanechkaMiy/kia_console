@@ -18,18 +18,19 @@ public:
     void close_dir_for_protocols();
     void close_dir_for_sql_protocols();
     void close_dir_for_frame_protocols();
-    void save_to_protocols(uint16_t &num_bokz, const uint16_t &type_protocol);
+    void save_to_protocols(uint16_t &num_bokz, const QString & data_to_out, const uint16_t &type_protocol);
     void save_to_sql_protocols(const QString &data_to_out);
     void save_to_frames_protocols(uint16_t& num_bokz, uint32_t &bshv, void *lvp_buf, uint32_t buf_size);
-    void save_and_out_to_system_error_ai_protocols(uint16_t &num_bokz, const QString &data_to_out, uint16_t parametr = EP_DOALL);
-    void save_and_out_to_dev_mko_protocols(uint16_t &num_bokz, const uint16_t &num_mpi_command, uint16_t parametr = EP_DOALL);
+    void save_and_out_to_dev_protocols(uint16_t &num_bokz, const QString & data_to_out, const uint16_t &num_mpi_command, uint16_t parametr = EP_DOALL);
+    void save_and_out_to_mko_protocols(uint16_t &num_bokz, const QString & data_to_out, uint16_t parametr = EP_DOALL);
+
+    void preset_before_save_and_out(uint16_t& num_bokz, QString data_to_out, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     void reset_dir_for_protocols();
     void count_of_fails(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
 signals:
     void send_to_client(quint16, QStringList);
 private:
     QString m_full_path;
-    void preset_before_save_and_out(uint16_t& num_bokz, const QString &data_to_out, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     void start_check_time();
     void reset_protocol();
     shared_ptr<WorkWithStruct> m_wws;

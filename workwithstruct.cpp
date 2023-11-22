@@ -120,8 +120,8 @@ uint32_t WorkWithStruct::current_hours()
 
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
     duration -= milliseconds;
-    return minutes.count();
-    //return now_t->tm_hour;
+    //return minutes.count();
+    return now_t->tm_hour;
 }
 
 float WorkWithStruct::decodeDateTime()
@@ -727,6 +727,9 @@ void WorkWithStruct::workWithDTMILoc(array<uint16_t, constants::packetSize> data
                                      DTMILoc_2 &dtmi_loc_2, DTMILoc_3 &dtmi_loc_3, DTMILoc_4 &dtmi_loc_4,
                                      DTMILoc_5 &dtmi_loc_5, DTMILoc_6 &dtmi_loc_6, DTMILoc_7 &dtmi_loc_7, DTMILoc_8 &dtmi_loc_8, DTMILoc_9 &dtmi_loc_9)
 {
+    dtmi_loc.dtmi_loc_list_name.clear();
+    dtmi_loc.dtmi_loc_list_data.clear();
+
     DTMILocRaw_1 dtmi_raw_1;
     DTMILocRaw_2_3_4_5_6_7_8 dtmi_loc_raw_2_3_4_5_6_7_8;
     DTMILocRaw_9 dtmi_raw_9;
@@ -814,6 +817,7 @@ void WorkWithStruct::workWithDTMILoc(array<uint16_t, constants::packetSize> data
         break;
     }
     
+
     dtmi_loc.dtmi_loc_list_name.push_back(format("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                   + "Служебное слово 1");
     dtmi_loc.dtmi_loc_list_data.push_back(QString("0x%1").arg(QString::number(dtmi_loc_1.CC1, 16), 4, '0') +

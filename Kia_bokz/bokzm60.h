@@ -70,14 +70,14 @@ private:
     void check_orientation();
     void getDataToDTMIOrDTMILoc();
     void send_status_info();
-    void post_status_proc();
+    void post_status_proc(QString &str_protocol);
     void send_data_to_command(const uint16_t &type_data, const uint16_t &type_command, const QString &data);
     void send_mpi_data_to_db();
-    void save_to_protocol(QString str_to_protocol, const uint16_t &num_mpi_command,  uint16_t parametr = EP_DOALL);
+    void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
     std::function<void()> m_set_control_word;
-    void set_data_to_device_protocol();
+    void set_data_to_device_protocol(QString &str_protocol);
     shared_ptr<WorkWithStruct> m_wws;
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     shared_ptr <ParseToDB> m_parser_db;

@@ -11,11 +11,13 @@ Kia_biu::Kia_biu(uint16_t num_bi, shared_ptr<WorkWithStruct> wws, std::array<std
     set_bi_settings();
     init_bi();
     get_synch_status();
-    get_relay_command_pulse_time();
+
     for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]; ++num_ch)
     {
         on_1s_bi(num_ch, num_ch);
+        //off_1s_bi(num_ch, num_ch);
     }
+
     set_sinchronize_event();
     set_sec_mark_pulse_time(50);
     start_1s_mark();
@@ -76,6 +78,14 @@ void Kia_biu::set_relay_command_pulse_time(uint16_t relay_command)
     set_relay_pul_time = (int16_t(*)(int16_t,uint16_t))dlsym(m_handle,"SetRelayCommandPulseTime");
     printf("SetRelayCommandPulseTime: %d\n", (*set_relay_pul_time)(m_device_id, relay_command));
     get_relay_command_pulse_time();
+}
+
+void Kia_biu::save_to_protocol(uint16_t &num_bokz, QString str_to_protocol, uint16_t parametr)
+{
+    if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_SYSTEM] == KiaS_SUCCESS)
+        m_kia_protocol->preset_before_save_and_out(num_bokz, str_to_protocol, SET_INFO_TO_WINDOW_INFO, SP_DO_SYSTEM, parametr);
+    if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] == KiaS_SUCCESS)
+        m_kia_protocol->preset_before_save_and_out(num_bokz, str_to_protocol, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
 }
 
 void Kia_biu::wait_1s_biu_0()
@@ -193,7 +203,7 @@ uint16_t Kia_biu::init_bi()
     int16_t (*init)(void);
     int16_t (*getDeviceID)(uint16_t);
     int16_t (*config)(int16_t);
-    m_handle = dlopen ("/usr/local/lib/BiLib_20230914_1659/BiLibNE.so", RTLD_LAZY);
+    m_handle = dlopen ("/usr/local/lib/BiLib_20231123_1604/BiLibNE.so", RTLD_LAZY);
     setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
     printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
     init = (int16_t(*)(void))dlsym(m_handle, "Init");
@@ -222,24 +232,25 @@ uint16_t Kia_biu::init_bi()
 
 void Kia_biu::set_sinchronize_event()
 {
+    int16_t (*set_sinch_event)(int16_t, void (Kia_biu::*)());
+    set_sinch_event = (int16_t(*)(int16_t, void (Kia_biu::*)()))dlsym(m_handle, "SetSinchronizeEvent");
+
     switch(m_num_bi)
     {
     case 0:
-        m_func = &Kia_biu::wait_1s_biu_0;
+        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_0));
         break;
     case 1:
-        m_func = &Kia_biu::wait_1s_biu_1;
+        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_1));
         break;
     case 2:
-        m_func = &Kia_biu::wait_1s_biu_2;
+        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_2));
         break;
     case 3:
-        m_func = &Kia_biu::wait_1s_biu_3;
+        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_3));
         break;
     };
-    int16_t (*set_sinch_event)(int16_t, void (Kia_biu::*)());
-    set_sinch_event = (int16_t(*)(int16_t, void (Kia_biu::*)()))dlsym(m_handle, "SetSinchronizeEvent");
-    printf("SinchronizeEvent: %d\n", (*set_sinch_event)(m_device_id, m_func));
+
 
 }
 
@@ -268,6 +279,7 @@ void Kia_biu::start_1s_mark()
         {
             //st.start();
             wait_for_event();
+            std::cout << "num bi " << m_device_id << std::endl;
             if (m_stop_1s_mark)
             {
                 m_kia_data->m_data_db->m_datetime = m_wws->currentDateTime();
@@ -377,36 +389,20 @@ void Kia_biu::get_sec_mark_telemetry()
     int16_t (*getSecTelemetry)(int16_t, DevTelemetry*, DevTelemetry*);
     getSecTelemetry = (int16_t(*)(int16_t, DevTelemetry*, DevTelemetry*))dlsym(m_handle,"GetSecMarkTelemetry");
     (*getSecTelemetry)(m_device_id, m_devTel_1, m_devTel_2);
-
-    //printf("GetSecMarkTelemetry: %d\n", );
-    //        printf("LinkControl: %d\n", m_devTel_1->LinkControl);
-    //        printf("Consumption: %d\n", m_devTel_1->Consumption);
-    //        printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
-    //        printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
-    //        printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
-    //        printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
-
-    //        printf("Temperature1g1: %f\n", m_devTel_2->Temperature1g1);
-    //        printf("Temperature2g1: %f\n", m_devTel_2->Temperature2g1);
-    //        printf("Temperature3g1: %f\n", m_devTel_2->Temperature3g1);
-    //        printf("Temperature4g1: %f\n", m_devTel_2->Temperature4g1);
-    //        printf("Temperature1Raw: %i\n", m_devTel_1->Temperature1Raw);
-    //        printf("DeviceFider1A %f\n", m_devTel_1->DeviceFider1A);
-    //        printf("DeviceFider2A %f\n", m_devTel_1->DeviceFider2A);
-    //        printf("ImitatorFider1A %f\n", m_devTel_1->ImitatorFider1A);
-    //        printf("ImitatorFider2A %f\n", m_devTel_1->ImitatorFider2A);
-
-    //        printf("Temperature1g1: %f\n", m_devTel_2->Temperature1g1);
-    //        printf("Temperature2g1: %f\n", m_devTel_2->  Temperature2g1);
-    //        printf("Temperature3g1: %f\n", m_devTel_2->Temperature3g1);
-    //        printf("Temperature4g1: %f\n", m_devTel_2->Temperature4g1);
-    //        printf("Temperature1Raw: %i\n", m_devTel_2->Temperature1Raw);
-    //        printf("DeviceFider1A %f\n", m_devTel_2->DeviceFider1A);
-    //        printf("DeviceFider2A %f\n", m_devTel_2->DeviceFider2A);
-    //        printf("ImitatorFider1A %f\n", m_devTel_2->ImitatorFider1A);
-    //        printf("ImitatorFider2A %f\n", m_devTel_2->ImitatorFider2A);
-    //        printf("DeviceVoltage1A %f\n", m_devTel_1->DeviceVoltage1A);
-    //        printf("PowerVoltage %f\n", m_devTel_1->PowerVoltage);
+//    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
+//    printf("Consumption: %d\n", m_devTel_1->Consumption);
+//    printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
+//    printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
+//    printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
+//    (*getSecTelemetry)(1, m_devTel_1, m_devTel_2);
+//    std::cout << "get sec " << m_device_id << std::endl;
+//    std::cout << "get sec " << 1 << std::endl;
+//    //printf("GetSecMarkTelemetry: %d\n", );
+//    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
+//    printf("Consumption: %d\n", m_devTel_1->Consumption);
+//    printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
+//    printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
+//    printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
 }
 
 void Kia_biu::get_telemetry()
@@ -479,8 +475,7 @@ void Kia_biu::on_power_bi(uint16_t& num_bokz, uint16_t &num_channel, uint16_t of
         m_off_1_ch = m_off_1_ch | (0x0102 << (num_channel * 4 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     m_power_status = m_power_status | (on_power_arr[num_channel] & m_off_1_ch);
     set_power(m_power_status);
 }
@@ -501,8 +496,7 @@ void Kia_biu::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t o
         m_off_1_ch = m_off_1_ch & (0x0204 << (num_channel * 4 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     m_power_status = m_power_status & (off_power_arr[num_channel] | m_off_1_ch);
     set_power(m_power_status);
 }
@@ -523,8 +517,7 @@ void Kia_biu::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1
         m_off_1_ch = m_off_1_ch | (0x01 << (num_channel * 2 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     m_sec_mark_status = m_sec_mark_status | (on_1s[num_channel] & m_off_1_ch);
     printf("%04x\n", m_sec_mark_status);
     set_sec_mark_status(num_channel, m_sec_mark_status);
@@ -546,8 +539,7 @@ void Kia_biu::off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_
         m_off_1_ch = ~(m_off_1_ch | (0x01 << (num_channel * 2 + off_1_ch - 1)));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     m_sec_mark_status = m_sec_mark_status & (off_1s[num_channel] | m_off_1_ch);
     set_sec_mark_status(num_channel, m_sec_mark_status);
 }
@@ -557,9 +549,9 @@ void Kia_biu::on_imitator_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t
     get_power(m_power_status);
     std::vector<uint16_t> on_power_arr = {0x0C09, 0xC090};
     m_power_status = m_power_status | (on_power_arr[num_channel]);
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
-                                                              + QString("Включаем имитатор для канала №") + QString::number(num_channel + 1) + "\n", parametr);
+    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+            + QString("Включаем имитатор для канала №") + QString::number(num_channel + 1) + "\n";
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     set_power(m_power_status);
 }
 
@@ -568,9 +560,9 @@ void Kia_biu::off_imitator_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_
     get_power(m_power_status);
     std::vector<uint16_t> off_power_arr = {0xf3f6, 0x3f6f};
     m_power_status = m_power_status & (off_power_arr[num_channel]);
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
-                                                              + QString("Выключаем имитатор для канала №") + QString::number(num_channel + 1) + "\n", parametr);
+    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+            + QString("Выключаем имитатор для канала №") + QString::number(num_channel + 1) + "\n";
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     set_power(m_power_status);
 }
 
@@ -583,9 +575,9 @@ void Kia_biu::on_contol_command(uint16_t &num_bokz, uint16_t &num_channel, uint1
     uint16_t command = 0x0001;
     command = command << (num_channel * 8);
     printf("command %04x\n", command);
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
-                                                              + QString("Включаем реле для канала №") + QString::number(num_channel + 1) + "\n", parametr);
+    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+            + QString("Включаем реле для канала №") + QString::number(num_channel + 1) + "\n";
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     set_relay_command(command);
 }
 
@@ -598,9 +590,9 @@ void Kia_biu::off_contol_command(uint16_t &num_bokz, uint16_t &num_channel, uint
     uint16_t command = 0x0002;
     command = command << (num_channel * 8);
     printf("%04x\n", command);
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_FAIL;
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
-                                                              + QString("Выключаем реле для канала №") + QString::number(num_channel + 1) + "\n", parametr);
+    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+            + QString("Выключаем реле для канала №") + QString::number(num_channel + 1) + "\n";
+    save_to_protocol(num_bokz, str_info_1s, parametr);
     set_relay_command(command);
 }
 

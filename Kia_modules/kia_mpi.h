@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "mainStruct.h"
+#include "kia_protocol.h"
 #include "workwithstruct.h"
 extern "C"
 {
@@ -12,7 +13,8 @@ class Kia_mpi : public QObject
 {
     Q_OBJECT
 public:
-    Kia_mpi(shared_ptr<WorkWithStruct> wws, std::shared_ptr<Kia_settings> kia_settings);
+    Kia_mpi(shared_ptr<WorkWithStruct> wws, shared_ptr<Kia_protocol> kia_protocol,
+            std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_mpi();
     void init();
     void close();
@@ -24,6 +26,7 @@ signals:
     void changed_lpi();
 private:
     shared_ptr<WorkWithStruct> m_wws;
+    shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
     void reset(std::shared_ptr<Kia_data> kia_data);
     void parse_mko_protocols(uint16_t& num_bokz, std::shared_ptr<Kia_data> kia_data);

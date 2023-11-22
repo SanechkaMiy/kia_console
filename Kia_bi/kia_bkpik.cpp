@@ -195,7 +195,7 @@ void Kia_bkpik::on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t 
         m_off_1_ch = m_off_1_ch | (0x01 << (num_channel * 2 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
     m_kia_data->m_data_bi->m_is_channel_on = m_kia_data->m_data_bi->m_is_channel_on & (on_power_arr[num_channel] | m_off_1_ch);
     change_command_bkpik({0x01, m_kia_data->m_data_bi->m_is_channel_on});//0x3c для БОКЗ М60; 0x33 для БОКЗ М60/1000
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -216,7 +216,7 @@ void Kia_bkpik::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t
         m_off_1_ch = m_off_1_ch & ~(0x01 << (num_channel * 2 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
     m_kia_data->m_data_bi->m_is_channel_on = m_kia_data->m_data_bi->m_is_channel_on | (off_power_arr[num_channel] & m_off_1_ch);
     change_command_bkpik({0x01, m_kia_data->m_data_bi->m_is_channel_on});
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -237,7 +237,7 @@ void Kia_bkpik::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off
         m_off_1_ch = m_off_1_ch | (0x01 << (num_channel * 2 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
     m_kia_data->m_data_bi->m_is_1s_on = m_kia_data->m_data_bi->m_is_1s_on & (on_power_arr[num_channel] | m_off_1_ch);
     printf("on %04x\n", m_kia_data->m_data_bi->m_is_1s_on);
     change_command_bkpik({0x02, m_kia_data->m_data_bi->m_is_1s_on});//0x3c для БОКЗ М60; 0x33 для БОКЗ М60/1000
@@ -259,7 +259,7 @@ void Kia_bkpik::off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t of
         m_off_1_ch = m_off_1_ch & ~(0x01 << (num_channel * 2 + off_1_ch - 1));
     }
     str_info_1s.push_back("для прибора №" + QString::number(num_channel + 1) + "\n");
-    m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
+    //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
     m_kia_data->m_data_bi->m_is_1s_on = m_kia_data->m_data_bi->m_is_1s_on | (off_power_arr[num_channel] & m_off_1_ch);
     printf("off %04x\n", m_kia_data->m_data_bi->m_is_1s_on);
     change_command_bkpik({0x02, m_kia_data->m_data_bi->m_is_1s_on});

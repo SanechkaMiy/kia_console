@@ -66,7 +66,9 @@ struct Data_for_mpi
 
     uint16_t m_num_used_channel = 0;
 
-    std::array<std::function<void(uint16_t&)>, constants::max_mpi_command> m_mpi_command;
+    std::array<std::function<void(uint16_t parametr)>, constants::max_mpi_command> m_mpi_command;
+
+    QString m_str_mpi_protocol;
 };
 #pragma pack(pop)
 #pragma pack(push, 1)
@@ -156,7 +158,6 @@ struct Data_to_protocols
     QFile* m_file_for_sql_protocol;
     QFile* m_file_for_frames_protocol;
     std::array<std::vector<QFile*>, constants::protocol_count> m_file_for_protocol;
-    std::array<std::vector<QString>, constants::protocol_count> m_protocols;
     std::array<uint16_t, constants::protocol_count> m_is_protocol_used;
     std::vector<int> m_count_of_exc_fail;
     std::vector<int> m_count_of_time_bind_fail;
@@ -215,7 +216,6 @@ struct Wait_and_param_for_cyclogram
     std::array<uint16_t, constants::max_count_param> m_param_for_cycl_full_frames;
     int16_t m_count_do_dtmi_in_state_off = 2;
     int16_t m_shift_bshv = 100;
-    uint16_t m_is_cyclogram_is_succesful = 0;
     std::vector<QString> m_is_error;
 };
 #pragma pack(pop)

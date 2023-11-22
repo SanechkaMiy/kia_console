@@ -46,7 +46,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    ../../../../../usr/local/lib/BiLib_20230914_1659/BiLibNE.h \
+    ../../../../../usr/local/lib/BiLib_20231123_1604/BiLibNE.h \
     ../../kia_gui/source/Kia_enums.h \
     Kia_modules/kia_db.h \
     Kia_modules/kia_help_functions.h \
@@ -85,8 +85,8 @@ DEPENDPATH += Kia_bokz/
 
 INCLUDEPATH += Kia_bi/
 DEPENDPATH += Kia_bi/
-INCLUDEPATH += ../../../../../usr/local/lib/BiLib_20230914_1659
-DEPENDPATH += ../../../../../usr/local/lib/BiLib_20230914_1659
+INCLUDEPATH += ../../../../../usr/local/lib/BiLib_20231123_1604
+DEPENDPATH += ../../../../../usr/local/lib/BiLib_20231123_1604
 
 unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lCppLinuxSerial
 

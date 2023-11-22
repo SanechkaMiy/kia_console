@@ -96,7 +96,7 @@ void Timer::start()
             auto delta = (m_now_time - m_curr_time) / m_to_ms;
             if (delta <= (m_kia_settings->m_timer_interval + m_shift_interval))
                 m_interval_divider  = (m_kia_settings->m_timer_interval / m_divider) - delta;
-            //std::cout << m_interval_divider << " " << delta << " " <<  (end - start) / m_to_ms << std::endl;
+            //std::cout << m_interval_divider << " " << delta << " " <<  m_now_time << std::endl;
             m_count++;
             m_cv.notify_all();
             //t_action();

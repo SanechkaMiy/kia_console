@@ -12,6 +12,7 @@ WorkWithMain::WorkWithMain(int nPort) :
 void WorkWithMain::set_kia_settings()
 {
     kia_init();
+
     m_wws.reset(new WorkWithStruct(m_kia_settings));
     m_kia_settings->m_data_for_db->experiment_id = m_wws->currentDateTime();
 
@@ -27,7 +28,7 @@ void WorkWithMain::set_kia_settings()
 
     m_kia_matrox.reset(new Kia_matrox(m_wws, m_kia_settings));
 
-    m_kia_mpi.reset(new Kia_mpi(m_wws, m_kia_settings));
+    m_kia_mpi.reset(new Kia_mpi(m_wws, m_kia_protocol, m_kia_settings));
 
     connect(m_kia_mpi.get(), SIGNAL(changed_lpi()), this, SLOT(send_data_from_mpi_current_lpi_to_table_settings()));
 
@@ -428,7 +429,7 @@ void WorkWithMain::cyclogram_define_address( uint16_t parametr)
             QStringList correct_adress;
             correct_adress.push_back(QString::number(TS_ADDRESS));
             for (auto el : m_kia_settings->m_data_for_bokz->m_address_defined)
-                correct_adress.push_back(QString::number(el + 5));
+                correct_adress.push_back(QString::number(el + TS_ADDRESS));
             emit send_to_client(SEND_DATA_TO_SETTINGS_WINDOW, correct_adress);
         }
     });
@@ -617,10 +618,7 @@ void WorkWithMain::start_kia_gui()
 
 bool WorkWithMain::check_used_bokz(uint16_t type_command, std::function<void (uint16_t, uint16_t)> start_exchange, uint16_t parametr)
 {
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_ERROR] = KiaS_SUCCESS;
     m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
-    m_kia_settings->m_wait_and_param_for_cyclogram->m_is_cyclogram_is_succesful  = KiaS_FAIL;
-
     for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
     {
         if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
