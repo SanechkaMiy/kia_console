@@ -197,7 +197,6 @@ struct Data_for_bi
     std::vector<uint16_t> m_1s;
     uint8_t m_is_channel_on = 0x3f;
     uint8_t m_is_1s_on = 0x3f;
-    int  m_sec_mark_period;
 };
 #pragma pack(pop)
 

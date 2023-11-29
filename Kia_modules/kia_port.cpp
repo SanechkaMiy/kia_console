@@ -80,7 +80,7 @@ void Kia_port::check_used_bi_usb_ports()
 {
     int16_t (*setSerialPrefix)(char*);
     int16_t (*init)(void);
-    m_handle = dlopen ("/usr/local/lib/BiLib_20231123_1604/BiLibNE.so", RTLD_LAZY);
+    m_handle = dlopen ("/usr/local/lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
     if (!m_handle) {
         printf("have problem!");
     }

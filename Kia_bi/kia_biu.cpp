@@ -15,7 +15,6 @@ Kia_biu::Kia_biu(uint16_t num_bi, shared_ptr<WorkWithStruct> wws, std::array<std
     for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]; ++num_ch)
     {
         on_1s_bi(num_ch, num_ch);
-        //off_1s_bi(num_ch, num_ch);
     }
 
     set_sinchronize_event();
@@ -100,6 +99,7 @@ void Kia_biu::wait_1s_biu_1()
     std::lock_guard lock(m[1]);
     m_count[1]++;
     m_cv[1].notify_all();
+
 }
 
 void Kia_biu::wait_1s_biu_2()
@@ -203,7 +203,7 @@ uint16_t Kia_biu::init_bi()
     int16_t (*init)(void);
     int16_t (*getDeviceID)(uint16_t);
     int16_t (*config)(int16_t);
-    m_handle = dlopen ("/usr/local/lib/BiLib_20231123_1604/BiLibNE.so", RTLD_LAZY);
+    m_handle = dlopen ("/usr/local/lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
     setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
     printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
     init = (int16_t(*)(void))dlsym(m_handle, "Init");
@@ -389,20 +389,20 @@ void Kia_biu::get_sec_mark_telemetry()
     int16_t (*getSecTelemetry)(int16_t, DevTelemetry*, DevTelemetry*);
     getSecTelemetry = (int16_t(*)(int16_t, DevTelemetry*, DevTelemetry*))dlsym(m_handle,"GetSecMarkTelemetry");
     (*getSecTelemetry)(m_device_id, m_devTel_1, m_devTel_2);
-//    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
-//    printf("Consumption: %d\n", m_devTel_1->Consumption);
-//    printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
-//    printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
-//    printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
-//    (*getSecTelemetry)(1, m_devTel_1, m_devTel_2);
-//    std::cout << "get sec " << m_device_id << std::endl;
-//    std::cout << "get sec " << 1 << std::endl;
-//    //printf("GetSecMarkTelemetry: %d\n", );
-//    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
-//    printf("Consumption: %d\n", m_devTel_1->Consumption);
-//    printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
-//    printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
-//    printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
+    //    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
+    //    printf("Consumption: %d\n", m_devTel_1->Consumption);
+    //    printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
+    //    printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
+    //    printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
+    //    (*getSecTelemetry)(1, m_devTel_1, m_devTel_2);
+    //    std::cout << "get sec " << m_device_id << std::endl;
+    //    std::cout << "get sec " << 1 << std::endl;
+    //    //printf("GetSecMarkTelemetry: %d\n", );
+    //    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
+    //    printf("Consumption: %d\n", m_devTel_1->Consumption);
+    //    printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
+    //    printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
+    //    printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
 }
 
 void Kia_biu::get_telemetry()

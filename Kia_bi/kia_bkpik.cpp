@@ -164,6 +164,11 @@ void Kia_bkpik::set_relay_command_pulse_time(uint16_t relay_command)
 
 }
 
+void Kia_bkpik::set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time)
+{
+
+}
+
 void Kia_bkpik::set_bkpik_settings()
 {
     m_kia_data.reset(new Kia_data());

@@ -429,7 +429,9 @@ void WorkWithMain::cyclogram_define_address( uint16_t parametr)
             QStringList correct_adress;
             correct_adress.push_back(QString::number(TS_ADDRESS));
             for (auto el : m_kia_settings->m_data_for_bokz->m_address_defined)
-                correct_adress.push_back(QString::number(el + TS_ADDRESS));
+            {
+                correct_adress.push_back(QString::number(el));
+            }
             emit send_to_client(SEND_DATA_TO_SETTINGS_WINDOW, correct_adress);
         }
     });
@@ -956,7 +958,10 @@ void WorkWithMain::slot_read_client()
             }
             break;
         case SET_SEC_MARK_PERIOD:
-            m_kia_settings->m_data_for_bi->m_sec_mark_period = data_from_client[type_bi].toInt();
+            for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
+            {
+                m_kia_bi[ind_bi]->set_sec_mark_pulse_time(data_from_client[0].toInt());
+            }
             break;
         case SET_TR_SETTINGS:
             for (uint16_t num_zkr_param = 0; num_zkr_param < data_from_client.size(); ++num_zkr_param)

@@ -1,4 +1,4 @@
-#ifndef KIA_BIU_H
+﻿#ifndef KIA_BIU_H
 #define KIA_BIU_H
 #include "BiLibNE.h"
 #include "mainStruct.h"
@@ -39,10 +39,12 @@ public:
     void set_relay_command(uint16_t relay_command) override;
     void set_relay_polarity(uint16_t relay_command) override;
     void set_relay_command_pulse_time(uint16_t relay_command) override;
+
+     void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time) override;
 signals:
     void send_to_client(quint16, QStringList);
 private:
-    void (Kia_biu::*m_func)();
+    //void (Kia_biu::*m_func)();
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void wait_1s_biu_0();
     void wait_1s_biu_1();
@@ -61,7 +63,6 @@ private:
     void get_power(uint16_t status_power);
     void set_synch_status(uint16_t synch_status);
     void get_synch_status();
-    void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time);
     void get_sec_mark_telemetry();
     void get_telemetry();
     void set_synchro(void(*func)(uint16_t));

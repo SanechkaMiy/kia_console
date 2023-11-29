@@ -31,6 +31,7 @@ public:
     virtual void set_relay_polarity(uint16_t relay_command) = 0;
     virtual void set_relay_command_pulse_time(uint16_t relay_command) = 0;
 
+    virtual void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time) = 0;
     std::shared_ptr<Kia_data> m_kia_data;
     uint16_t m_num_bi;
 };

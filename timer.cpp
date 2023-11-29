@@ -7,14 +7,15 @@ Timer::Timer(uint16_t num_timer, int32_t interval, int16_t divider, std::shared_
 {
     m_num_timer = num_timer;
     cout<<"start_timer " << m_num_timer <<endl;
-    m_interval_divider = m_interval / m_divider;
-    m_sum_filter_el = 0;
-    m_dovInterval = 2;
-    for(auto &el : m_arr_for_synch)
-    {
-        el = m_interval;
-        m_sum_filter_el += el;
-    }
+    m_kia_settings->m_timer_interval = m_interval / m_divider;
+    m_interval_divider = m_kia_settings->m_timer_interval;
+    //    m_sum_filter_el = 0;
+    //    m_dovInterval = 2;
+    //    for(auto &el : m_arr_for_synch)
+    //    {
+    //        el = m_interval;
+    //        m_sum_filter_el += el;
+    //    }
 }
 
 Timer::~Timer()
@@ -95,11 +96,10 @@ void Timer::start()
             m_kia_settings->m_data_for_db->bshv[m_num_timer]++;
             auto delta = (m_now_time - m_curr_time) / m_to_ms;
             if (delta <= (m_kia_settings->m_timer_interval + m_shift_interval))
-                m_interval_divider  = (m_kia_settings->m_timer_interval / m_divider) - delta;
-            //std::cout << m_interval_divider << " " << delta << " " <<  m_now_time << std::endl;
+                m_interval_divider = m_kia_settings->m_timer_interval - delta / m_divider;
+            //std::cout << m_interval_divider << " " << delta << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] << std::endl;
             m_count++;
             m_cv.notify_all();
-            //t_action();
         }
 
     });
@@ -176,5 +176,6 @@ void Timer::change_1s_mark(const int32_t& interval)
 
 void Timer::change_divider(int32_t &divider)
 {
+    m_kia_settings->m_timer_interval = m_interval / divider;
     m_divider = divider;
 }

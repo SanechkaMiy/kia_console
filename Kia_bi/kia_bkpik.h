@@ -54,6 +54,7 @@ public:
     void set_relay_polarity(uint16_t relay_command) override;
     void set_relay_command_pulse_time(uint16_t relay_command) override;
 
+    void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time) override;
 signals:
     void send_to_client(quint16, QStringList);
 private:
