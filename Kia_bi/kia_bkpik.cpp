@@ -1,10 +1,9 @@
 #include "kia_bkpik.h"
 
-Kia_bkpik::Kia_bkpik(uint16_t num_bi, shared_ptr<WorkWithStruct> wws,
+Kia_bkpik::Kia_bkpik(uint16_t num_bi,
                      std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
                      shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings) :
-    m_wws(wws)
-  , m_kia_db(kia_db)
+    m_kia_db(kia_db)
   , m_kia_protocol(kia_protocol)
   , m_kia_settings(kia_settings)
 {
@@ -92,7 +91,7 @@ void Kia_bkpik::start_1s_mark_bkpik()
                     m_kia_data->m_data_bi->m_commandR.resize(command_size);
                     m_count++;
                     m_cv.notify_all();
-                    m_kia_data->m_data_db->m_datetime = m_wws->currentDateTime();
+                    m_kia_data->m_data_db->m_datetime = currentDateTime();
                     send_telemetry();
                     m_parser_db->send_to_bkpik(m_num_bi);
                     buffer.erase(buffer.begin(), buffer.begin() + command_size);
@@ -188,7 +187,7 @@ void Kia_bkpik::set_bkpik_settings()
 void Kia_bkpik::on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем питание ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем питание ");
     m_off_1_ch = 0x00;
     std::vector<uint8_t> on_power_arr = {0x3c, 0x33, 0xcf};
     if (off_1_ch != 0)
@@ -209,7 +208,7 @@ void Kia_bkpik::on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t 
 void Kia_bkpik::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем питание ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем питание ");
     m_off_1_ch = 0x3f;
     std::vector <uint8_t> off_power_arr = {0x03, 0x0c, 0x30};
     if (off_1_ch != 0)
@@ -230,7 +229,7 @@ void Kia_bkpik::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t
 void Kia_bkpik::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем секундную метку ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем секундную метку ");
     m_off_1_ch = 0x00;
     std::vector<uint8_t> on_power_arr = {0x3c, 0x33, 0xcf};
     if (off_1_ch != 0)
@@ -252,7 +251,7 @@ void Kia_bkpik::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off
 void Kia_bkpik::off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем секундную метку ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем секундную метку ");
     m_off_1_ch = 0x3f;
     std::vector <uint8_t> off_power_arr = {0x03, 0x0c, 0x30};
     if (off_1_ch != 0)

@@ -3,27 +3,26 @@
 
 
 
-Kia_matrox::Kia_matrox(shared_ptr<WorkWithStruct> wws, std::shared_ptr<Kia_settings> kia_settings) :
-    m_wws(wws)
-  , m_kia_settings(kia_settings)
+Kia_matrox::Kia_matrox(std::shared_ptr<Kia_settings> kia_settings) :
+    m_kia_settings(kia_settings)
 {
-//    auto check_result = matrox_init();
-//    if (check_result != 0)
-//    {
-//        std::cout << "Matrox load" << std::endl;
-//        m_kia_settings->m_matrox_is_define = CS_IS_ON;
-//    }
+    //    auto check_result = matrox_init();
+    //    if (check_result != 0)
+    //    {
+    //        std::cout << "Matrox load" << std::endl;
+    //        m_kia_settings->m_matrox_is_define = CS_IS_ON;
+    //    }
 }
 
 Kia_matrox::~Kia_matrox()
 {
-//    if (m_kia_settings->m_matrox_is_define == CS_IS_ON)
-//        matrox_close();
+    //    if (m_kia_settings->m_matrox_is_define == CS_IS_ON)
+    //        matrox_close();
 }
 
 void Kia_matrox::matrox_grab_frame(std::shared_ptr<Kia_data> kia_data)
 {
-    kia_data->m_data_db->m_datetime = m_wws->currentDateTime();
+    kia_data->m_data_db->m_datetime = currentDateTime();
     MdigGrab(m_mil.m_dig_id, m_mil.m_buf_id);
     std::vector<uint8_t> m_commandToCom = {CMD_GRAB};
     m_serial_port->WriteBinary(m_commandToCom);

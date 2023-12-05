@@ -1,7 +1,6 @@
 #include "kia_mpi.h"
 
-Kia_mpi::Kia_mpi(shared_ptr<WorkWithStruct> wws, shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings) :
-    m_wws(wws),
+Kia_mpi::Kia_mpi(shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_protocol(kia_protocol),
     m_kia_settings(kia_settings)
 {
@@ -41,13 +40,13 @@ uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data, uint16_t 
     reset(kia_data);
 
     tmkselect(kia_data->m_data_mpi->m_mpi_index);
-    kia_data->m_data_db->send_time = m_wws->currentDateTime();
+    kia_data->m_data_db->send_time = currentDateTime();
     bcdefbus(kia_data->m_data_mpi->m_lpi);
     bcdefbase(kia_data->m_data_mpi->m_base);
     bcputw(0, kia_data->m_data_mpi->m_code_word);
     if (kia_data->m_data_mpi->m_format == DATA_BC_RT)
         bcputblk(1, kia_data->m_data_mpi->m_data_to_exc.data(), kia_data->m_data_mpi->m_data_to_exc.size() - 1);
-    kia_data->m_data_db->m_datetime = m_wws->currentDateTime();
+    kia_data->m_data_db->m_datetime = currentDateTime();
     bcstart(kia_data->m_data_mpi->m_base, kia_data->m_data_mpi->m_format);
     tmkwaitevents(1 << kia_data->m_data_mpi->m_mpi_index, 1000);
     TTmkEventData tmkEvD;
@@ -67,7 +66,7 @@ uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data, uint16_t 
         kia_data->m_data_mpi->m_status_exchange = KiaS_FAIL;
     }
     bcgetblk(0, kia_data->m_data_mpi->m_data_word.data(), constants::packetSize);
-    kia_data->m_data_db->receive_time = m_wws->currentDateTime();
+    kia_data->m_data_db->receive_time = currentDateTime();
     if (kia_data->m_data_mpi->m_format == DATA_BC_RT)
         kia_data->m_data_mpi->m_wOs = kia_data->m_data_mpi->m_data_word[kia_data->m_data_mpi->m_word_data + 1];
     else
@@ -90,7 +89,7 @@ void Kia_mpi::reset(std::shared_ptr<Kia_data> kia_data)
 void Kia_mpi::parse_mko_protocols(uint16_t &num_bokz, std::shared_ptr<Kia_data> kia_data)
 {
     QString str_mpi_protocol;
-    str_mpi_protocol.push_back(m_wws->format("", m_kia_settings->m_format_for_desc->shift_for_numbers + 3, '-') + m_wws->format(" " + QString::fromStdString(kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
+    str_mpi_protocol.push_back(format("", m_kia_settings->m_format_for_desc->shift_for_numbers + 3, '-') + format(" " + QString::fromStdString(kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
 
     str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5).arg("БШВ", -11).arg("МПИ", -11).arg("ФОРМАТ",-11).arg("address", -11).arg("ЛПИ",-11).arg("ДАТА И ВРЕМЯ"));
     str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5)

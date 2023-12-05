@@ -14,4 +14,11 @@ QString get_mode_orientation(uint16_t value, uint16_t shift);
 QString get_command_wait(uint16_t value, uint16_t shift);
 QString get_command_complete(uint16_t value, uint16_t shift);
 QString get_last_usd(uint16_t value, uint16_t shift);
+
+float uint32_to_float(uint32_t value);
+std::string currentDateTime();
+uint32_t current_hours();
+float decodeDateTime();
+
+QString format(const QString& str, const int16_t &shift, const char &fillchar = ' ');
 #endif // KIA_HELP_FUNCTIONS_H

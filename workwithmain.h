@@ -4,7 +4,6 @@
 #include <QtGlobal>
 #include <QVector>
 #include <QtCore>
-#include "workwithstruct.h"
 #include "timer.h"
 #include "kia_synch_timer.h"
 #include "parsetodb.h"
@@ -25,7 +24,9 @@
 #include "Kia_modules/kia_mpi.h"
 #include "Kia_modules/kia_port.h"
 #include "kia_cyclogram.h"
+#include "kia_cyclogram_bokzm60.h"
 #include "Kia_modules/kia_db.h"
+#include "Kia_modules/kia_help_functions.h"
 class WorkWithMain : public QObject
 {
     Q_OBJECT
@@ -105,7 +106,6 @@ private:
     std::shared_ptr<Kia_db> m_kia_db;
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_bi_db;
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_bokz_db;
-    shared_ptr<WorkWithStruct> m_wws;
     std::shared_ptr<Kia_mpi> m_kia_mpi;
     shared_ptr<Kia_matrox> m_kia_matrox;
     shared_ptr<Kia_protocol> m_kia_protocol;

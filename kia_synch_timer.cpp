@@ -1,12 +1,11 @@
 #include "kia_synch_timer.h"
 
 Kia_synch_timer::Kia_synch_timer(uint16_t num_timer, shared_ptr<Timer> timer, shared_ptr<Kia_bi> kia_bi,
-                                 std::shared_ptr<Kia_settings> kia_settings, shared_ptr<WorkWithStruct> wws,
+                                 std::shared_ptr<Kia_settings> kia_settings,
                                  shared_ptr<Kia_protocol> kia_protocol) :
     m_timer(timer),
     m_kia_bi(kia_bi),
     m_kia_settings(kia_settings),
-    m_wws(wws),
     m_kia_protocol(kia_protocol)
 {
     m_num_timer = num_timer;
@@ -39,6 +38,11 @@ void Kia_synch_timer::start_timer()
         while (m_stop_timer)
         {
             m_kia_bi->wait_for_event();
+            if (m_is_first)
+            {
+                m_kia_settings->m_data_for_db->bshv[m_num_timer] = 0;
+                m_is_first = false;
+            }
             m_timer->synchronize();
         }
     });
@@ -62,6 +66,7 @@ void Kia_synch_timer::start_synch_timer()
         while (m_stop_synch_1s_mark)
         {
             wait_for_event(m_timer);
+            m_kia_settings->m_data_for_db->bshv[m_num_timer]++;
             for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]; ++num_ch)
             {
                 bshv_for_table.push_back(QString::number(ST_BSHV));

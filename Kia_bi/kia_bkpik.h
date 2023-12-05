@@ -7,7 +7,6 @@
 #include <thread>
 #include <atomic>
 #include "simpletimer.h"
-#include "workwithstruct.h"
 #include <condition_variable>
 #include "kia_protocol.h"
 #include "mainStruct.h"
@@ -18,14 +17,14 @@
 #include "kia_bi.h"
 #include <filesystem>
 #include "Kia_modules/kia_db.h"
+#include "Kia_modules/kia_help_functions.h"
 namespace fs = std::filesystem;
 
 class Kia_bkpik : public Kia_bi
 {
     Q_OBJECT
 public:
-    const static uint32_t countOfCh = 4;
-    Kia_bkpik(uint16_t num_bi, shared_ptr<WorkWithStruct> wws, std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
+    Kia_bkpik(uint16_t num_bi, std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
               shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_bkpik();
     std::condition_variable& getEvent();
@@ -55,12 +54,12 @@ public:
     void set_relay_command_pulse_time(uint16_t relay_command) override;
 
     void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time) override;
+
 signals:
     void send_to_client(quint16, QStringList);
 private:
     void set_bkpik_settings();
     std::vector<std::string> m_list_com_port;
-    shared_ptr<WorkWithStruct> m_wws;
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     shared_ptr<ParseToDB> m_parser_db;
     shared_ptr<Kia_protocol> m_kia_protocol;

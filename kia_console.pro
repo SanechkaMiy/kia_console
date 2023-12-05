@@ -21,11 +21,15 @@ SOURCES += \
         Kia_bi/kia_bi.cpp \
         Kia_bi/kia_biu.cpp \
         Kia_bi/kia_bkpik.cpp \
+        Kia_bokz/bokzmr.cpp \
+        Kia_cyclogram/kia_cyclogram.cpp \
+        Kia_cyclogram/kia_cyclogram_bokzm60.cpp \
         Kia_modules/kia_db.cpp \
         Kia_modules/kia_help_functions.cpp \
         Kia_modules/kia_mpi.cpp \
         Kia_modules/kia_port.cpp \
-        kia_cyclogram.cpp \
+        Kia_pio/pio_bokz.cpp \
+        Kia_pio/pio_bokzm60.cpp \
         kia_ftdi.cpp \
         kia_load_initial_settings.cpp \
         kia_matrox.cpp \
@@ -37,8 +41,7 @@ SOURCES += \
         parsetodb.cpp \
         simpletimer.cpp \
         timer.cpp \
-        workwithmain.cpp \
-        workwithstruct.cpp
+        workwithmain.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -48,10 +51,15 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ../../../../../usr/local/lib/BiLib_20231123_1653/BiLibNE.h \
     ../../kia_gui/source/Kia_enums.h \
+    Kia_bokz/bokzmr.h \
+    Kia_cyclogram/kia_cyclogram.h \
+    Kia_cyclogram/kia_cyclogram_bokzm60.h \
     Kia_modules/kia_db.h \
     Kia_modules/kia_help_functions.h \
     Kia_modules/kia_mpi.h \
     Kia_modules/kia_port.h \
+    Kia_pio/pio_bokz.h \
+    Kia_pio/pio_bokzm60.h \
     Kia_struct/Kia_mko_struct.h \
     Kia_bokz/bokz.h \
     Kia_bokz/bokzm60.h \
@@ -60,7 +68,6 @@ HEADERS += \
     Kia_bi/kia_bi.h \
     Kia_bi/kia_biu.h \
     Kia_bi/kia_bkpik.h \
-    kia_cyclogram.h \
     kia_ftdi.h \
     kia_load_initial_settings.h \
     kia_matrox.h \
@@ -72,8 +79,7 @@ HEADERS += \
     parsetodb.h \
     simpletimer.h \
     timer.h \
-    workwithmain.h \
-    workwithstruct.h
+    workwithmain.h
 
 
 
@@ -85,6 +91,10 @@ DEPENDPATH += Kia_bokz/
 
 INCLUDEPATH += Kia_bi/
 DEPENDPATH += Kia_bi/
+
+INCLUDEPATH += Kia_cyclogram/
+DEPENDPATH += Kia_cyclogram/
+
 INCLUDEPATH += ../../../../../usr/local/lib/BiLib_20231123_1653
 DEPENDPATH += ../../../../../usr/local/lib/BiLib_20231123_1653
 

@@ -100,7 +100,7 @@ struct Data_for_db
     uint16_t m_error_code;
     uint32_t m_exchange_counter = 0;
     string send_time;
-    std::vector<uint32_t> bshv;
+    std::vector<int32_t> bshv;
     uint16_t error_code;
     string receive_time;
     uint16_t waw1;
@@ -205,6 +205,7 @@ struct Wait_and_param_for_cyclogram
 {
     int16_t m_wait_for_on_power_is_stable = 30;
     int16_t m_wait_for_otclp = 2;
+    int16_t m_wait_for_takt = 1;
     int16_t m_wait_for_off_power_is_stable = 3;
     int16_t m_wait_for_start_dtmi_loc = 10;
     int16_t m_count_cyclogram_technical_run = 2;

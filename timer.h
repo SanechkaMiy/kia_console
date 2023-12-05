@@ -64,7 +64,6 @@ private:
     int64_t t_missDelta = 0;
     int16_t m_corrInterval = 0;
     int16_t m_dovInterval = 0;
-    bool m_inSleep = false;
     std::mutex m;
     std::future<void> m_start_timer;
     std::atomic_bool m_stop_timer{false};

@@ -3,14 +3,13 @@
 #include "mainStruct.h"
 #include "kia_bi.h"
 #include "timer.h"
-#include "workwithstruct.h"
 #include "kia_protocol.h"
 class Kia_synch_timer : public QObject
 {
     Q_OBJECT
 public:
     Kia_synch_timer(uint16_t num_timer, shared_ptr<Timer> timer, shared_ptr<Kia_bi> kia_bi,
-                    std::shared_ptr<Kia_settings> kia_settings, shared_ptr<WorkWithStruct> wws,
+                    std::shared_ptr<Kia_settings> kia_settings,
                     shared_ptr<Kia_protocol> kia_protocol);
     template <typename T>
     void wait_for_event(T& ev);
@@ -24,12 +23,11 @@ private:
     shared_ptr<Timer> m_timer;
     shared_ptr<Kia_bi> m_kia_bi;
     std::shared_ptr<Kia_settings> m_kia_settings;
-    shared_ptr<WorkWithStruct> m_wws;
     shared_ptr<Kia_protocol> m_kia_protocol;
 
     std::future<void> m_start_synch_1s_mark;
     std::atomic_bool m_stop_synch_1s_mark{false};
-
+    bool m_is_first = true;
     std::future<void> m_start_timer;
     std::atomic_bool m_stop_timer{false};
 };

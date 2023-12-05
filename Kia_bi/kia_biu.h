@@ -2,7 +2,6 @@
 #define KIA_BIU_H
 #include "BiLibNE.h"
 #include "mainStruct.h"
-#include "workwithstruct.h"
 #include "kia_protocol.h"
 #include "parsetodb.h"
 #include <condition_variable>
@@ -14,7 +13,7 @@ class Kia_biu : public Kia_bi
 {
     Q_OBJECT
 public:
-    Kia_biu(uint16_t num_bi, shared_ptr<WorkWithStruct> wws,
+    Kia_biu(uint16_t num_bi,
             std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
             shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_biu();
@@ -72,7 +71,6 @@ private:
     void get_master_state();
     void preset_telemetry(uint16_t num_ch, struct DevTelemetry* dev_tel);
     shared_ptr<ParseToDB> m_parser_db;
-    shared_ptr<WorkWithStruct> m_wws;
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;

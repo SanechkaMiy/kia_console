@@ -103,6 +103,7 @@ void Kia_db::stop_commit()
         {
             while (!m_data.empty())
             {
+                std::cout << m_data.front() << std::endl;
                 std::cout << "data " << m_data.size() << std::endl;
             }
             m_data.push("end");

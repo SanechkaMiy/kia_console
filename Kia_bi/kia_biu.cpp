@@ -1,9 +1,8 @@
 #include "kia_biu.h"
 
-Kia_biu::Kia_biu(uint16_t num_bi, shared_ptr<WorkWithStruct> wws, std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
+Kia_biu::Kia_biu(uint16_t num_bi, std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
                  shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings) :
-    m_wws(wws)
-  , m_kia_db(kia_db)
+    m_kia_db(kia_db)
   , m_kia_protocol(kia_protocol)
   , m_kia_settings(kia_settings)
 {
@@ -279,10 +278,10 @@ void Kia_biu::start_1s_mark()
         {
             //st.start();
             wait_for_event();
-            std::cout << "num bi " << m_device_id << std::endl;
+            //std::cout << "num bi " << m_device_id << std::endl;
             if (m_stop_1s_mark)
             {
-                m_kia_data->m_data_db->m_datetime = m_wws->currentDateTime();
+                m_kia_data->m_data_db->m_datetime = currentDateTime();
                 get_sec_mark_telemetry();
                 send_telemetry();
                 m_parser_db->send_to_bi(m_num_bi);
@@ -462,7 +461,7 @@ void Kia_biu::on_power_bi(uint16_t& num_bokz, uint16_t &num_channel, uint16_t of
 {
     get_power(m_power_status);
     printf("power_status %04x\n", m_power_status);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем питание ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем питание ");
     std::vector<uint16_t> on_power_arr = {0x0306, 0x3060};
     m_off_1_ch = 0xffff;
     if (off_1_ch != 0)
@@ -483,7 +482,7 @@ void Kia_biu::on_power_bi(uint16_t& num_bokz, uint16_t &num_channel, uint16_t of
 void Kia_biu::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     get_power(m_power_status);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем питание ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем питание ");
     std::vector<uint16_t> off_power_arr = {0xfcf9, 0xcf9f};
     m_off_1_ch = 0x0000;
     if (off_1_ch != 0)
@@ -504,7 +503,7 @@ void Kia_biu::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t o
 void Kia_biu::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     get_sec_mark_status(m_sec_mark_status);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем секундную метку ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем секундную метку ");
     m_off_1_ch = 0xffff;
     std::vector<uint16_t> on_1s = {0x0003, 0x000c};
     if (off_1_ch != 0)
@@ -526,7 +525,7 @@ void Kia_biu::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1
 void Kia_biu::off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     get_sec_mark_status(m_sec_mark_status);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем секундную метку ");
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем секундную метку ");
     std::vector<uint16_t> off_1s = {0x000c, 0x0003};
     m_off_1_ch = 0x0000;
     if (off_1_ch != 0)
@@ -549,7 +548,7 @@ void Kia_biu::on_imitator_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t
     get_power(m_power_status);
     std::vector<uint16_t> on_power_arr = {0x0C09, 0xC090};
     m_power_status = m_power_status | (on_power_arr[num_channel]);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
             + QString("Включаем имитатор для канала №") + QString::number(num_channel + 1) + "\n";
     save_to_protocol(num_bokz, str_info_1s, parametr);
     set_power(m_power_status);
@@ -560,7 +559,7 @@ void Kia_biu::off_imitator_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_
     get_power(m_power_status);
     std::vector<uint16_t> off_power_arr = {0xf3f6, 0x3f6f};
     m_power_status = m_power_status & (off_power_arr[num_channel]);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
             + QString("Выключаем имитатор для канала №") + QString::number(num_channel + 1) + "\n";
     save_to_protocol(num_bokz, str_info_1s, parametr);
     set_power(m_power_status);
@@ -575,7 +574,7 @@ void Kia_biu::on_contol_command(uint16_t &num_bokz, uint16_t &num_channel, uint1
     uint16_t command = 0x0001;
     command = command << (num_channel * 8);
     printf("command %04x\n", command);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
             + QString("Включаем реле для канала №") + QString::number(num_channel + 1) + "\n";
     save_to_protocol(num_bokz, str_info_1s, parametr);
     set_relay_command(command);
@@ -590,7 +589,7 @@ void Kia_biu::off_contol_command(uint16_t &num_bokz, uint16_t &num_channel, uint
     uint16_t command = 0x0002;
     command = command << (num_channel * 8);
     printf("%04x\n", command);
-    QString str_info_1s = m_wws->format(QString::fromStdString(m_wws->currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
             + QString("Выключаем реле для канала №") + QString::number(num_channel + 1) + "\n";
     save_to_protocol(num_bokz, str_info_1s, parametr);
     set_relay_command(command);

@@ -4,6 +4,8 @@
 #include <iostream>
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
+#include "Kia_pio/pio_bokz.h"
+#include "Kia_pio/pio_bokzm60.h"
 #include "math.h"
 class Bokz : public QObject
 {
@@ -49,6 +51,7 @@ public:
 
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;
+    std::shared_ptr<Pio_bokz> m_pio_bokz;
     uint16_t m_is_used_bokz = CS_IS_OFF;
     uint16_t m_num_bokz;
     virtual ~Bokz(){    cout<<"destructor bokz"<<endl;};

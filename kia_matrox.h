@@ -3,10 +3,11 @@
 #include <mil.h>
 #include <CppLinuxSerial/SerialPort.hpp>
 #include <iostream>
-#include "workwithstruct.h"
 #include "mainStruct.h"
 #include <string.h>
 #include <memory>
+#include <math.h>
+#include "Kia_modules/kia_help_functions.h"
 #define DCF_DUAL    "KAM_DUALBASE.dcf"
 #define CMD_GRAB    0x04 // 0x20
 typedef struct
@@ -39,12 +40,11 @@ class Kia_matrox
 public:
     uint32_t get_buf_size();
     void* get_frame_buf();
-    Kia_matrox(std::shared_ptr<WorkWithStruct> wws, std::shared_ptr<Kia_settings> kia_settings);
+    Kia_matrox(std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_matrox();
     void matrox_grab_frame(std::shared_ptr<Kia_data> kia_data);
 private:
     std::shared_ptr <mn::CppLinuxSerial::SerialPort> m_serial_port;
-    std::shared_ptr<WorkWithStruct> m_wws;
     std::shared_ptr<Kia_settings> m_kia_settings;
     uint16_t matrox_init();
     void matrox_close();

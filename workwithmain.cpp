@@ -13,10 +13,9 @@ void WorkWithMain::set_kia_settings()
 {
     kia_init();
 
-    m_wws.reset(new WorkWithStruct(m_kia_settings));
-    m_kia_settings->m_data_for_db->experiment_id = m_wws->currentDateTime();
+    m_kia_settings->m_data_for_db->experiment_id = currentDateTime();
 
-    m_kia_protocol.reset(new Kia_protocol(m_wws, m_kia_settings));
+    m_kia_protocol.reset(new Kia_protocol(m_kia_settings));
     m_kia_protocol->create_dir_for_protocols();
 
     m_kia_db.reset(new Kia_db(m_kia_settings));
@@ -26,9 +25,9 @@ void WorkWithMain::set_kia_settings()
     m_kia_db->start_experiment();
 
 
-    m_kia_matrox.reset(new Kia_matrox(m_wws, m_kia_settings));
+    m_kia_matrox.reset(new Kia_matrox(m_kia_settings));
 
-    m_kia_mpi.reset(new Kia_mpi(m_wws, m_kia_protocol, m_kia_settings));
+    m_kia_mpi.reset(new Kia_mpi(m_kia_protocol, m_kia_settings));
 
     connect(m_kia_mpi.get(), SIGNAL(changed_lpi()), this, SLOT(send_data_from_mpi_current_lpi_to_table_settings()));
 
@@ -47,26 +46,32 @@ void WorkWithMain::set_kia_settings()
         switch(m_kia_settings->m_type_bi)
         {
         case TYPE_BI_BKPIK:
-            m_kia_bi.push_back(std::make_shared<Kia_bkpik>(ind_bi, m_wws, m_kia_bi_db, m_kia_protocol, m_kia_settings));
+            m_kia_bi.push_back(std::make_shared<Kia_bkpik>(ind_bi, m_kia_bi_db, m_kia_protocol, m_kia_settings));
             break;
         case TYPE_BI_BIU:
-            m_kia_bi.push_back(std::make_shared<Kia_biu>(ind_bi, m_wws, m_kia_bi_db, m_kia_protocol, m_kia_settings));
+            m_kia_bi.push_back(std::make_shared<Kia_biu>(ind_bi, m_kia_bi_db, m_kia_protocol, m_kia_settings));
             break;
         }
-        m_kia_synch_timer.push_back(std::make_shared<Kia_synch_timer>(ind_bi, m_timer[ind_bi], m_kia_bi[ind_bi], m_kia_settings, m_wws, m_kia_protocol));
+        m_kia_synch_timer.push_back(std::make_shared<Kia_synch_timer>(ind_bi, m_timer[ind_bi], m_kia_bi[ind_bi], m_kia_settings, m_kia_protocol));
         m_timer[ind_bi]->start();
     }
 
     start_kia_gui();
     m_kia_ftdi.reset(new Kia_ftdi(m_kia_settings));
 
-    for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_data_for_bokz->m_count_bokz; ++num_bokz)
-        m_bokz.push_back(std::make_shared<BokzM60>(num_bokz, m_wws, m_kia_bokz_db, m_timer,
-                                                   m_kia_synch_timer, m_kia_bi, m_kia_mpi,
-                                                   m_kia_protocol, m_kia_matrox, m_kia_settings,
-                                                   m_kia_ftdi));
-
-    m_kia_cyclogram.reset(new Kia_cyclogram(m_wws, m_timer, m_kia_synch_timer, m_bokz, m_kia_bi, m_kia_protocol, m_kia_settings));
+    switch(m_kia_settings->m_type_bokz)
+    {
+    case TYPE_BOKZ_BOKZM60:
+        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_data_for_bokz->m_count_bokz; ++num_bokz)
+            m_bokz.push_back(std::make_shared<BokzM60>(num_bokz, m_kia_bokz_db, m_timer,
+                                                       m_kia_synch_timer, m_kia_bi, m_kia_mpi,
+                                                       m_kia_protocol, m_kia_matrox, m_kia_settings,
+                                                       m_kia_ftdi));
+        m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_timer, m_kia_synch_timer, m_bokz, m_kia_bi, m_kia_protocol, m_kia_settings));
+        break;
+    case TYPE_BOKZ_BOKZMR:
+        break;
+    }
 
 }
 
@@ -526,7 +531,6 @@ void WorkWithMain::delete_connection()
 {
     std::cout << "disconnection" << std::endl;
     disconnect(this, SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
-    disconnect(m_wws.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     disconnect(m_kia_protocol.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
     {
@@ -552,7 +556,6 @@ void WorkWithMain::new_connection_slot()
         connect(m_kia_bi[ind_bi].get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
         connect(m_kia_synch_timer[ind_bi].get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     }
-    connect(m_wws.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     connect(m_kia_protocol.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     connect(m_kia_db.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     connect(m_kia_mpi.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
@@ -932,7 +935,7 @@ void WorkWithMain::slot_read_client()
             do_frames(EP_NOPROTECTEDEXCHANGE);
             break;
         case CYCL_FULL_FRAMES:
-            //cyclogram_zkr();
+            cyclogram_full_frames();
             break;
         case SET_RELAY_PULSE:
             printf("relay command %04x\n", data_from_client[TRC_PULSE].toUInt());

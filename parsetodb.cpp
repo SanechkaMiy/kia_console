@@ -15,7 +15,7 @@ ParseToDB::~ParseToDB()
 
 }
 
-void ParseToDB::sendDataIntoMSHIOR(uint16_t& num_bokz, uint32_t& bshv, MSHIOR &st_mshior)
+void ParseToDB::sendDataIntoMSHIOR(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st_mshior)
 {
     char data_into_mshior[1024];
     sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
@@ -43,7 +43,7 @@ void ParseToDB::sendDataIntoMSHIOR(uint16_t& num_bokz, uint32_t& bshv, MSHIOR &s
     m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
 }
 
-void ParseToDB::sendDataIntoSHTMI1(uint16_t &num_bokz, uint32_t& bshv, SHTMI1& st_shtmi1)
+void ParseToDB::sendDataIntoSHTMI1(uint16_t &num_bokz, int32_t& bshv, SHTMI1& st_shtmi1)
 {
     char data_into_shtmi1[1024];
     sprintf(data_into_shtmi1,"{\"experiment_id\":\"%s\","
@@ -59,7 +59,7 @@ void ParseToDB::sendDataIntoSHTMI1(uint16_t &num_bokz, uint32_t& bshv, SHTMI1& s
                              "\"st2\":%i,"
                              "\"sernum\":%i,"
                              "\"post\":%i,"
-                             "\"foc\":%i,"
+                             "\"foc\":%f,"
                              "\"xo\":%i,"
                              "\"yo\":%i,"
                              "\"texp\":%i,"
@@ -78,7 +78,7 @@ void ParseToDB::sendDataIntoSHTMI1(uint16_t &num_bokz, uint32_t& bshv, SHTMI1& s
     m_kia_db[TYPE_DATA]->insert_data(data_into_shtmi1, "prepare_insert_into_shtmi1");
 }
 
-void ParseToDB::sendDataIntoSHTMI2(uint16_t &num_bokz, uint32_t& bshv, SHTMI2& st_shtmi2)
+void ParseToDB::sendDataIntoSHTMI2(uint16_t &num_bokz, int32_t& bshv, SHTMI2& st_shtmi2)
 {
     char data_into_shtmi2[1024];
     sprintf(data_into_shtmi2,"{\"experiment_id\":\"%s\","
@@ -126,7 +126,7 @@ void ParseToDB::sendDataIntoSHTMI2(uint16_t &num_bokz, uint32_t& bshv, SHTMI2& s
     m_kia_db[TYPE_DATA]->insert_data(data_into_shtmi2, "prepare_insert_into_shtmi2");
 }
 
-void ParseToDB::sendDataIntoMPI(uint16_t &num_bokz, uint32_t &bshv)
+void ParseToDB::sendDataIntoMPI(uint16_t &num_bokz, int32_t &bshv)
 {
     char m_data_to_mpi[1024];
     sprintf(m_data_to_mpi,"{\"experiment_id\":\"%s\","
@@ -164,7 +164,7 @@ void ParseToDB::sendDataIntoMPI(uint16_t &num_bokz, uint32_t &bshv)
     m_kia_db[TYPE_RAW]->insert_data(m_data_to_mpi, "prepare_insert_into_mpi");
 }
 
-void ParseToDB::sendDataIntoDTMILOC(uint16_t &num_bokz, uint32_t& bshv, DTMILoc_1& dtmiLoc_1, DTMILoc_2& dtmiLoc_2, DTMILoc_3& dtmiLoc_3,
+void ParseToDB::sendDataIntoDTMILOC(uint16_t &num_bokz, int32_t& bshv, DTMILoc_1& dtmiLoc_1, DTMILoc_2& dtmiLoc_2, DTMILoc_3& dtmiLoc_3,
                                     DTMILoc_4& dtmiLoc_4, DTMILoc_5& dtmiLoc_5, DTMILoc_6& dtmiLoc_6,
                                     DTMILoc_7& dtmiLoc_7, DTMILoc_8& dtmiLoc_8, DTMILoc_9& dtmiLoc_9)
 {
@@ -242,7 +242,7 @@ void ParseToDB::sendDataIntoDTMILOC(uint16_t &num_bokz, uint32_t& bshv, DTMILoc_
      m_kia_db[TYPE_DATA]->insert_data(data_into_dtmiloc, "prepare_insert_into_dtmiloc");
 }
 
-void ParseToDB::sendDataIntoDTMI(uint16_t &num_bokz, uint32_t& bshv, DTMI_1& dtmi_1, DTMI_2& dtmi_2, DTMI_3& dtmi_3, DTMI_4& dtmi_4,
+void ParseToDB::sendDataIntoDTMI(uint16_t &num_bokz, int32_t& bshv, DTMI_1& dtmi_1, DTMI_2& dtmi_2, DTMI_3& dtmi_3, DTMI_4& dtmi_4,
                                  DTMI_5& dtmi_5, DTMI_6& dtmi_6, DTMI_7& dtmi_7, DTMI_8& dtmi_8,
                                  DTMI_9& dtmi_9)
 {

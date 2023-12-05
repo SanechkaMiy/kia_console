@@ -4,131 +4,131 @@
 #include <QStringList>
 using namespace std;
 #pragma pack(push, 1)
-    struct SHTMI1
-    {
-        uint16_t CW = 0;
-        uint16_t AW = 0;
-        uint16_t CC1 = 0;
-        uint16_t CC2 = 0;
-        uint32_t T = 0;
-        uint16_t KC1 = 0;
-        uint16_t KC2 = 0;
-        uint16_t SerNum = 0;
-        uint16_t POST = 0;
-        float Foc = 0;
-        uint32_t Xo = 0;
-        uint32_t Yo = 0;
-        uint16_t Texp = 0;
-        uint16_t Mt = 0;
-        uint16_t St = 0;
-        uint16_t Ndef = 0;
-        uint16_t rezerv1 = 0;
-        uint16_t rezerv2 = 0;
-        uint16_t rezerv3 = 0;
-        uint16_t rezerv4 = 0;
-        uint16_t rezerv5 = 0;
-        uint16_t rezerv6 = 0;
-        uint16_t rezerv7 = 0;
-        uint16_t rezerv8 = 0;
-        uint16_t rezerv9 = 0;
-        uint16_t rezerv10 = 0;
-        uint16_t rezerv11 = 0;
-        uint16_t XCF = 0;
-        uint16_t Years = 0;
-        uint16_t Month= 0;
-        uint16_t Days = 0;
-        uint16_t Ver1 = 0;
-        uint16_t Ver2 = 0;
-        uint16_t Ver3 = 0;
+struct SHTMI1
+{
+    uint16_t CW = 0;
+    uint16_t AW = 0;
+    uint16_t CC1 = 0;
+    uint16_t CC2 = 0;
+    uint32_t T = 0;
+    uint16_t KC1 = 0;
+    uint16_t KC2 = 0;
+    uint16_t SerNum = 0;
+    uint16_t POST = 0;
+    float Foc = 0;
+    uint32_t Xo = 0;
+    uint32_t Yo = 0;
+    uint16_t Texp = 0;
+    uint16_t Mt = 0;
+    uint16_t St = 0;
+    uint16_t Ndef = 0;
+    uint16_t rezerv1 = 0;
+    uint16_t rezerv2 = 0;
+    uint16_t rezerv3 = 0;
+    uint16_t rezerv4 = 0;
+    uint16_t rezerv5 = 0;
+    uint16_t rezerv6 = 0;
+    uint16_t rezerv7 = 0;
+    uint16_t rezerv8 = 0;
+    uint16_t rezerv9 = 0;
+    uint16_t rezerv10 = 0;
+    uint16_t rezerv11 = 0;
+    uint16_t XCF = 0;
+    uint16_t Years = 0;
+    uint16_t Month= 0;
+    uint16_t Days = 0;
+    uint16_t Ver1 = 0;
+    uint16_t Ver2 = 0;
+    uint16_t Ver3 = 0;
 
-        QStringList shtmi1_list_name;
-        QStringList shtmi1_list_data;
-    };
+    QStringList shtmi1_list_name;
+    QStringList shtmi1_list_data;
+};
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-    struct SHTMI1raw
-    {
-        uint16_t CW = 0;
-        uint16_t AW = 0;
-        uint16_t CC1 = 0;
-        uint16_t CC2 = 0;
-        uint32_t T = 0;
-        uint16_t KC1 = 0;
-        uint16_t KC2 = 0;
-        uint16_t SerNum = 0;
-        uint16_t POST = 0;
-        uint32_t Foc = 0;
-        uint32_t Xo = 0;
-        uint32_t Yo = 0;
-        uint16_t Texp = 0;
-        uint16_t Mt = 0;
-        uint16_t St = 0;
-        uint16_t Ndef = 0;
-        uint16_t rezerv1 = 0;
-        uint16_t rezerv2 = 0;
-        uint16_t rezerv3 = 0;
-        uint16_t rezerv4 = 0;
-        uint16_t rezerv5 = 0;
-        uint16_t rezerv6 = 0;
-        uint16_t rezerv7 = 0;
-        uint16_t rezerv8 = 0;
-        uint16_t rezerv9 = 0;
-        uint16_t rezerv10 = 0;
-        uint16_t rezerv11 = 0;
-        uint16_t XCF = 0;
-        uint16_t Date = 0;
-        uint16_t Ver = 0;
-    };
+struct SHTMI1raw
+{
+    uint16_t CW = 0;
+    uint16_t AW = 0;
+    uint16_t CC1 = 0;
+    uint16_t CC2 = 0;
+    uint32_t T = 0;
+    uint16_t KC1 = 0;
+    uint16_t KC2 = 0;
+    uint16_t SerNum = 0;
+    uint16_t POST = 0;
+    uint32_t Foc = 0;
+    uint32_t Xo = 0;
+    uint32_t Yo = 0;
+    uint16_t Texp = 0;
+    uint16_t Mt = 0;
+    uint16_t St = 0;
+    uint16_t Ndef = 0;
+    uint16_t rezerv1 = 0;
+    uint16_t rezerv2 = 0;
+    uint16_t rezerv3 = 0;
+    uint16_t rezerv4 = 0;
+    uint16_t rezerv5 = 0;
+    uint16_t rezerv6 = 0;
+    uint16_t rezerv7 = 0;
+    uint16_t rezerv8 = 0;
+    uint16_t rezerv9 = 0;
+    uint16_t rezerv10 = 0;
+    uint16_t rezerv11 = 0;
+    uint16_t XCF = 0;
+    uint16_t Date = 0;
+    uint16_t Ver = 0;
+};
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-    struct SHTMI2
-    {
-        uint16_t CW = 0;
-        uint16_t AW = 0;
-        uint16_t CC1 = 0;
-        uint16_t CC2 = 0;
-        uint32_t T = 0;
-        uint16_t KC1 = 0;
-        uint16_t KC2 = 0;
-        uint16_t SerNum = 0;
-        uint16_t POST = 0;
-        uint16_t Texp = 0;
-        uint16_t Nusd = 0;
-        uint16_t Nno = 0;
-        uint16_t Nnosl = 0;
-        uint16_t Nto = 0;
-        uint16_t Ntosl = 0;
-        uint32_t Nsl = 0;
-        std::array<uint16_t, 16> eCount;
+struct SHTMI2
+{
+    uint16_t CW = 0;
+    uint16_t AW = 0;
+    uint16_t CC1 = 0;
+    uint16_t CC2 = 0;
+    uint32_t T = 0;
+    uint16_t KC1 = 0;
+    uint16_t KC2 = 0;
+    uint16_t SerNum = 0;
+    uint16_t POST = 0;
+    uint16_t Texp = 0;
+    uint16_t Nusd = 0;
+    uint16_t Nno = 0;
+    uint16_t Nnosl = 0;
+    uint16_t Nto = 0;
+    uint16_t Ntosl = 0;
+    uint32_t Nsl = 0;
+    std::array<uint16_t, 16> eCount;
 
-        QStringList shtmi2_list_name;
-        QStringList shtmi2_list_data;
-    };
+    QStringList shtmi2_list_name;
+    QStringList shtmi2_list_data;
+};
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-    struct SHTMI2raw
-    {
-        uint16_t CW = 0;
-        uint16_t AW = 0;
-        uint16_t CC1 = 0;
-        uint16_t CC2 = 0;
-        uint32_t T = 0;
-        uint16_t KC1 = 0;
-        uint16_t KC2 = 0;
-        uint16_t SerNum = 0;
-        uint16_t POST = 0;
-        uint16_t Texp = 0;
-        uint16_t Nusd = 0;
-        uint16_t Nno = 0;
-        uint16_t Nnosl = 0;
-        uint16_t Nto = 0;
-        uint16_t Ntosl = 0;
-        uint32_t Nsl = 0;
-        uint16_t eCount[16] = {0};
-    };
+struct SHTMI2raw
+{
+    uint16_t CW = 0;
+    uint16_t AW = 0;
+    uint16_t CC1 = 0;
+    uint16_t CC2 = 0;
+    uint32_t T = 0;
+    uint16_t KC1 = 0;
+    uint16_t KC2 = 0;
+    uint16_t SerNum = 0;
+    uint16_t POST = 0;
+    uint16_t Texp = 0;
+    uint16_t Nusd = 0;
+    uint16_t Nno = 0;
+    uint16_t Nnosl = 0;
+    uint16_t Nto = 0;
+    uint16_t Ntosl = 0;
+    uint32_t Nsl = 0;
+    uint16_t eCount[16] = {0};
+};
 #pragma pack(pop)
 
 #pragma pack(push, 1)
@@ -934,10 +934,35 @@ struct DTMILocRaw_9
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+struct DTMILocRaw_9_m60
+{
+    uint16_t CW = 0;
+    uint16_t AW = 0;
+    uint16_t CC1 = 0;
+    uint16_t CC2 = 0;
+    uint32_t Loc_3_4 = 0;
+    uint32_t Loc_5_6 = 0;
+    uint32_t Loc_7_8 = 0;
+    uint32_t Loc_9_10 = 0;
+    uint32_t Loc_11_12 = 0;
+    uint32_t Loc_13_14 = 0;
+    uint32_t Loc_15_16 = 0;
+    uint32_t Loc_17_18 = 0;
+    uint32_t Loc_19_20 = 0;
+    uint32_t Loc_21_22 = 0;
+    uint32_t Loc_23_24 = 0;
+    uint32_t Loc_25_26 = 0;
+    uint32_t Loc_27_28 = 0;
+    uint32_t Loc_29_30 = 0;
+    uint32_t rezerv = 0;
+};
+#pragma pack(pop)
+
 struct Kia_mko_struct
 {
     SHTMI1 st_shtmi1;
-    SHTMI2 st_shmti2;
+    SHTMI2 st_shtmi2;
     MSHIOR st_mshior;
     DTMI st_dtmi;
     DTMILoc st_dtmi_loc;
@@ -959,5 +984,16 @@ struct Kia_mko_struct
     DTMILoc_7 dtmiLoc_7;
     DTMILoc_8 dtmiLoc_8;
     DTMILoc_9 dtmiLoc_9;
+    DTMILocRaw_9_m60 dtmiLoc_9_m60;
+};
+
+struct Kia_mko_struct_bokzm60 : public Kia_mko_struct
+{
+
+};
+
+struct Kia_mko_struct_bokzmr : public Kia_mko_struct
+{
+
 };
 #endif // KIA_MKO_STRUCT_H

@@ -93,11 +93,12 @@ void Timer::start()
             {
                 m_now_time = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
             }
-            m_kia_settings->m_data_for_db->bshv[m_num_timer]++;
+
             auto delta = (m_now_time - m_curr_time) / m_to_ms;
             if (delta <= (m_kia_settings->m_timer_interval + m_shift_interval))
                 m_interval_divider = m_kia_settings->m_timer_interval - delta / m_divider;
-            //std::cout << m_interval_divider << " " << delta << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] << std::endl;
+            std::cout <<  m_kia_settings->m_data_for_db->bshv[m_num_timer] << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] /  m_divider << std::endl;
+            //std::cout << m_interval_divider << " " << delta / m_divider << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] << std::endl;
             m_count++;
             m_cv.notify_all();
         }
