@@ -1,7 +1,6 @@
 #ifndef PIO_BOKZM60_H
 #define PIO_BOKZM60_H
 #include "mainStruct.h"
-#include "Kia_modules/kia_help_functions.h"
 #include "Kia_mko_struct.h"
 #include <math.h>
 #include "Kia_pio/pio_bokz.h"

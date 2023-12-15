@@ -14,14 +14,14 @@ Kia_protocol::~Kia_protocol()
 void Kia_protocol::create_dir_for_protocols()
 {
     m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol = KiaS_SUCCESS;
-    m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols = current_hours();
+    m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols = helpers::current_hours();
     m_kia_settings->m_data_to_protocols->m_count_of_exc_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     m_kia_settings->m_data_to_protocols->m_count_of_time_out_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     m_kia_settings->m_data_to_protocols->m_count_of_kvaor_is_not_corr_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     std::fill(m_kia_settings->m_data_to_protocols->m_is_protocol_used.begin(), m_kia_settings->m_data_to_protocols->m_is_protocol_used.end(), KiaS_SUCCESS);
-    QString name_dir = "exp_" + QString::fromStdString(currentDateTime());
+    QString name_dir = "exp_" + QString::fromStdString(helpers::currentDateTime());
     QDir dir("/home/alexander/Project/kia_console/protocols/");
     dir.mkdir(name_dir);
     QString full_path_and_name;
@@ -52,7 +52,7 @@ void Kia_protocol::create_dir_for_sql_protocols()
 {
     m_kia_settings->m_data_to_protocols->m_is_sql_protocol_used = KiaS_SUCCESS;
     QDir dir_sql("/home/alexander/Project/kia_console/sql_protocols/");
-    QString full_path_and_name_sql = "/home/alexander/Project/kia_console/sql_protocols/sql_protocol_" + QString::fromStdString(currentDateTime()) + ".txt";
+    QString full_path_and_name_sql = "/home/alexander/Project/kia_console/sql_protocols/sql_protocol_" + QString::fromStdString(helpers::currentDateTime()) + ".txt";
     m_kia_settings->m_data_to_protocols->m_file_for_sql_protocol = new QFile(full_path_and_name_sql);
     m_kia_settings->m_data_to_protocols->m_file_for_sql_protocol->open(QIODevice::Append | QIODevice::Text);
 
@@ -61,7 +61,7 @@ void Kia_protocol::create_dir_for_sql_protocols()
 void Kia_protocol::create_dir_for_frame_protocols()
 {
     m_kia_settings->m_data_to_protocols->m_is_frames_protocol_used = KiaS_SUCCESS;
-    QString name_dir = "exp_" + QString::fromStdString(currentDateTime());
+    QString name_dir = "exp_" + QString::fromStdString(helpers::currentDateTime());
     QDir dir_frames("/home/alexander/Project/kia_console/frames/");
     dir_frames.mkdir(name_dir);
     m_full_path = "/home/alexander/Project/kia_console/frames/" + name_dir;
@@ -164,7 +164,7 @@ void Kia_protocol::preset_before_save_and_out(uint16_t& num_bokz, QString data_t
 
 void Kia_protocol::reset_protocol()
 {
-    if (m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols  != current_hours())
+    if (m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols  != helpers::current_hours())
     {
         m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol = KiaS_FAIL;
         reset_dir_for_protocols();
@@ -207,11 +207,11 @@ void Kia_protocol::count_of_fails(uint16_t &num_bokz, uint16_t parametr)
 {
 
     QString str_error_counter;
-    str_error_counter.push_back(format_qstring(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + format_qstring("Счетчики ошибок", m_kia_settings->m_format_for_desc->shift_count_of_fail) + "\n");
-    str_error_counter.push_back(format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + format_qstring("Счетчик нарушения обмена", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_exc_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + format_qstring("Счетчик ненормы привязки ко времени", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + format_qstring("Ориентация не определена", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + format_qstring("Ненорма кватерниона", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_kvaor_is_not_corr_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + format_qstring("Нет выхода в режим ожидания", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_time_out_fail[num_bokz]) + "\n");
+    str_error_counter.push_back(helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Счетчики ошибок", m_kia_settings->m_format_for_desc->shift_count_of_fail) + "\n");
+    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Счетчик нарушения обмена", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_exc_fail[num_bokz]) + "\n");
+    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Счетчик ненормы привязки ко времени", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail[num_bokz]) + "\n");
+    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Ориентация не определена", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail[num_bokz]) + "\n");
+    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Ненорма кватерниона", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_kvaor_is_not_corr_fail[num_bokz]) + "\n");
+    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Нет выхода в режим ожидания", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_time_out_fail[num_bokz]) + "\n");
     preset_before_save_and_out(num_bokz, str_error_counter, SET_INFO_TO_ERROR_WINDOW, SP_DO_ERROR, parametr);
 }

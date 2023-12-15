@@ -3,9 +3,17 @@
 #include <QString>
 #include <map>
 #include "mainStruct.h"
+namespace helpers
+{
+
+inline namespace angular_transform
+{
 QString get_degreze(double value);
 QString get_minutes(double value);
 QString get_seconds(double value);
+}
+
+
 QString get_status_zkr(uint16_t value, uint16_t shift);
 QString get_count_sec_fail_mark(uint16_t value, uint16_t shift);
 QString get_dev_ready(uint16_t value, uint16_t shift);
@@ -21,4 +29,5 @@ uint32_t current_hours();
 float decodeDateTime();
 
 QString format_qstring(const QString& str, const int16_t &shift, const char &fillchar = ' ');
+};
 #endif // KIA_HELP_FUNCTIONS_H

@@ -8,6 +8,10 @@
 #include <dlfcn.h>
 #include "kia_bi.h"
 #include "Kia_modules/kia_db.h"
+
+
+
+
 void wait_1s();
 class Kia_biu : public Kia_bi
 {
@@ -43,6 +47,7 @@ public:
 signals:
     void send_to_client(quint16, QStringList);
 private:
+
     //void (Kia_biu::*m_func)();
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void wait_1s_biu_0();

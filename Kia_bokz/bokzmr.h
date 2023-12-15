@@ -19,7 +19,6 @@
 #include "Kia_mko_struct.h"
 #include "Kia_modules/kia_mpi.h"
 #include "Kia_modules/kia_db.h"
-#include "Kia_modules/kia_help_functions.h"
 
 class BokzMR : public Bokz
 {

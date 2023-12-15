@@ -1,12 +1,9 @@
 #include "bokzmf.h"
 
 Bokzmf::Bokzmf(uint16_t num_bokz, std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
-               std::vector<shared_ptr<Timer> > timer, std::vector<std::shared_ptr<Kia_synch_timer> >
-               kia_synch_timer, shared_ptr<Kia_mpi> kia_mpi,
+               shared_ptr<Kia_mpi> kia_mpi,
                std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_db(kia_db)
-  , m_timer(timer)
-  , m_kia_synch_timer(kia_synch_timer)
   , m_kia_mpi(kia_mpi)
   , m_kia_protocol(kia_protocol)
   , m_kia_settings(kia_settings)
@@ -60,7 +57,7 @@ Bokzmf::~Bokzmf()
 uint16_t Bokzmf::shtmi1(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = format_qstring(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Запрашиваем ШТМИ1!");
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Запрашиваем ШТМИ1!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -94,7 +91,7 @@ uint16_t Bokzmf::shtmi1(uint16_t parametr)
             uint16_t do_shift_left = 0;
             if (m_kia_mko_struct->st_shtmi1.shtmi1_list_data[num_list][0] == '-')
                 do_shift_left = 1;
-            str_protocol.push_back(format_qstring(m_kia_mko_struct->st_shtmi1.shtmi1_list_name[num_list],
+            str_protocol.push_back(helpers::format_qstring(m_kia_mko_struct->st_shtmi1.shtmi1_list_name[num_list],
                                           m_kia_settings->m_format_for_desc->shift_description
                                           + m_kia_settings->m_format_for_desc->shift_for_numbers + do_shift_left)
                                    + m_kia_mko_struct->st_shtmi1.shtmi1_list_data[num_list] + "\n");
@@ -311,10 +308,10 @@ void Bokzmf::save_to_protocol(QString str_to_protocol, uint16_t parametr)
 
 void Bokzmf::set_data_to_device_protocol(QString &str_protocol)
 {
-    str_protocol.push_back(format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers + 1, '-')
-                           + format_qstring(" " + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
-    str_protocol.push_back(format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
-                           + format_qstring("БШВ", m_kia_settings->m_format_for_desc->shift_description) + QString::number(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]) + '\n');
-    str_protocol.push_back(format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
-                           + format_qstring("Время", m_kia_settings->m_format_for_desc->shift_description) + QString::fromStdString(m_kia_data->m_data_db->m_datetime) + '\n');
+    str_protocol.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers + 1, '-')
+                           + helpers::format_qstring(" " + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
+    str_protocol.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+                           + helpers::format_qstring("БШВ", m_kia_settings->m_format_for_desc->shift_description) + QString::number(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]) + '\n');
+    str_protocol.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+                           + helpers::format_qstring("Время", m_kia_settings->m_format_for_desc->shift_description) + QString::fromStdString(m_kia_data->m_data_db->m_datetime) + '\n');
 }

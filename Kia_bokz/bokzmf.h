@@ -6,7 +6,6 @@
 #include "kia_synch_timer.h"
 #include "Kia_modules/kia_mpi.h"
 #include "Kia_modules/kia_db.h"
-#include "Kia_modules/kia_help_functions.h"
 #include "Kia_pio/pio_bokzmf.h"
 #include "parsetodb.h"
 #include "timer.h"
@@ -16,7 +15,6 @@ class Bokzmf : public Bokz
 public:
     Bokzmf(uint16_t num_bokz,
            std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
-           std::vector<shared_ptr <Timer>> timer, std::vector<std::shared_ptr<Kia_synch_timer> > kia_synch_timer,
            shared_ptr <Kia_mpi> kia_mpi,
            std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
     void set_bokz_settings() override;
@@ -58,8 +56,6 @@ signals:
     void send_to_client(quint16, QStringList) override;
 private:
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
-    std::vector<shared_ptr<Timer>> m_timer;
-    std::vector<shared_ptr<Kia_synch_timer>> m_kia_synch_timer;
     std::shared_ptr<Kia_mpi> m_kia_mpi;
     std::shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;

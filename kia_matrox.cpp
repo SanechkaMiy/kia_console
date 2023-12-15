@@ -22,7 +22,7 @@ Kia_matrox::~Kia_matrox()
 
 void Kia_matrox::matrox_grab_frame(std::shared_ptr<Kia_data> kia_data)
 {
-    kia_data->m_data_db->m_datetime = currentDateTime();
+    kia_data->m_data_db->m_datetime = helpers::currentDateTime();
     MdigGrab(m_mil.m_dig_id, m_mil.m_buf_id);
     std::vector<uint8_t> m_commandToCom = {CMD_GRAB};
     m_serial_port->WriteBinary(m_commandToCom);

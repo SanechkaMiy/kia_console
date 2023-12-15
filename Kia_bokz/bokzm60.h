@@ -19,7 +19,6 @@
 #include "Kia_mko_struct.h"
 #include "Kia_modules/kia_mpi.h"
 #include "Kia_modules/kia_db.h"
-#include "Kia_modules/kia_help_functions.h"
 #include "Kia_pio/pio_bokzm60.h"
 class BokzM60 : public Bokz
 {
@@ -27,10 +26,8 @@ class BokzM60 : public Bokz
 public:
     //using kia_info_p = shared_ptr <KiaInformationBot>;
     BokzM60(uint16_t num_bokz,
-            std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
-            std::vector<shared_ptr <Timer>> timer, std::vector<std::shared_ptr<Kia_synch_timer> > kia_synch_timer,
-            std::vector<shared_ptr<Kia_bi>> kia_bi, shared_ptr <Kia_mpi> kia_mpi,
-            shared_ptr<Kia_protocol> kia_protocol, shared_ptr<Kia_matrox> kia_matrox,
+            std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db, shared_ptr <Kia_mpi> kia_mpi,
+            shared_ptr<Kia_protocol> kia_protocol,
             std::shared_ptr<Kia_settings> kia_settings, shared_ptr<Kia_ftdi> kia_ftdi);
     ~BokzM60();
     void set_bokz_settings() override;
@@ -71,6 +68,7 @@ signals:
     void send_to_client(quint16, QStringList) override;
 
 private:
+    void do_pause(uint16_t interval);
     void check_orientation();
     void getDataToDTMIOrDTMILoc(uint16_t &count_dtmo_or_dtmo_loc);
     void send_status_info();
@@ -85,13 +83,9 @@ private:
     void set_data_to_device_protocol(QString &str_protocol);
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     shared_ptr <ParseToDB> m_parser_db;
-    std::vector<shared_ptr<Timer>> m_timer;
-    std::vector<shared_ptr<Kia_synch_timer>> m_kia_synch_timer;
     std::vector<shared_ptr<Kia_bi>> m_kia_bi;
     std::shared_ptr<Kia_mpi> m_kia_mpi;
-
     shared_ptr<Kia_protocol> m_kia_protocol;
-    shared_ptr<Kia_matrox> m_kia_matrox;
     std::shared_ptr<Kia_settings> m_kia_settings;
     shared_ptr<Kia_ftdi> m_kia_ftdi;
     uint16_t m_count_dtmi_dtmi_loc;

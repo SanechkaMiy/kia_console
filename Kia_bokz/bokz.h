@@ -5,6 +5,7 @@
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
 #include "Kia_pio/pio_bokz.h"
+#include "Kia_modules/kia_help_functions.h"
 #include "math.h"
 class Bokz : public QObject
 {

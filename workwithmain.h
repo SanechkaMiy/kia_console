@@ -20,13 +20,13 @@
 #include "kia_bi.h"
 #include "bokz.h"
 #include "bokzm60.h"
+#include "bokzmf.h"
 #include "kia_load_initial_settings.h"
 #include "Kia_modules/kia_mpi.h"
 #include "Kia_modules/kia_port.h"
 #include "kia_cyclogram.h"
 #include "kia_cyclogram_bokzm60.h"
 #include "Kia_modules/kia_db.h"
-#include "Kia_modules/kia_help_functions.h"
 class WorkWithMain : public QObject
 {
     Q_OBJECT
@@ -109,9 +109,7 @@ private:
     std::shared_ptr<Kia_mpi> m_kia_mpi;
     shared_ptr<Kia_matrox> m_kia_matrox;
     shared_ptr<Kia_protocol> m_kia_protocol;
-    std::vector<shared_ptr<Kia_bi>> m_kia_bi;
-    std::vector<shared_ptr<Timer>> m_timer;
-    std::vector<std::shared_ptr<Kia_synch_timer>> m_kia_synch_timer;
+    std::shared_ptr<Kia_timers> m_kia_timers;
     shared_ptr<ParseToDB> m_parseToDB;
     shared_ptr<Kia_ftdi> m_kia_ftdi;
     std::vector<std::shared_ptr<Bokz>> m_bokz;

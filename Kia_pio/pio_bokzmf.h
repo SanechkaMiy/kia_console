@@ -1,10 +1,10 @@
 #ifndef PIO_BOKZMF_H
 #define PIO_BOKZMF_H
 #include "mainStruct.h"
-#include "Kia_modules/kia_help_functions.h"
 #include "Kia_mko_struct.h"
 #include <math.h>
 #include "Kia_pio/pio_bokz.h"
+#include "Kia_modules/kia_help_functions.h"
 class Pio_bokzmf : public Pio_bokz
 {
 public:

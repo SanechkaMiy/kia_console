@@ -2,13 +2,19 @@
 #define KIA_PORT_H
 #include <iostream>
 #include <QSerialPortInfo>
-#include <CppLinuxSerial/SerialPort.hpp>
+
 #include "mainStruct.h"
 #include "BiLibNE.h"
 #include <dlfcn.h>
 #include <thread>
 #include <vector>
 #include <string.h>
+
+namespace mn::CppLinuxSerial
+{
+    class SerialPort;
+}
+
 class Kia_port
 {
 public:
@@ -24,3 +30,19 @@ private:
 };
 
 #endif // KIA_PORT_H
+
+
+//A.h
+
+
+//B.h
+//include <A.h>
+
+//B.c
+
+
+//C.h
+
+//D.h
+
+//E.h

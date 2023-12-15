@@ -1,5 +1,5 @@
 #include "kia_port.h"
-
+#include <CppLinuxSerial/SerialPort.hpp>
 Kia_port::Kia_port(std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_settings(kia_settings)
 {

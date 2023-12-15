@@ -10,12 +10,13 @@
 #include <future>
 #include <vector>
 #include <nlohmann/json.hpp>
+
 using json = nlohmann::json;
 using namespace std;
 #define PI    3.141592653589793f
 #define RTS   206264.8062470964f
 #define PI2  6.283185307179587f
-//CONST
+
 namespace constants
 {
 const uint16_t MAX_TMK_NUMBER =  7;
@@ -37,6 +38,8 @@ const static int32_t frame_size = 512 * 512;
 const static uint16_t max_count_bi = 4;
 const static uint16_t max_count_same_connection = 2;
 }
+
+
 #pragma pack(push, 1)
 struct Data_for_mpi
 {
@@ -71,6 +74,7 @@ struct Data_for_mpi
     QString m_str_mpi_protocol;
 };
 #pragma pack(pop)
+
 #pragma pack(push, 1)
 struct Data_for_bokz
 {
@@ -124,25 +128,13 @@ struct Flags_for_thread
 {
     std::mutex m_mtx;
     std::mutex m_mtx_cyclogram;
-    std::mutex m_mtx_db_biu;
     std::vector<bool>m_stop_cyclogram;
     std::vector<bool>m_stop_command;
     atomic_bool m_stop_cyclogram_for_one_launch{false};
-    atomic_bool m_startTimer{true};
-    atomic_bool m_cycleTMI{true};
-    atomic_bool m_stop_synch_1s_mark{true};
-    atomic_bool m_stop_do_commit_bi{false};
-    atomic_bool m_stopDoCommitBOKZ{false};
-    atomic_bool m_stopKiaInformationBot{true};
-    atomic_bool m_stopSendToBot{true};
-    atomic_bool m_stop_check_internet_con{false};
 
     std::vector<std::future<void>> m_stop_cyclogram_thread;
     std::vector<std::future<void>> m_stop_command_thread;
     std::future<void> m_stop_cyclogram_for_one_launch_thread;
-    std::future<void> m_futStopKiaInformationBot;
-    std::future<void> m_futBotSend;
-    std::future<void> m_stop_check_internet_con_thread;
 };
 #pragma pack(pop)
 
@@ -276,4 +268,5 @@ struct Kia_data
     std::shared_ptr<Data_for_bi> m_data_bi;
 };
 #pragma pack(pop)
+
 #endif // MAINSTRUCT_H

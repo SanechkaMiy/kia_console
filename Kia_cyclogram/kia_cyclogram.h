@@ -7,7 +7,13 @@
 #include "kia_protocol.h"
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
-#include "Kia_modules/kia_help_functions.h"
+struct Kia_timers
+{
+    std::vector<shared_ptr<Timer>> m_timer;
+    std::vector<shared_ptr<Kia_synch_timer>> m_kia_synch_timer;
+    std::vector<shared_ptr<Kia_bi>> m_kia_bi;
+};
+
 class Kia_cyclogram
 {
 public:

@@ -1,12 +1,13 @@
 #include "kia_help_functions.h"
-QString get_degreze(double value)
+
+QString helpers::angular_transform::get_degreze(double value)
 {
     value = value * 180 / PI;
     QString ret = QString("%1").arg(QString::number((int)value), -5) + "°" + " ";
     return ret;
 }
 
-QString get_minutes(double value)
+QString helpers::angular_transform::get_minutes(double value)
 {
     value = value * 180 / PI;
     value = value * 60;
@@ -14,7 +15,7 @@ QString get_minutes(double value)
     return ret;
 }
 
-QString get_seconds(double value)
+QString helpers::angular_transform::get_seconds(double value)
 {
     value = value * 180 / PI;
     value = value * 3600;
@@ -23,7 +24,7 @@ QString get_seconds(double value)
 }
 
 
-QString get_status_zkr(uint16_t value, uint16_t shift)
+QString helpers::get_status_zkr(uint16_t value, uint16_t shift)
 {
     if ((value & (0x0001 << shift)) != 0)
     {
@@ -41,12 +42,12 @@ QString get_status_zkr(uint16_t value, uint16_t shift)
     }
 }
 
-QString get_count_sec_fail_mark(uint16_t value, uint16_t shift)
+QString helpers::get_count_sec_fail_mark(uint16_t value, uint16_t shift)
 {
     return QString::number((value & (0x0001 << shift)) + (value & (0x0001 << (shift + 1))) + (value & (0x0001 << (shift + 2))) + (value & (0x0001 << (shift + 3))));
 }
 
-QString get_dev_ready(uint16_t value, uint16_t shift)
+QString helpers::get_dev_ready(uint16_t value, uint16_t shift)
 {
     if ((value & (0x0001 << shift)) != 0)
     {
@@ -59,7 +60,7 @@ QString get_dev_ready(uint16_t value, uint16_t shift)
 }
 
 
-QString get_status_orientation(uint16_t value, uint16_t shift)
+QString helpers::get_status_orientation(uint16_t value, uint16_t shift)
 {
     if ((value & (0x0001 << shift)) != 0)
     {
@@ -71,7 +72,7 @@ QString get_status_orientation(uint16_t value, uint16_t shift)
     }
 }
 
-QString get_mode_orientation(uint16_t value, uint16_t shift)
+QString helpers::get_mode_orientation(uint16_t value, uint16_t shift)
 {
     if ((value & (0x0001 << shift)) != 0)
     {
@@ -83,7 +84,7 @@ QString get_mode_orientation(uint16_t value, uint16_t shift)
     }
 }
 
-QString get_command_wait(uint16_t value, uint16_t shift)
+QString helpers::get_command_wait(uint16_t value, uint16_t shift)
 {
     if ((value & (0x0001 << shift)) != 0)
     {
@@ -95,7 +96,7 @@ QString get_command_wait(uint16_t value, uint16_t shift)
     }
 }
 
-QString get_command_complete(uint16_t value, uint16_t shift)
+QString helpers::get_command_complete(uint16_t value, uint16_t shift)
 {
     if ((value & (0x0001 << shift)) != 0)
     {
@@ -107,7 +108,7 @@ QString get_command_complete(uint16_t value, uint16_t shift)
     }
 }
 
-QString get_last_usd(uint16_t value, uint16_t shift)
+QString helpers::get_last_usd(uint16_t value, uint16_t shift)
 {
     std::map<uint16_t, QString> usd;
     usd[1] = "ОКР";
@@ -124,7 +125,7 @@ QString get_last_usd(uint16_t value, uint16_t shift)
         return "0 - последнего переданного УСД не было";
 }
 
-float uint32_to_float(uint32_t value)
+float helpers::uint32_to_float(uint32_t value)
 {
     uint32_t masca = 0x00000001;
     uint32_t temp = 0;
@@ -154,7 +155,7 @@ float uint32_to_float(uint32_t value)
     return result;
 }
 
-string currentDateTime()
+string helpers::currentDateTime()
 {
     std::time_t t = std::time(nullptr);
     std::tm* now_t = std::localtime(&t);
@@ -183,7 +184,7 @@ string currentDateTime()
     return buffer;
 }
 
-uint32_t current_hours()
+uint32_t helpers::current_hours()
 {
     std::time_t t = std::time(nullptr);
     std::tm* now_t = std::localtime(&t);
@@ -209,7 +210,7 @@ uint32_t current_hours()
     return now_t->tm_hour;
 }
 
-float decodeDateTime()
+float helpers::decodeDateTime()
 {
     const float J_GOD = 36525.0;
     const float JD2000 = 2451545.0;
@@ -260,7 +261,7 @@ float decodeDateTime()
     return Fl;
 }
 
-QString format_qstring(const QString &str, const int16_t &shift, const char &fillchar)
+QString helpers::format_qstring(const QString &str, const int16_t &shift, const char &fillchar)
 {
     return QString("%1").arg(str, shift, fillchar);
 }

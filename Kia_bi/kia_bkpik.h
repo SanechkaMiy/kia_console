@@ -17,7 +17,6 @@
 #include "kia_bi.h"
 #include <filesystem>
 #include "Kia_modules/kia_db.h"
-#include "Kia_modules/kia_help_functions.h"
 namespace fs = std::filesystem;
 
 class Kia_bkpik : public Kia_bi
