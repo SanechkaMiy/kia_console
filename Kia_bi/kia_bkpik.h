@@ -32,8 +32,8 @@ public:
     void change_command_bkpik(std::vector<uint8_t> command);
 
     void start_1s_mark_bkpik();
-    void on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch = 0, uint16_t parametr = EP_DOALL) override;
-    void off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t parametr = EP_DOALL, uint16_t off_1_ch = 0) override;
+    uint16_t on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch = 0, uint16_t parametr = EP_DOALL) override;
+    uint16_t off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t parametr = EP_DOALL, uint16_t off_1_ch = 0) override;
 
     void on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t parametr = EP_DOALL, uint16_t off_1_ch = 0) override;
     void off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t parametr = EP_DOALL, uint16_t off_1_ch = 0) override;

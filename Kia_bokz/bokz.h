@@ -5,7 +5,6 @@
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
 #include "Kia_pio/pio_bokz.h"
-#include "Kia_pio/pio_bokzm60.h"
 #include "math.h"
 class Bokz : public QObject
 {
@@ -13,6 +12,10 @@ class Bokz : public QObject
 public:
     Bokz();
     virtual void set_bokz_settings() = 0;
+
+    virtual uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
+                                       string struct_id, string struct_id_desc, uint16_t parametr = EP_DOALL) = 0;
+
     virtual uint16_t shtmi1(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t shtmi2(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t mshior(uint16_t parametr = EP_DOALL) = 0;

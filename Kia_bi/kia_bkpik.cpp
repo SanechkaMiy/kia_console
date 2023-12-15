@@ -184,10 +184,10 @@ void Kia_bkpik::set_bkpik_settings()
 }
 
 
-void Kia_bkpik::on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
+uint16_t Kia_bkpik::on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем питание ");
+    QString str_info_1s = format_qstring(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем питание ");
     m_off_1_ch = 0x00;
     std::vector<uint8_t> on_power_arr = {0x3c, 0x33, 0xcf};
     if (off_1_ch != 0)
@@ -205,10 +205,10 @@ void Kia_bkpik::on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t 
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
 }
 
-void Kia_bkpik::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
+uint16_t Kia_bkpik::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем питание ");
+    QString str_info_1s = format_qstring(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем питание ");
     m_off_1_ch = 0x3f;
     std::vector <uint8_t> off_power_arr = {0x03, 0x0c, 0x30};
     if (off_1_ch != 0)
@@ -229,7 +229,7 @@ void Kia_bkpik::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t
 void Kia_bkpik::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем секундную метку ");
+    QString str_info_1s = format_qstring(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Включаем секундную метку ");
     m_off_1_ch = 0x00;
     std::vector<uint8_t> on_power_arr = {0x3c, 0x33, 0xcf};
     if (off_1_ch != 0)
@@ -251,7 +251,7 @@ void Kia_bkpik::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off
 void Kia_bkpik::off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_info_1s = format(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем секундную метку ");
+    QString str_info_1s = format_qstring(QString::fromStdString(currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Выключаем секундную метку ");
     m_off_1_ch = 0x3f;
     std::vector <uint8_t> off_power_arr = {0x03, 0x0c, 0x30};
     if (off_1_ch != 0)

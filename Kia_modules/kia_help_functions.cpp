@@ -87,11 +87,11 @@ QString get_command_wait(uint16_t value, uint16_t shift)
 {
     if ((value & (0x0001 << shift)) != 0)
     {
-        return "1 - команда выполняется";
+        return "1 - выполнение команды завершено";
     }
     else
     {
-        return "0 - команда не выполняется";
+        return "0 - команда выполняется";
     }
 }
 
@@ -260,7 +260,7 @@ float decodeDateTime()
     return Fl;
 }
 
-QString format(const QString &str, const int16_t &shift, const char &fillchar)
+QString format_qstring(const QString &str, const int16_t &shift, const char &fillchar)
 {
     return QString("%1").arg(str, shift, fillchar);
 }

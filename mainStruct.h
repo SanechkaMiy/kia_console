@@ -84,7 +84,7 @@ struct Data_for_bokz
 #pragma pack(push, 1)
 struct Data_for_db
 {
-    std::vector<string> m_type_bokz = {"bokzm60"};
+    std::vector<string> m_type_bokz = {"bokzm60", "bokzmf"};
     std::vector<string> m_type_bi = {"bkpik", "biu"};
     string m_extype_id;
     string m_description;
@@ -197,6 +197,7 @@ struct Data_for_bi
     std::vector<uint16_t> m_1s;
     uint8_t m_is_channel_on = 0x3f;
     uint8_t m_is_1s_on = 0x3f;
+    uint16_t m_is_powered = IS_NOT_POWERED;
 };
 #pragma pack(pop)
 
@@ -217,6 +218,7 @@ struct Wait_and_param_for_cyclogram
     int16_t m_count_do_dtmi_in_state_off = 2;
     int16_t m_shift_bshv = 100;
     std::vector<QString> m_is_error;
+    uint16_t m_skip_fails_for_continue = 1;
 };
 #pragma pack(pop)
 

@@ -20,6 +20,7 @@
 #include "Kia_modules/kia_mpi.h"
 #include "Kia_modules/kia_db.h"
 #include "Kia_modules/kia_help_functions.h"
+#include "Kia_pio/pio_bokzm60.h"
 class BokzM60 : public Bokz
 {
     Q_OBJECT
@@ -33,6 +34,10 @@ public:
             std::shared_ptr<Kia_settings> kia_settings, shared_ptr<Kia_ftdi> kia_ftdi);
     ~BokzM60();
     void set_bokz_settings() override;
+
+    uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
+                               string struct_id, string struct_id_desc, uint16_t parametr = EP_DOALL) override;
+
     uint16_t shtmi1(uint16_t parametr = EP_DOALL) override;
     uint16_t shtmi2(uint16_t parametr = EP_DOALL) override;
     uint16_t mshior(uint16_t parametr = EP_DOALL) override;
@@ -73,6 +78,7 @@ private:
     void send_data_to_command(const uint16_t &type_data, const uint16_t &type_command, const QString &data);
     void send_mpi_data_to_db();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
+    void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
     std::function<void()> m_set_control_word;

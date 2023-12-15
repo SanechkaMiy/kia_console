@@ -89,7 +89,7 @@ void Kia_mpi::reset(std::shared_ptr<Kia_data> kia_data)
 void Kia_mpi::parse_mko_protocols(uint16_t &num_bokz, std::shared_ptr<Kia_data> kia_data)
 {
     QString str_mpi_protocol;
-    str_mpi_protocol.push_back(format("", m_kia_settings->m_format_for_desc->shift_for_numbers + 3, '-') + format(" " + QString::fromStdString(kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
+    str_mpi_protocol.push_back(format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers + 3, '-') + format_qstring(" " + QString::fromStdString(kia_data->m_data_db->struct_id_desc) + " ", m_kia_settings->m_format_for_desc->shift_description,'-') + '\n');
 
     str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5).arg("БШВ", -11).arg("МПИ", -11).arg("ФОРМАТ",-11).arg("address", -11).arg("ЛПИ",-11).arg("ДАТА И ВРЕМЯ"));
     str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5)

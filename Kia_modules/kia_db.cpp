@@ -144,13 +144,22 @@ void Kia_db::prepare_request(std::shared_ptr<pqxx::connection> conn)
 
     conn->prepare("prepare_insert_telemetry", "CALL " + m_kia_settings->m_data_for_db->m_type_bi[m_kia_settings->m_type_bi] + ".insert_into_telemetry($1::json);");
     conn->prepare("prepare_insert_raw", "CALL " + m_kia_settings->m_data_for_db->m_type_bi[m_kia_settings->m_type_bi] + ".insert_into_raw($1::json);");
-
     conn->prepare("prepare_insert_into_mpi", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_mpi($1::json)");
-    conn->prepare("prepare_insert_into_mshior", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_mshior($1::json)");
     conn->prepare("prepare_insert_into_shtmi1", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_shtmi1($1::json)");
-    conn->prepare("prepare_insert_into_shtmi2", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_shtmi2($1::json)");
-    conn->prepare("prepare_insert_into_dtmiloc", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_dtmiloc($1::json)");
-    conn->prepare("prepare_insert_into_dtmi", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_dtmi($1::json)");
-    conn->prepare("prepare_insert_into_frames", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_frames($1::json)");
+
+    switch(m_kia_settings->m_type_bokz)
+    {
+    case TYPE_BOKZ_BOKZM60:
+        conn->prepare("prepare_insert_into_mshior", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_mshior($1::json)");
+        conn->prepare("prepare_insert_into_shtmi2", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_shtmi2($1::json)");
+        conn->prepare("prepare_insert_into_dtmiloc", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_dtmiloc($1::json)");
+        conn->prepare("prepare_insert_into_dtmi", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_dtmi($1::json)");
+        conn->prepare("prepare_insert_into_frames", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_frames($1::json)");
+        break;
+    case TYPE_BOKZ_BOKZMF:
+        break;
+    }
+
+
 
 }

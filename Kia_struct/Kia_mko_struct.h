@@ -83,6 +83,83 @@ struct SHTMI1raw
 #pragma pack(pop)
 
 #pragma pack(push, 1)
+struct SHTMI1_MF
+{
+    uint16_t CW = 0;
+    uint16_t AW = 0;
+    uint16_t nAr = 0;
+    uint32_t T = 0;
+    uint16_t Tms = 0;
+    uint16_t KC1 = 0;
+    uint16_t KC2 = 0;
+    uint16_t SerNum = 0;
+    uint16_t POST = 0;
+    float Foc = 0;
+    float Xo = 0;
+    float Yo = 0;
+    uint16_t Texp = 0;
+    uint16_t Mean = 0;
+    uint16_t Sigma = 0;
+    uint16_t rezerv1 = 0;
+    uint16_t rezerv2 = 0;
+    uint16_t cntUPN = 0;
+    int16_t Tcmv = 0;
+    uint16_t ConfCS = 0;
+    uint16_t desc = 0;
+    uint16_t ogConstCrc = 0;
+    uint16_t CatCS0 = 0;
+    uint16_t CatCS1 = 0;
+    uint16_t ConstCS0 = 0;
+    uint16_t ConstCS1 = 0;
+    uint16_t ProgCS0 = 0;
+    uint16_t ProgCS1 = 0;
+    uint16_t Ver1 = 0;
+    uint16_t Ver2 = 0;
+    uint16_t Ver3 = 0;
+    uint16_t cs = 0;
+
+    QStringList shtmi1_list_name;
+    QStringList shtmi1_list_data;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct SHTMI1raw_MF
+{
+    uint16_t CW = 0;
+    uint16_t AW = 0;
+    uint16_t nAr = 0;
+    uint32_t T = 0;
+    uint16_t Tms = 0;
+    uint16_t KC1 = 0;
+    uint16_t KC2 = 0;
+    uint16_t SerNum = 0;
+    uint16_t POST = 0;
+    uint32_t Foc = 0;
+    uint32_t Xo = 0;
+    uint32_t Yo = 0;
+    uint16_t Texp = 0;
+    uint16_t Mean = 0;
+    uint16_t Sigma = 0;
+    uint16_t rezerv1 = 0;
+    uint16_t rezerv2 = 0;
+    uint16_t cntUPN = 0;
+    uint16_t Tcmv = 0;
+    uint16_t ConfCS = 0;
+    uint16_t desc = 0;
+    uint16_t ogConstCrc = 0;
+    uint16_t CatCS0 = 0;
+    uint16_t CatCS1 = 0;
+    uint16_t ConstCS0 = 0;
+    uint16_t ConstCS1 = 0;
+    uint16_t ProgCS0 = 0;
+    uint16_t ProgCS1 = 0;
+    uint16_t Ver = 0;
+    uint16_t cs = 0;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
 struct SHTMI2
 {
     uint16_t CW = 0;
@@ -957,8 +1034,8 @@ struct DTMILocRaw_9_m60
     uint32_t Loc_29_30 = 0;
     uint32_t rezerv = 0;
 };
-#pragma pack(pop)
 
+#pragma pack(pop)
 struct Kia_mko_struct
 {
     SHTMI1 st_shtmi1;
@@ -984,16 +1061,7 @@ struct Kia_mko_struct
     DTMILoc_7 dtmiLoc_7;
     DTMILoc_8 dtmiLoc_8;
     DTMILoc_9 dtmiLoc_9;
-    DTMILocRaw_9_m60 dtmiLoc_9_m60;
-};
 
-struct Kia_mko_struct_bokzm60 : public Kia_mko_struct
-{
-
-};
-
-struct Kia_mko_struct_bokzmr : public Kia_mko_struct
-{
-
+    SHTMI1_MF st_shtmi1_mf;
 };
 #endif // KIA_MKO_STRUCT_H

@@ -16,7 +16,7 @@ public:
     virtual uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t cyclogram_offline_tests(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t cyclogram_ai(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual void cyclogram_define_address(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_operation(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;

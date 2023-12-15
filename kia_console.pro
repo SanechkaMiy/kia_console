@@ -21,6 +21,7 @@ SOURCES += \
         Kia_bi/kia_bi.cpp \
         Kia_bi/kia_biu.cpp \
         Kia_bi/kia_bkpik.cpp \
+        Kia_bokz/bokzmf.cpp \
         Kia_bokz/bokzmr.cpp \
         Kia_cyclogram/kia_cyclogram.cpp \
         Kia_cyclogram/kia_cyclogram_bokzm60.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
         Kia_modules/kia_port.cpp \
         Kia_pio/pio_bokz.cpp \
         Kia_pio/pio_bokzm60.cpp \
+        Kia_pio/pio_bokzmf.cpp \
         kia_ftdi.cpp \
         kia_load_initial_settings.cpp \
         kia_matrox.cpp \
@@ -51,6 +53,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ../../../../../usr/local/lib/BiLib_20231123_1653/BiLibNE.h \
     ../../kia_gui/source/Kia_enums.h \
+    Kia_bokz/bokzmf.h \
     Kia_bokz/bokzmr.h \
     Kia_cyclogram/kia_cyclogram.h \
     Kia_cyclogram/kia_cyclogram_bokzm60.h \
@@ -60,6 +63,7 @@ HEADERS += \
     Kia_modules/kia_port.h \
     Kia_pio/pio_bokz.h \
     Kia_pio/pio_bokzm60.h \
+    Kia_pio/pio_bokzmf.h \
     Kia_struct/Kia_mko_struct.h \
     Kia_bokz/bokz.h \
     Kia_bokz/bokzm60.h \

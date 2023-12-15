@@ -7,6 +7,8 @@ WorkWithMain::WorkWithMain(int nPort) :
     QThread::currentThread()->setPriority(QThread::HighPriority);
     start_tcp_server(nPort);
     set_kia_settings();
+
+    start_kia_gui();
 }
 
 void WorkWithMain::set_kia_settings()
@@ -55,8 +57,6 @@ void WorkWithMain::set_kia_settings()
         m_kia_synch_timer.push_back(std::make_shared<Kia_synch_timer>(ind_bi, m_timer[ind_bi], m_kia_bi[ind_bi], m_kia_settings, m_kia_protocol));
         m_timer[ind_bi]->start();
     }
-
-    start_kia_gui();
     m_kia_ftdi.reset(new Kia_ftdi(m_kia_settings));
 
     switch(m_kia_settings->m_type_bokz)
@@ -69,7 +69,13 @@ void WorkWithMain::set_kia_settings()
                                                        m_kia_ftdi));
         m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_timer, m_kia_synch_timer, m_bokz, m_kia_bi, m_kia_protocol, m_kia_settings));
         break;
-    case TYPE_BOKZ_BOKZMR:
+    case TYPE_BOKZ_BOKZMF:
+        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_data_for_bokz->m_count_bokz; ++num_bokz)
+            m_bokz.push_back(std::make_shared<BokzM60>(num_bokz, m_kia_bokz_db, m_timer,
+                                                       m_kia_synch_timer, m_kia_bi, m_kia_mpi,
+                                                       m_kia_protocol, m_kia_matrox, m_kia_settings,
+                                                       m_kia_ftdi));
+        m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_timer, m_kia_synch_timer, m_bokz, m_kia_bi, m_kia_protocol, m_kia_settings));
         break;
     }
 
@@ -370,11 +376,11 @@ void WorkWithMain::delete_all_threads()
     }
 }
 
-void WorkWithMain::cyclogram_offline_tests( uint16_t parametr)
+void WorkWithMain::cyclogram_ai( uint16_t parametr)
 {
     auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
     {
-        m_kia_cyclogram->cyclogram_offline_tests(num_bokz, parametr);
+        m_kia_cyclogram->cyclogram_ai(num_bokz, parametr);
     };
     check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
 }
@@ -779,7 +785,8 @@ void WorkWithMain::slot_read_client()
                 if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel, data_from_client[0].toInt());
+                        m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                                                                              data_from_client[0].toInt());
                 }
             }
             break;
@@ -789,7 +796,8 @@ void WorkWithMain::slot_read_client()
                 if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel, data_from_client[0].toInt());
+                        m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                                                                               data_from_client[0].toInt());
                 }
             }
             break;
@@ -799,7 +807,8 @@ void WorkWithMain::slot_read_client()
                 if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel, data_from_client[0].toInt());
+                        m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                   data_from_client[0].toInt());
                 }
             }
             break;
@@ -809,7 +818,8 @@ void WorkWithMain::slot_read_client()
                 if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel, data_from_client[0].toInt());
+                        m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                    data_from_client[0].toInt());
                 }
             }
             break;
@@ -826,7 +836,7 @@ void WorkWithMain::slot_read_client()
             command_otclp();
             break;
         case CYCLOGRAM_OFFLINE_TEST:
-            cyclogram_offline_tests();
+            cyclogram_ai();
             break;
         case CYCLOGRAM_STOP:
             set_stop();
@@ -1044,6 +1054,27 @@ void WorkWithMain::slot_read_client()
             break;
         case CYCLOGRAM_SYNCHRO:
             cyclogram_test_synchro();
+            break;
+        case SET_AI_SKIP_OR_STOP:
+            m_kia_settings->m_wait_and_param_for_cyclogram->m_skip_fails_for_continue = data_from_client[0].toInt();
+            std::cout << m_kia_settings->m_wait_and_param_for_cyclogram->m_skip_fails_for_continue << std::endl;
+            break;
+        case DEBUGGING_COMMAND:
+            uint16_t is_dec_or_hex = 16;
+            bool ok;
+            if (data_from_client[CS_DIRECTION].toInt() == 0)
+            {
+                for (uint16_t num_word = 0; num_word < data_from_client[CS_WORD_DATA].toInt(); ++num_word)
+                {
+                    if (data_from_client[CS_DATA_TO_EXC + num_word][0] == "0")
+                        is_dec_or_hex = 16;
+                    else
+                        is_dec_or_hex = 10;
+                    m_bokz[data_from_client[CS_NUM_BOKZ].toInt()]->m_kia_data->m_data_mpi->m_data_to_exc[num_word] = data_from_client[CS_DATA_TO_EXC + num_word].toInt(&ok, is_dec_or_hex);
+                }
+            }
+            m_bokz[data_from_client[CS_NUM_BOKZ].toInt()]->debugging_command(data_from_client[CS_DIRECTION].toInt(), data_from_client[CS_FORMAT].toInt(),
+                    data_from_client[CS_SUB_ADDRESS].toInt(), data_from_client[CS_WORD_DATA].toInt(), data_from_client[CS_STRUCT_ID].toStdString(), data_from_client[CS_STRUCT_ID_DESCK].toStdString());
             break;
         }
         m_nNextBlockSize = 0;

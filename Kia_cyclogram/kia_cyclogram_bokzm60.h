@@ -10,6 +10,7 @@
 #include "Kia_mko_struct.h"
 #include "Kia_modules/kia_help_functions.h"
 #include "kia_cyclogram.h"
+#include <utility>
 class Kia_cyclogram_bokzm60 : public Kia_cyclogram
 {
 public:
@@ -20,7 +21,7 @@ public:
     uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
-    uint16_t cyclogram_offline_tests(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
+    uint16_t cyclogram_ai(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     void cyclogram_define_address(uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;

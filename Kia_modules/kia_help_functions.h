@@ -20,5 +20,5 @@ std::string currentDateTime();
 uint32_t current_hours();
 float decodeDateTime();
 
-QString format(const QString& str, const int16_t &shift, const char &fillchar = ' ');
+QString format_qstring(const QString& str, const int16_t &shift, const char &fillchar = ' ');
 #endif // KIA_HELP_FUNCTIONS_H

@@ -7,10 +7,16 @@ BokzMR::BokzMR(uint16_t num_bokz, std::array<std::shared_ptr<Kia_db>, constants:
 
 BokzMR::~BokzMR()
 {
-    m_kia_mko_struct.reset(new Kia_mko_struct_bokzmr());
+    m_kia_mko_struct.reset(new Kia_mko_struct());
 }
 
 void BokzMR::set_bokz_settings()
+{
+
+}
+
+uint16_t BokzMR::debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
+                                   string struct_id, string struct_id_desc, uint16_t parametr)
 {
 
 }

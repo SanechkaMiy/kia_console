@@ -64,7 +64,7 @@ public:
     void cyclogram_state_off(uint16_t parametr = EP_DOALL);
     void cyclogram_no(uint16_t parametr = EP_DOALL);
     void cyclogram_to(uint16_t parametr = EP_DOALL);
-    void cyclogram_offline_tests(uint16_t parametr = EP_DOALL);
+    void cyclogram_ai(uint16_t parametr = EP_DOALL);
     void cyclogram_loc(uint16_t parametr = EP_DOALL);
     void cyclogram_define_address(uint16_t parametr = EP_DOALL);
     void cyclogram_operation(uint16_t parametr = EP_DOALL);
