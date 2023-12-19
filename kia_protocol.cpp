@@ -3,7 +3,12 @@
 Kia_protocol::Kia_protocol(std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_settings(kia_settings)
 {
-
+    m_kia_settings->m_data_to_protocols->m_count_of_exc_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_settings->m_data_to_protocols->m_count_of_time_out_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_settings->m_data_to_protocols->m_count_of_kvaor_is_not_corr_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    std::fill(m_kia_settings->m_data_to_protocols->m_is_protocol_used.begin(), m_kia_settings->m_data_to_protocols->m_is_protocol_used.end(), KiaS_SUCCESS);
 }
 
 Kia_protocol::~Kia_protocol()
@@ -15,12 +20,7 @@ void Kia_protocol::create_dir_for_protocols()
 {
     m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol = KiaS_SUCCESS;
     m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols = helpers::current_hours();
-    m_kia_settings->m_data_to_protocols->m_count_of_exc_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_time_out_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_kvaor_is_not_corr_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    std::fill(m_kia_settings->m_data_to_protocols->m_is_protocol_used.begin(), m_kia_settings->m_data_to_protocols->m_is_protocol_used.end(), KiaS_SUCCESS);
+
     QString name_dir = "exp_" + QString::fromStdString(helpers::currentDateTime());
     QDir dir("/home/alexander/Project/kia_console/protocols/");
     dir.mkdir(name_dir);

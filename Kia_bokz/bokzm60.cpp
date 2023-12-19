@@ -324,7 +324,7 @@ void BokzM60::save_to_protocol(QString str_to_protocol, uint16_t parametr)
     if (m_kia_settings->m_data_to_protocols->m_stop_spam_in_system_info[m_num_bokz])
         str_to_protocol.clear();
     else
-        str_to_protocol.push_back(m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error[m_num_bokz] + "\n");
+        str_to_protocol.push_back(m_kia_data->m_data_mpi->m_is_error + "\n");
 
     if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_SYSTEM] == KiaS_SUCCESS)
         m_kia_protocol->preset_before_save_and_out(m_num_bokz, str_to_protocol, SET_INFO_TO_WINDOW_INFO, SP_DO_SYSTEM, parametr);
@@ -346,6 +346,28 @@ void BokzM60::save_to_specific_protocol(QString str_to_protocol, uint16_t type_w
     if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[type_protocol] == KiaS_SUCCESS)
         m_kia_protocol->preset_before_save_and_out(m_num_bokz, str_to_protocol, type_window, type_protocol, parametr);
 
+}
+
+void BokzM60::calc_frame_param(std::array<uint8_t, frame_size> frame_buffer)
+{
+    m_kia_data->m_data_db->m_max = frame_buffer[0];
+    m_kia_data->m_data_db->m_min = frame_buffer[0];
+    for (uint32_t el = 0; el < frame_size; el++)
+    {
+        if (frame_buffer[el] > m_kia_data->m_data_db->m_max)
+        {
+            m_kia_data->m_data_db->m_max = frame_buffer[el];
+        }
+        if (frame_buffer[el] < m_kia_data->m_data_db->m_min)
+            m_kia_data->m_data_db->m_min = frame_buffer[el];
+        m_kia_data->m_data_db->m_average = m_kia_data->m_data_db->m_average + frame_buffer[el];
+
+    }
+    m_kia_data->m_data_db->m_average = m_kia_data->m_data_db->m_average / frame_size;
+    for (uint32_t el = 2; el < frame_size; el++)
+        m_kia_data->m_data_db->m_variance = m_kia_data->m_data_db->m_variance
+                + pow(abs(frame_buffer[el] - (int32_t)m_kia_data->m_data_db->m_average), 2);
+    m_kia_data->m_data_db->m_variance = sqrt(m_kia_data->m_data_db->m_variance / (frame_size));
 }
 
 uint16_t BokzM60::smti(uint16_t parametr)
@@ -832,10 +854,10 @@ uint16_t BokzM60::do_frames(uint16_t parametr)
         m_set_control_word();
         save_to_protocol(str_to_protocol, parametr);
         uint16_t count_pixel_in_one_arr = 64;
-        std::array<uint8_t, constants::frame_size> frame_buffer;
+        std::array<uint8_t, frame_size> frame_buffer;
         uint32_t num_command = 0;
         uint32_t pos = 0;
-        while (num_command < constants::frame_size / count_pixel_in_one_arr)
+        while (num_command < frame_size / count_pixel_in_one_arr)
         {
             m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
 
@@ -848,6 +870,9 @@ uint16_t BokzM60::do_frames(uint16_t parametr)
             //  save_to_protocol(str_to_protocol, DO_FULL_FRAME, parametr);
         }
         m_kia_protocol->save_to_frames_protocols(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], frame_buffer.data(), frame_buffer.size());
+        calc_frame_param(frame_buffer);
+        m_kia_data->m_data_db->frame_name = "frame_num_bokz_" + std::to_string(m_num_bokz) + "_" + std::to_string(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
+        m_parser_db->send_to_frames(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
         m_kia_settings->m_flags_for_thread->m_mtx.unlock();
     }
     return m_kia_data->m_data_mpi->m_status_exchange;
@@ -1066,7 +1091,7 @@ void BokzM60::post_status_proc(QString& str_protocol)
     str_protocol.push_back(helpers::format_qstring("3", m_kia_settings->m_format_for_desc->shift_for_numbers)
                            + helpers::format_qstring("Состояние концевого датчика \"крышка открыта\"", m_kia_settings->m_format_for_desc->shift_description)
                            + helpers::get_status_zkr(m_kia_mko_struct->st_mshior.KC1, 2) + "\n");
-    str_protocol.push_back(helpers::format_qstring("5,6,7,8", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    str_protocol.push_back(helpers::format_qstring("5-8", m_kia_settings->m_format_for_desc->shift_for_numbers)
                            + helpers::format_qstring("Счетчик ошибочных секундных меток", m_kia_settings->m_format_for_desc->shift_description)
                            + helpers::get_count_sec_fail_mark(m_kia_mko_struct->st_mshior.KC1, 4) + "\n");
     str_protocol.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc->shift_for_numbers)
@@ -1086,9 +1111,12 @@ void BokzM60::post_status_proc(QString& str_protocol)
                            + helpers::get_command_complete(m_kia_mko_struct->st_mshior.KC1, 15) + "\n\n");
     str_protocol.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
                            + helpers::format_qstring("Расшифровка Код состояния 2:", m_kia_settings->m_format_for_desc->shift_description) + "\n");
-    str_protocol.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    str_protocol.push_back(helpers::format_qstring("1-4", m_kia_settings->m_format_for_desc->shift_for_numbers)
                            + helpers::format_qstring("Код последнего полученного УСД", m_kia_settings->m_format_for_desc->shift_description)
                            + helpers::get_last_usd(m_kia_mko_struct->st_mshior.KC2, 0) + "\n\n");
+    str_protocol.push_back(helpers::format_qstring("9-21", m_kia_settings->m_format_for_desc->shift_for_numbers)
+                           + helpers::format_qstring("Код ошибки", m_kia_settings->m_format_for_desc->shift_description)
+                           + helpers::get_status_error(m_kia_mko_struct->st_mshior.KC2, 8) + "\n\n");
 }
 
 void BokzM60::send_data_to_command(const uint16_t& type_data, const uint16_t &type_command, const QString& data)
@@ -1141,7 +1169,7 @@ void BokzM60::check_orientation()
 
 void BokzM60::preset_before_exchange()
 {
-    m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error[m_num_bokz] = " - УСПЕХ!";
+    m_kia_data->m_data_mpi->m_is_error = " - УСПЕХ!";
 }
 
 void BokzM60::do_pause(uint16_t interval)
@@ -1171,9 +1199,9 @@ uint16_t BokzM60::start_exchage(uint16_t parametr)
     }
 
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
-        m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error[m_num_bokz] = " - УСПЕХ!";
+        m_kia_data->m_data_mpi->m_is_error = " - УСПЕХ!";
     else
-        m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error[m_num_bokz] = " - ОШИБКА!";
+        m_kia_data->m_data_mpi->m_is_error = " - ОШИБКА!";
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
 

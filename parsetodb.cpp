@@ -477,7 +477,7 @@ string ParseToDB::parse_kc_kp(uint16_t n)
 
 
 
-void ParseToDB::send_to_frames(uint16_t &num_bokz, uint32_t& bshv)
+void ParseToDB::send_to_frames(uint16_t &num_bokz, int32_t &bshv)
 {
     char data_into_frames[1024];
     sprintf(data_into_frames,"{\"experiment_id\":\"%s\","
@@ -486,11 +486,12 @@ void ParseToDB::send_to_frames(uint16_t &num_bokz, uint32_t& bshv)
                              "\"host_id\":\"%s\","
                              "\"unit_id\":\"%s\","
                              "\"bshv\":%d,"
+                             "\"frame_name\":\"%s\","
                              "\"max_v\":%d,"
                              "\"min_v\":%d,"
                              "\"average_v\":%f,"
                              "\"variance_v\":%f}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz, m_kia_data->m_data_db->m_datetime.c_str(),
-            m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
+            m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv, m_kia_data->m_data_db->frame_name.c_str(),
             m_kia_data->m_data_db->m_max, m_kia_data->m_data_db->m_min, m_kia_data->m_data_db->m_average, m_kia_data->m_data_db->m_variance);
     m_kia_db[TYPE_DATA]->insert_data(data_into_frames, "prepare_insert_into_frames");
 }

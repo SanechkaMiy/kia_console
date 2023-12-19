@@ -3,23 +3,27 @@
 QString helpers::angular_transform::get_degreze(double value)
 {
     value = value * 180 / PI;
-    QString ret = QString("%1").arg(QString::number((int)value), -5) + "°" + " ";
+    QString ret = QString("%1").arg(QString::number(value, 'f', 3), -8) + "°" + " ";
     return ret;
 }
 
 QString helpers::angular_transform::get_minutes(double value)
 {
     value = value * 180 / PI;
-    value = value * 60;
-    QString ret = QString("%1").arg(QString::number(value, 'f', 3), -9) + "'" + " ";
+    auto minutes = value - (int)value;
+    minutes = 60 * minutes;
+    QString ret = QString("%1").arg(QString::number((int)minutes, 'f', 3), -8) + "'" + " ";
     return ret;
 }
 
 QString helpers::angular_transform::get_seconds(double value)
 {
     value = value * 180 / PI;
-    value = value * 3600;
-    QString ret = QString("%1").arg(QString::number(value, 'f', 3), -11) + "\"" + " ";
+    auto minutes = value - (int)value;
+    minutes = 60 * minutes;
+    auto seconds = minutes - (int)minutes;
+    seconds = 60 * seconds;
+    QString ret = QString("%1").arg(QString::number(seconds, 'f', 3), -8) + "\"" + " ";
     return ret;
 }
 
@@ -123,6 +127,58 @@ QString helpers::get_last_usd(uint16_t value, uint16_t shift)
         return QString::number((value & (0x000f << shift))) + " - резерв";
     else
         return "0 - последнего переданного УСД не было";
+}
+
+QString helpers::get_status_error(uint16_t value, uint16_t shift)
+{
+    switch(value >> shift)
+    {
+    case 0x0001:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - конец первой фазы НО(не ошибка)";
+        break;
+    case 0x0005:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - засветка";
+        break;
+    case 0x0006:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - локализовано менее 4-х объектов в НО или менее 3-х при слежении";
+        break;
+    case 0x0008:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - с апр.инф-ии распознано менее 3 звезд";
+        break;
+    case 0x0009:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - без апр.инф-ии распознано менее 4 звезд";
+        break;
+    case 0x000A:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - неверно задан апр.кватернион";
+        break;
+    case 0x000B:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - ошибочная переменная";
+        break;
+    case 0x000D:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - грубые измерения";
+        break;
+    case 0x000E:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - ошибка фрагмента";
+        break;
+    case 0x0080:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - получено неподдерживемое УСД";
+        break;
+    case 0x0081:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - ошбика ввода 1";
+        break;
+    case 0x0082:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - ошибка ввода 2";
+        break;
+    case 0x0083:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - ошибка ввода 3";
+        break;
+    case 0x0084:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - тайм-аут расчета";
+        break;
+    default:
+        return QString("%1").arg(QString::number(value >> shift, 16), 2, '0') + " - ошибки нет";
+        break;
+    }
 }
 
 float helpers::uint32_to_float(uint32_t value)

@@ -92,8 +92,8 @@ uint16_t Bokzmf::shtmi1(uint16_t parametr)
             if (m_kia_mko_struct->st_shtmi1.shtmi1_list_data[num_list][0] == '-')
                 do_shift_left = 1;
             str_protocol.push_back(helpers::format_qstring(m_kia_mko_struct->st_shtmi1.shtmi1_list_name[num_list],
-                                          m_kia_settings->m_format_for_desc->shift_description
-                                          + m_kia_settings->m_format_for_desc->shift_for_numbers + do_shift_left)
+                                                           m_kia_settings->m_format_for_desc->shift_description
+                                                           + m_kia_settings->m_format_for_desc->shift_for_numbers + do_shift_left)
                                    + m_kia_mko_struct->st_shtmi1.shtmi1_list_data[num_list] + "\n");
         }
         str_protocol.push_back("\n\n");
@@ -242,7 +242,7 @@ uint16_t Bokzmf::get_texp(uint16_t parametr)
 
 void Bokzmf::preset_before_exchange()
 {
-    m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error[m_num_bokz] = " - УСПЕХ!";
+    m_kia_data->m_data_mpi->m_is_error = " - УСПЕХ!";
 }
 
 uint16_t Bokzmf::start_exchage(uint16_t parametr)
@@ -267,9 +267,9 @@ uint16_t Bokzmf::start_exchage(uint16_t parametr)
     }
 
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
-        m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error[m_num_bokz] = " - УСПЕХ!";
+        m_kia_data->m_data_mpi->m_is_error = " - УСПЕХ!";
     else
-        m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error[m_num_bokz] = " - ОШИБКА!";
+        m_kia_data->m_data_mpi->m_is_error = " - ОШИБКА!";
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
 

@@ -22,6 +22,7 @@ public:
     uint16_t cyclogram_operation(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
+    uint16_t cyclogram_operation_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_1s_mark(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_check_address(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_test_mko(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
@@ -40,7 +41,7 @@ private:
     void wait_some_time_for_one_launch(const uint16_t& wait_s) override;
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi) override;
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
-
+    void preset_before_exchange(uint16_t num_bokz);
     std::shared_ptr<Kia_timers> m_kia_timers;
     std::vector<std::shared_ptr<Bokz>> m_bokz;
     shared_ptr<Kia_protocol> m_kia_protocol;

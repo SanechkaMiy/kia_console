@@ -28,6 +28,7 @@ public:
     virtual uint16_t cyclogram_operation(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_operation_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_operation_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t cyclogram_operation_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_1s_mark(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_check_address(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_test_mko(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
@@ -36,7 +37,7 @@ public:
     virtual uint16_t cyclogram_zkr(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_full_frames(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual ~Kia_cyclogram(){};
-
+    std::shared_ptr<Kia_data_cyclogram> m_kia_data_cyclogram;
 private:
     virtual uint16_t start_no(uint16_t &num_bokz) = 0;
     virtual uint16_t start_to(uint16_t &num_bokz) = 0;

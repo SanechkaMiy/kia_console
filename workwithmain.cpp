@@ -609,9 +609,6 @@ void WorkWithMain::kia_init()
     m_kia_settings->m_flags_for_thread->m_stop_command_thread.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
 
     m_kia_settings->m_data_to_protocols->m_stop_spam_in_system_info.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_wait_and_param_for_cyclogram->m_is_error.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    std::fill(m_kia_settings->m_data_for_bokz->m_do_mpi_command_in_cyclogram.begin(),
-              m_kia_settings->m_data_for_bokz->m_do_mpi_command_in_cyclogram.end(), KiaS_FAIL);
 }
 
 void WorkWithMain::start_kia_gui()
@@ -730,6 +727,8 @@ void WorkWithMain::slot_read_client()
         in >> data_from_client >> type_bokz >> type_bi >> num;
         m_kia_settings->m_type_bokz = type_bokz;
         m_kia_settings->m_type_bi = type_bi;
+        uint16_t is_dec_or_hex = 16;
+        bool ok;
         switch (num)
         {
         case SHTMI_1:
@@ -771,7 +770,7 @@ void WorkWithMain::slot_read_client()
         case CYCLOGRAM_STATE_OFF:
             cyclogram_state_off();
             break;
-        case CYCLOGRAM_DO_EXPOSURE:
+        case COMMAND_FULL_EXP:
             command_full_exp();
             break;
         case POWER_ON:
@@ -781,7 +780,7 @@ void WorkWithMain::slot_read_client()
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
                         m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                                                                              data_from_client[0].toInt());
+                                                                                                                                                                            data_from_client[0].toInt());
                 }
             }
             break;
@@ -792,7 +791,7 @@ void WorkWithMain::slot_read_client()
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
                         m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                                                                               data_from_client[0].toInt());
+                                                                                                                                                                             data_from_client[0].toInt());
                 }
             }
             break;
@@ -803,7 +802,7 @@ void WorkWithMain::slot_read_client()
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
                         m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                   data_from_client[0].toInt());
+                                                                                                                 data_from_client[0].toInt());
                 }
             }
             break;
@@ -814,7 +813,7 @@ void WorkWithMain::slot_read_client()
                 {
                     if (data_from_client[0].toInt() < BI_ALL_OFF)
                         m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                    data_from_client[0].toInt());
+                                                                                                                  data_from_client[0].toInt());
                 }
             }
             break;
@@ -915,14 +914,12 @@ void WorkWithMain::slot_read_client()
             }
             break;
         case SET_USED_MPI_COMMAND_IN_CYCLOGRAM:
-            std::fill(m_kia_settings->m_data_for_bokz->m_do_mpi_command_in_cyclogram.begin(),
-                      m_kia_settings->m_data_for_bokz->m_do_mpi_command_in_cyclogram.end(), KiaS_FAIL);
             for (uint16_t num_mpi_command = 0; num_mpi_command < data_from_client.size(); ++num_mpi_command)
-                m_kia_settings->m_data_for_bokz->m_do_mpi_command_in_cyclogram[num_mpi_command] = data_from_client[num_mpi_command].toInt();
+                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_mpi_command_in_cyclogram[num_mpi_command] = data_from_client[num_mpi_command].toInt();
             break;
         case SET_ZKR_SETTINGS:
             for (uint16_t num_zkr_param = 0; num_zkr_param < data_from_client.size(); ++num_zkr_param)
-                m_kia_settings->m_wait_and_param_for_cyclogram->m_param_for_cycl_zkr[num_zkr_param] = data_from_client[num_zkr_param].toInt();
+                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_cycl_zkr[num_zkr_param] = data_from_client[num_zkr_param].toInt();
             break;
         case SET_EXC_FREQ:
             m_kia_settings->m_data_for_bokz->m_freq_bokz = data_from_client[type_bokz].toInt();
@@ -971,9 +968,9 @@ void WorkWithMain::slot_read_client()
                 m_kia_timers->m_kia_bi[ind_bi]->set_sec_mark_pulse_time(data_from_client[0].toInt());
             }
             break;
-        case SET_TR_SETTINGS:
-            for (uint16_t num_zkr_param = 0; num_zkr_param < data_from_client.size(); ++num_zkr_param)
-                m_kia_settings->m_wait_and_param_for_cyclogram->m_param_for_cycl_tech_run[num_zkr_param] = data_from_client[num_zkr_param].toInt();
+        case SET_TP_SETTINGS:
+            for (uint16_t num_param = 0; num_param < data_from_client.size(); ++num_param)
+                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_cycl_tech_run[num_param] = data_from_client[num_param].toInt();
             break;
         case SET_NUM_BI:
             for (uint16_t num_bokz = 0; num_bokz < data_from_client.size(); ++num_bokz)
@@ -1051,13 +1048,10 @@ void WorkWithMain::slot_read_client()
             cyclogram_test_synchro();
             break;
         case SET_AI_SKIP_OR_STOP:
-            m_kia_settings->m_wait_and_param_for_cyclogram->m_skip_fails_for_continue = data_from_client[0].toInt();
-            std::cout << m_kia_settings->m_wait_and_param_for_cyclogram->m_skip_fails_for_continue << std::endl;
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_skip_fails_for_continue = data_from_client[0].toInt();
             break;
         case DEBUGGING_COMMAND:
             m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
-            uint16_t is_dec_or_hex = 16;
-            bool ok;
             if (data_from_client[CS_DIRECTION].toInt() == 0)
             {
                 for (uint16_t num_word = 0; num_word < data_from_client[CS_WORD_DATA].toInt(); ++num_word)
@@ -1071,6 +1065,20 @@ void WorkWithMain::slot_read_client()
             }
             m_bokz[data_from_client[CS_NUM_BOKZ].toInt()]->debugging_command(data_from_client[CS_DIRECTION].toInt(), data_from_client[CS_FORMAT].toInt(),
                                                                              data_from_client[CS_SUB_ADDRESS].toInt(), data_from_client[CS_WORD_DATA].toInt(), data_from_client[CS_STRUCT_ID].toStdString(), data_from_client[CS_STRUCT_ID_DESCK].toStdString());
+            break;
+        case COMMAND_ZKR:
+            command_zkr();
+            break;
+        case SET_IS_OFF_POWER_IN_TP:
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_off_power_for_tp = data_from_client[0].toInt();
+            break;
+        case SET_DO_CYCLOGRAM_IN_TP:
+            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
+                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
+            break;
+        case SET_COUNT_TO_DO_CYCLOGRAM_IN_TP:
+            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
+                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_count_to_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
             break;
         }
         m_nNextBlockSize = 0;

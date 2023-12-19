@@ -32,7 +32,7 @@ public:
     string parse_kc_kp(uint16_t n);
     template<typename arr>
     void parse_data_bi(std::string& str, arr data);
-    void send_to_frames(uint16_t& num_bokz, uint32_t &bshv);
+    void send_to_frames(uint16_t& num_bokz, int32_t &bshv);
 private:
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     std::shared_ptr<Kia_data> m_kia_data;

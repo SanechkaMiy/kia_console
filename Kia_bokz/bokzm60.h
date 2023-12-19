@@ -68,6 +68,7 @@ signals:
     void send_to_client(quint16, QStringList) override;
 
 private:
+    const static int32_t frame_size = 512 * 512;
     void do_pause(uint16_t interval);
     void check_orientation();
     void getDataToDTMIOrDTMILoc(uint16_t &count_dtmo_or_dtmo_loc);
@@ -77,6 +78,7 @@ private:
     void send_mpi_data_to_db();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
+    void calc_frame_param(std::array<uint8_t, frame_size> frame_buffer);
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
     std::function<void()> m_set_control_word;
@@ -90,6 +92,7 @@ private:
     shared_ptr<Kia_ftdi> m_kia_ftdi;
     uint16_t m_count_dtmi_dtmi_loc;
     std::vector<uint8_t> m_commandR;
+
 };
 
 #endif // BOKZM60_H

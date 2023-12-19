@@ -22,6 +22,7 @@ QString get_mode_orientation(uint16_t value, uint16_t shift);
 QString get_command_wait(uint16_t value, uint16_t shift);
 QString get_command_complete(uint16_t value, uint16_t shift);
 QString get_last_usd(uint16_t value, uint16_t shift);
+QString get_status_error(uint16_t value, uint16_t shift);
 
 float uint32_to_float(uint32_t value);
 std::string currentDateTime();

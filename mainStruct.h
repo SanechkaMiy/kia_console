@@ -34,9 +34,9 @@ const static uint16_t m_count_lpi = 2;
 const static uint16_t max_avalable_address = 31;
 const static uint16_t max_mpi_command = 5;
 const static uint16_t max_count_param = 3;
-const static int32_t frame_size = 512 * 512;
 const static uint16_t max_count_bi = 4;
 const static uint16_t max_count_same_connection = 2;
+const static uint16_t max_count_cyclograms_in_tp = 3;
 }
 
 
@@ -71,14 +71,14 @@ struct Data_for_mpi
 
     std::array<std::function<void(uint16_t parametr)>, constants::max_mpi_command> m_mpi_command;
 
-    QString m_str_mpi_protocol;
+    QString m_is_error;
+
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct Data_for_bokz
 {
-    std::array<uint16_t, constants::max_mpi_command> m_do_mpi_command_in_cyclogram;
     std::vector<uint16_t> m_address_defined;
     int m_count_bokz;//0 - БОКЗМ60; 1 - БОКЗМ60/1000; 2 - БОКЗМР; 3 - АИС-2К; 4 - БОКЗНК.
     int m_shift_timer_interval;
@@ -99,6 +99,7 @@ struct Data_for_db
     string struct_id_dop;
     string struct_id_desc;
     string struct_id_dop_desc;
+    string frame_name;
     string true_host;
     uint16_t subarray_id;
     uint16_t m_error_code;
@@ -196,14 +197,15 @@ struct Data_for_bi
 #pragma pack(push, 1)
 struct Wait_and_param_for_cyclogram
 {
+    std::array<uint16_t, constants::max_mpi_command> m_do_mpi_command_in_cyclogram;
+    std::array<uint16_t, constants::max_count_cyclograms_in_tp> m_do_cyclogram_in_tp;
+    std::array<uint16_t, constants::max_count_cyclograms_in_tp> m_count_to_do_cyclogram_in_tp = {10, 10, 10};
     int16_t m_wait_for_on_power_is_stable = 30;
     int16_t m_wait_for_otclp = 2;
     int16_t m_wait_for_takt = 1;
     int16_t m_wait_for_off_power_is_stable = 3;
     int16_t m_wait_for_start_dtmi_loc = 10;
     int16_t m_count_cyclogram_technical_run = 2;
-    int16_t m_count_cyclogram_operation_no = 10;
-    int16_t m_count_cyclogram_operation_to = 10;
     std::array<uint16_t, constants::max_count_param> m_param_for_cycl_tech_run;
     std::array<uint16_t, constants::max_count_param> m_param_for_cycl_zkr;
     std::array<uint16_t, constants::max_count_param> m_param_for_cycl_full_frames;
@@ -211,6 +213,8 @@ struct Wait_and_param_for_cyclogram
     int16_t m_shift_bshv = 100;
     std::vector<QString> m_is_error;
     uint16_t m_skip_fails_for_continue = 1;
+    uint16_t m_off_power_for_tp = 0;
+    std::array<std::function<void(uint16_t num_bokz, uint16_t parametr)>, constants::max_count_cyclograms_in_tp> m_cyclograms;
 };
 #pragma pack(pop)
 
@@ -232,7 +236,6 @@ struct Kia_settings
         m_data_to_protocols.reset(new Data_to_protocols());
         m_format_for_desc.reset(new Format_for_description());
         m_data_for_bi.reset(new Data_for_bi());
-        m_wait_and_param_for_cyclogram.reset(new Wait_and_param_for_cyclogram());
         m_matrox_setting.reset(new Matrox_settings());
     }
     std::shared_ptr<Data_for_bokz> m_data_for_bokz;
@@ -241,7 +244,6 @@ struct Kia_settings
     std::shared_ptr<Data_to_protocols> m_data_to_protocols;
     std::shared_ptr<Format_for_description> m_format_for_desc;
     std::shared_ptr<Data_for_bi> m_data_for_bi;
-    std::shared_ptr<Wait_and_param_for_cyclogram> m_wait_and_param_for_cyclogram;
     std::shared_ptr<Matrox_settings> m_matrox_setting;
     uint16_t m_type_bokz;
     uint16_t m_type_bi;
@@ -269,4 +271,14 @@ struct Kia_data
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+struct Kia_data_cyclogram
+{
+    Kia_data_cyclogram()
+    {
+        m_wait_and_param_for_cyclogram.reset(new Wait_and_param_for_cyclogram());
+    }
+    std::shared_ptr<Wait_and_param_for_cyclogram> m_wait_and_param_for_cyclogram;
+};
+#pragma pack(pop)
 #endif // MAINSTRUCT_H
