@@ -64,9 +64,10 @@ public:
     uint16_t get_focus( uint16_t parametr = EP_DOALL) override;
     uint16_t set_texp(uint16_t command, uint16_t parametr = EP_DOALL) override;
     uint16_t get_texp( uint16_t parametr = EP_DOALL) override;
-    void preset_before_exchange() override;
 signals:
     void send_to_client(quint16, QStringList) override;
+private:
+    void preset_before_exchange();
 
 };
 

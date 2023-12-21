@@ -63,7 +63,6 @@ public:
     uint16_t get_focus( uint16_t parametr = EP_DOALL) override;
     uint16_t set_texp(uint16_t command, uint16_t parametr = EP_DOALL) override;
     uint16_t get_texp( uint16_t parametr = EP_DOALL) override;
-    void preset_before_exchange() override;
 signals:
     void send_to_client(quint16, QStringList) override;
 
@@ -76,9 +75,11 @@ private:
     void post_status_proc(QString &str_protocol);
     void send_data_to_command(const uint16_t &type_data, const uint16_t &type_command, const QString &data);
     void send_mpi_data_to_db();
+    void preset_before_exchange();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     void calc_frame_param(std::array<uint8_t, frame_size> frame_buffer);
+    void count_of_fails(uint16_t parametr = EP_DOALL);
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
     std::function<void()> m_set_control_word;

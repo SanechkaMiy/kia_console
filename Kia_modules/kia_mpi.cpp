@@ -62,7 +62,7 @@ uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data, uint16_t 
     }
     else
     {
-        m_kia_settings->m_data_to_protocols->m_count_of_exc_fail[num_bokz]++;
+        kia_data->m_data_bokz->m_count_of_exc_fail++;
         kia_data->m_data_mpi->m_status_exchange = KiaS_FAIL;
     }
     bcgetblk(0, kia_data->m_data_mpi->m_data_word.data(), constants::packetSize);

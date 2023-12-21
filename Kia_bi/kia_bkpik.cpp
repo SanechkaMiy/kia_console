@@ -17,7 +17,7 @@ Kia_bkpik::Kia_bkpik(uint16_t num_bi,
     m_serial_port->WriteBinary(commandBKC);
     std::vector<uint8_t> m_commandToCom = {0x9};
     m_serial_port->WriteBinary(m_commandToCom);
-    for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bokz->m_count_bokz; ++num_ch)
+    for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_count_bokz; ++num_ch)
         on_1s_bi(num_ch, num_ch);
     start_1s_mark_bkpik();
 }
@@ -37,7 +37,7 @@ void Kia_bkpik::change_command_bkpik(std::vector<uint8_t> command)
     std::vector<uint8_t> m_commandToCicle = {0x8};
     m_serial_port->WriteBinary(m_commandToCicle);
     is_change_state = 0;
-    for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bokz->m_count_bokz; num_ch++)
+    for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_count_bokz; num_ch++)
     {
         switch(((m_kia_data->m_data_bi->m_is_1s_on >> (num_ch * 2)) & 0x0003))
         {
@@ -114,7 +114,7 @@ void Kia_bkpik::send_telemetry()
 {
 
     QStringList data_for_client;
-    for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bokz->m_count_bokz; ++num_ch)
+    for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_count_bokz; ++num_ch)
     {
         data_for_client.push_back(QString::number(m_num_bi));
         data_for_client.push_back(QString::number(num_ch));
@@ -171,12 +171,12 @@ void Kia_bkpik::set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time)
 void Kia_bkpik::set_bkpik_settings()
 {
     m_kia_data.reset(new Kia_data());
-    m_kia_data->m_data_bi->m_term_group.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_data->m_data_bi->m_term_group.resize(m_kia_settings->m_count_bokz);
     std::fill(m_kia_data->m_data_bi->m_term_group.begin(), m_kia_data->m_data_bi->m_term_group.end(), 1);
-    m_kia_data->m_data_bi->m_1s.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_data->m_data_bi->m_kc.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_data->m_data_bi->m_kp.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_data->m_data_bi->m_td.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_data->m_data_bi->m_1s.resize(m_kia_settings->m_count_bokz);
+    m_kia_data->m_data_bi->m_kc.resize(m_kia_settings->m_count_bokz);
+    m_kia_data->m_data_bi->m_kp.resize(m_kia_settings->m_count_bokz);
+    m_kia_data->m_data_bi->m_td.resize(m_kia_settings->m_count_bokz);
 
     m_kia_db[TYPE_RAW]->add_device_to_experiment(m_kia_settings->m_data_for_db->m_type_bi[m_kia_settings->m_type_bi], m_num_bi);
 

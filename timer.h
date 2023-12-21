@@ -38,7 +38,6 @@ public:
     int64_t inSleep();
     int64_t getBSHV();
     int getDelta();
-    void change_1s_mark(const int32_t &interval);
 public slots:
     void change_divider(int32_t& divider);
 private:

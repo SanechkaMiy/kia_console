@@ -95,6 +95,8 @@ private:
     void close_db_connection();
     bool check_used_bokz(uint16_t type_command, std::function<void(uint16_t, uint16_t)> start_exchange, uint16_t parametr = EP_DOALL);
     void send_kia_initial_settings();
+    void send_mpi_list_command();
+    void send_cyclogams_list();
     void kia_profile_load();
     void send_type_bi_to_table_settings();
     void send_info_about_connection();

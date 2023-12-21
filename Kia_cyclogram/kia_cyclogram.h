@@ -26,9 +26,9 @@ public:
     virtual uint16_t cyclogram_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual void cyclogram_define_address(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_operation(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t cyclogram_operation_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t cyclogram_operation_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t cyclogram_operation_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t cyclogram_operation_no(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t cyclogram_operation_to(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t cyclogram_operation_loc(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_1s_mark(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_check_address(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_test_mko(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;

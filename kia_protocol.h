@@ -26,7 +26,6 @@ public:
 
     void preset_before_save_and_out(uint16_t& num_bokz, QString data_to_out, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     void reset_dir_for_protocols();
-    void count_of_fails(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
 signals:
     void send_to_client(quint16, QStringList);
 private:

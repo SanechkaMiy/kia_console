@@ -44,7 +44,7 @@ void WorkWithMain::set_kia_settings()
 
     for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
     {
-        m_kia_timers->m_timer.push_back(std::make_shared<Timer>(ind_bi, m_kia_settings->m_timer_interval, m_kia_settings->m_data_for_bokz->m_freq_bokz, m_kia_settings));
+        m_kia_timers->m_timer.push_back(std::make_shared<Timer>(ind_bi, m_kia_settings->m_timer_interval, m_kia_settings->m_freq_bokz, m_kia_settings));
         switch(m_kia_settings->m_type_bi)
         {
         case TYPE_BI_BKPIK:
@@ -61,14 +61,14 @@ void WorkWithMain::set_kia_settings()
     switch(m_kia_settings->m_type_bokz)
     {
     case TYPE_BOKZ_BOKZM60:
-        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_data_for_bokz->m_count_bokz; ++num_bokz)
+        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; ++num_bokz)
             m_bokz.push_back(std::make_shared<BokzM60>(num_bokz, m_kia_bokz_db, m_kia_mpi,
                                                        m_kia_protocol, m_kia_settings,
                                                        m_kia_ftdi));
         m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_kia_timers, m_bokz, m_kia_protocol, m_kia_settings));
         break;
     case TYPE_BOKZ_BOKZMF:
-        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_data_for_bokz->m_count_bokz; ++num_bokz)
+        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; ++num_bokz)
             m_bokz.push_back(std::make_shared<Bokzmf>(num_bokz, m_kia_bokz_db, m_kia_mpi,
                                                       m_kia_protocol, m_kia_settings));
         m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_kia_timers, m_bokz, m_kia_protocol, m_kia_settings));
@@ -435,9 +435,9 @@ void WorkWithMain::cyclogram_define_address( uint16_t parametr)
         {
             QStringList correct_adress;
             correct_adress.push_back(QString::number(TS_ADDRESS));
-            for (auto el : m_kia_settings->m_data_for_bokz->m_address_defined)
+            for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; num_bokz++)
             {
-                correct_adress.push_back(QString::number(el));
+                correct_adress.push_back(QString::number(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_address));
             }
             emit send_to_client(SEND_DATA_TO_SETTINGS_WINDOW, correct_adress);
         }
@@ -566,7 +566,8 @@ void WorkWithMain::new_connection_slot()
         connect(bokz.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
 
     send_kia_initial_settings();
-
+    send_mpi_list_command();
+    send_cyclogams_list();
     send_info_about_connection();
     m_kia_db->send_status_connection_to_db();
 
@@ -593,22 +594,22 @@ void WorkWithMain::kia_init()
 {
     m_kia_load_initial_settings.reset(new Kia_load_initial_settings(m_kia_settings));
 
-    m_kia_settings->m_data_for_bokz->m_freq_bokz = 1;
+    m_kia_settings->m_freq_bokz = 1;
     m_kia_settings->m_timer_interval = 1000;
 
     Kia_port m_kia_port(m_kia_settings);
     m_kia_port.check_used_bi_ports(m_kia_settings->m_type_bi);
 
     m_kia_settings->m_data_for_db->bshv.resize(m_kia_settings->m_data_for_bi->m_count_bi);
-    m_kia_settings->m_data_for_bokz->m_count_bokz = m_kia_settings->m_data_for_bi->m_count_bi * m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi];
+    m_kia_settings->m_count_bokz = m_kia_settings->m_data_for_bi->m_count_bi * m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi];
 
-    m_kia_settings->m_flags_for_thread->m_stop_cyclogram.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_flags_for_thread->m_stop_cyclogram_thread.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_settings->m_flags_for_thread->m_stop_cyclogram.resize(m_kia_settings->m_count_bokz);
+    m_kia_settings->m_flags_for_thread->m_stop_cyclogram_thread.resize(m_kia_settings->m_count_bokz);
 
-    m_kia_settings->m_flags_for_thread->m_stop_command.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_flags_for_thread->m_stop_command_thread.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_settings->m_flags_for_thread->m_stop_command.resize(m_kia_settings->m_count_bokz);
+    m_kia_settings->m_flags_for_thread->m_stop_command_thread.resize(m_kia_settings->m_count_bokz);
 
-    m_kia_settings->m_data_to_protocols->m_stop_spam_in_system_info.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
+    m_kia_settings->m_data_to_protocols->m_stop_spam_in_system_info.resize(m_kia_settings->m_count_bokz);
 }
 
 void WorkWithMain::start_kia_gui()
@@ -665,6 +666,22 @@ void WorkWithMain::send_kia_initial_settings()
     QStringList settings;
     settings.push_back(QString::number(m_kia_settings->m_data_for_bi->m_count_bi));
     emit send_to_client(SET_KIA_GUI_SETTINGS, settings);
+}
+
+void WorkWithMain::send_mpi_list_command()
+{
+    QStringList mpi_command;
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_command)
+        mpi_command.push_back(el.second);
+    emit send_to_client(SEND_MPI_COMMAND, mpi_command);
+}
+
+void WorkWithMain::send_cyclogams_list()
+{
+    QStringList cyclograms;
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms)
+        cyclograms.push_back(el.second);
+    emit send_to_client(SEND_CYCLOGRAMS, cyclograms);
 }
 
 void WorkWithMain::kia_profile_load()
@@ -922,14 +939,9 @@ void WorkWithMain::slot_read_client()
                 m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_cycl_zkr[num_zkr_param] = data_from_client[num_zkr_param].toInt();
             break;
         case SET_EXC_FREQ:
-            m_kia_settings->m_data_for_bokz->m_freq_bokz = data_from_client[type_bokz].toInt();
+            m_kia_settings->m_freq_bokz = data_from_client[0].toInt();
             for (auto timer : m_kia_timers->m_timer)
-                timer->change_divider(m_kia_settings->m_data_for_bokz->m_freq_bokz);
-            break;
-        case SET_INTERVAL_1S_MARK:
-            m_kia_settings->m_data_for_bokz->m_shift_timer_interval = data_from_client[type_bokz].toInt();
-            for (auto timer : m_kia_timers->m_timer)
-                timer->change_1s_mark(m_kia_settings->m_data_for_bokz->m_shift_timer_interval);
+                timer->change_divider(m_kia_settings->m_freq_bokz);
             break;
         case CYCLOGRAM_ZKR:
             break;

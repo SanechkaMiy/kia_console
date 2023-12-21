@@ -3,11 +3,6 @@
 Kia_protocol::Kia_protocol(std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_settings(kia_settings)
 {
-    m_kia_settings->m_data_to_protocols->m_count_of_exc_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_time_out_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
-    m_kia_settings->m_data_to_protocols->m_count_of_kvaor_is_not_corr_fail.resize(m_kia_settings->m_data_for_bokz->m_count_bokz);
     std::fill(m_kia_settings->m_data_to_protocols->m_is_protocol_used.begin(), m_kia_settings->m_data_to_protocols->m_is_protocol_used.end(), KiaS_SUCCESS);
 }
 
@@ -33,7 +28,7 @@ void Kia_protocol::create_dir_for_protocols()
     QString name_protocol;
     for (uint16_t type_protocol = 0; type_protocol < constants::protocol_count; ++type_protocol)
     {
-        for (uint16_t count_bokz = 0; count_bokz < m_kia_settings->m_data_for_bokz->m_count_bokz + 1; ++count_bokz)
+        for (uint16_t count_bokz = 0; count_bokz < m_kia_settings->m_count_bokz + 1; ++count_bokz)
         {
             if (count_bokz == 0)
                 name_protocol = "common";
@@ -73,7 +68,7 @@ void Kia_protocol::close_dir_for_protocols()
 {
     for (uint16_t type_protocol = 0; type_protocol < constants::protocol_count; ++type_protocol)
     {
-        for (uint16_t count_bokz = 0; count_bokz < m_kia_settings->m_data_for_bokz->m_count_bokz + 1; ++count_bokz)
+        for (uint16_t count_bokz = 0; count_bokz < m_kia_settings->m_count_bokz + 1; ++count_bokz)
         {
             m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][count_bokz]->close();
         }
@@ -199,19 +194,4 @@ void Kia_protocol::reset_dir_for_protocols()
 {
     close_dir_for_protocols();
     create_dir_for_protocols();
-}
-
-
-
-void Kia_protocol::count_of_fails(uint16_t &num_bokz, uint16_t parametr)
-{
-
-    QString str_error_counter;
-    str_error_counter.push_back(helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Счетчики ошибок", m_kia_settings->m_format_for_desc->shift_count_of_fail) + "\n");
-    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Счетчик нарушения обмена", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_exc_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Счетчик ненормы привязки ко времени", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_time_bind_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Ориентация не определена", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_no_is_not_def_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Ненорма кватерниона", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_kvaor_is_not_corr_fail[num_bokz]) + "\n");
-    str_error_counter.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_date_time) + helpers::format_qstring("Нет выхода в режим ожидания", m_kia_settings->m_format_for_desc->shift_count_of_fail) + QString::number(m_kia_settings->m_data_to_protocols->m_count_of_time_out_fail[num_bokz]) + "\n");
-    preset_before_save_and_out(num_bokz, str_error_counter, SET_INFO_TO_ERROR_WINDOW, SP_DO_ERROR, parametr);
 }

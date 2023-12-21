@@ -47,7 +47,6 @@ public:
     virtual uint16_t set_texp(uint16_t command, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t get_texp(uint16_t parametr = EP_DOALL) = 0;
 
-    virtual void preset_before_exchange() = 0;
 
     std::tuple<double, double, double> math_alpha_delta_azimut(double Qo0, double Qo1, double Qo2, double Qo3);
     double atan2m(double y, double x);

@@ -51,7 +51,6 @@ public:
     uint16_t get_focus( uint16_t parametr = EP_DOALL) override;
     uint16_t set_texp(uint16_t command, uint16_t parametr = EP_DOALL) override;
     uint16_t get_texp( uint16_t parametr = EP_DOALL) override;
-    void preset_before_exchange() override;
 signals:
     void send_to_client(quint16, QStringList) override;
 private:
@@ -65,7 +64,13 @@ private:
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
     void send_mpi_data_to_db();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
+    void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     void set_data_to_device_protocol(QString &str_protocol);
+    void preset_before_exchange();
+    void send_status_info();
+    void check_orientation();
+    void post_status_proc(QString &str_protocol);
+    void count_of_fails(uint16_t parametr = EP_DOALL);
 };
 
 #endif // BOKZMF_H

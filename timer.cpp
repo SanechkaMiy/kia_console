@@ -170,11 +170,6 @@ int Timer::getDelta()
     return m_interval;
 }
 
-void Timer::change_1s_mark(const int32_t& interval)
-{
-    m_shift_interval = interval;
-}
-
 void Timer::change_divider(int32_t &divider)
 {
     m_kia_settings->m_timer_interval = m_interval / divider;

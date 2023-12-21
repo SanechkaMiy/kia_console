@@ -14,5 +14,6 @@ int main(int argc, char *argv[])
     WorkWithMain wwMain(2529);
     std::signal(SIGINT, sigHandler);
     std::signal(SIGTERM, sigHandler);
+
     return a.exec();
 }
