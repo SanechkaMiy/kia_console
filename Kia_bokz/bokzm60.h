@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include "mainStruct.h"
 #include "parsetodb.h"
-#include "kia_protocol.h"
 #include "kia_matrox.h"
 #include "kia_bkpik.h"
 #include "kia_synch_timer.h"
@@ -17,7 +16,6 @@
 #include "kia_ftdi.h"
 #include "kia_bi.h"
 #include "Kia_mko_struct.h"
-#include "Kia_modules/kia_mpi.h"
 #include "Kia_modules/kia_db.h"
 #include "Kia_pio/pio_bokzm60.h"
 class BokzM60 : public Bokz
@@ -39,6 +37,7 @@ public:
     uint16_t shtmi2(uint16_t parametr = EP_DOALL) override;
     uint16_t mshior(uint16_t parametr = EP_DOALL) override;
     uint16_t dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL) override;
+    uint16_t mloc(uint16_t parametr = EP_DOALL) override;
     uint16_t smti(uint16_t parametr = EP_DOALL) override;
     uint16_t vmti(uint16_t parametr = EP_DOALL) override;
     uint16_t synchro(uint16_t parametr = EP_DOALL) override;
@@ -50,6 +49,10 @@ public:
     uint16_t command_otclp(uint16_t parametr = EP_DOALL) override;
     uint16_t command_openkr(uint16_t parametr = EP_DOALL) override;
     uint16_t command_zkr(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_bshv(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_restart(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_oo(uint16_t parametr = EP_DOALL) override;
+
     uint16_t kvaor(uint16_t parametr = EP_DOALL) override;
     uint16_t os(uint16_t parametr = EP_DOALL) override;
     uint16_t vskou(uint16_t parametr = EP_DOALL) override;
@@ -82,6 +85,7 @@ private:
     void count_of_fails(uint16_t parametr = EP_DOALL);
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
+    void execute_exchange();
     std::function<void()> m_set_control_word;
     void set_data_to_device_protocol(QString &str_protocol);
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;

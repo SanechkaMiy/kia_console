@@ -5,12 +5,12 @@
 #include "mainStruct.h"
 namespace helpers
 {
-
+const int32_t second_for_1_jan_2000 = 946080000;
 inline namespace angular_transform
 {
-QString get_degreze(double value);
-QString get_minutes(double value);
-QString get_seconds(double value);
+    QString get_degreze(double value);
+    QString get_minutes(double value);
+    QString get_seconds(double value);
 }
 
 
@@ -28,6 +28,7 @@ float uint32_to_float(uint32_t value);
 std::string currentDateTime();
 uint32_t current_hours();
 float decodeDateTime();
+std::pair<uint64_t, uint16_t> get_seconds_for_bshv();
 
 QString format_qstring(const QString& str, const int16_t &shift, const char &fillchar = ' ');
 };

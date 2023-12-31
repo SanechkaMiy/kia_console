@@ -25,7 +25,6 @@ const static uint32_t FILTER_LENGTH= 10;
 const static uint16_t max_tmk_dev = MAX_TMK_NUMBER * 2 + 1;
 const static uint32_t packetSize = 34;
 const static uint32_t protocol_count = 5;
-const static int m_countArrayDTMILoc = 9;
 const static uint16_t count_type_bi = 2;
 const static uint16_t count_type_bokz = 6;
 const static uint16_t size_qa = 4;
@@ -43,7 +42,7 @@ struct Data_for_mpi
 {
     uint16_t m_code_word = 0;
     uint16_t m_address = 0;
-    uint16_t m_word_data = 0;
+    uint16_t m_word_data = 1;
     uint16_t m_sub_address = 0;
     uint16_t m_format = 0;
     uint16_t m_direction = 0;
@@ -190,10 +189,12 @@ struct Data_for_bi
 struct Wait_and_param_for_cyclogram
 {
     uint16_t m_max_mpi_command;
-    uint16_t m_max_cyclogram;
+    uint16_t m_max_cyclogram_tp;
+    uint16_t m_max_cyclogram_ai;
     std::vector<uint16_t> m_do_mpi_command_in_cyclogram;
     std::vector<uint16_t> m_do_cyclogram_in_tp;
     std::vector<uint16_t> m_count_to_do_cyclogram_in_tp;
+    std::vector<uint16_t> m_do_cyclogram_in_ai;
     int16_t m_wait_for_on_power_is_stable = 30;
     int16_t m_wait_for_otclp = 2;
     int16_t m_wait_for_takt = 1;
@@ -209,8 +210,9 @@ struct Wait_and_param_for_cyclogram
     uint16_t m_skip_fails_for_continue = 1;
     uint16_t m_off_power_for_tp = 0;
 
-    std::vector<std::pair<std::function<void(uint16_t num_bokz, uint16_t parametr)>, QString>> m_mpi_command;
-    std::vector<std::pair<std::function<void(uint16_t num_bokz, uint16_t cound_do_cyclogram, uint16_t parametr)>, QString>> m_cyclograms;
+    std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_mpi_command;
+    std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t cound_do_cyclogram, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_tp;
+    std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ai;
 };
 #pragma pack(pop)
 

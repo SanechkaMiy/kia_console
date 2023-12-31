@@ -4,6 +4,7 @@ Kia_protocol::Kia_protocol(std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_settings(kia_settings)
 {
     std::fill(m_kia_settings->m_data_to_protocols->m_is_protocol_used.begin(), m_kia_settings->m_data_to_protocols->m_is_protocol_used.end(), KiaS_SUCCESS);
+    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
 }
 
 Kia_protocol::~Kia_protocol()

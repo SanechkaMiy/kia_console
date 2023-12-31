@@ -80,7 +80,6 @@ void Kia_biu::set_relay_command_pulse_time(uint16_t relay_command)
 
 void Kia_biu::save_to_protocol(uint16_t &num_bokz, QString str_to_protocol, uint16_t parametr)
 {
-    m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
     if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_SYSTEM] == KiaS_SUCCESS)
         m_kia_protocol->preset_before_save_and_out(num_bokz, str_to_protocol, SET_INFO_TO_WINDOW_INFO, SP_DO_SYSTEM, parametr);
     if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] == KiaS_SUCCESS)

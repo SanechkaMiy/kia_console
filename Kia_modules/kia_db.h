@@ -9,7 +9,7 @@ class Kia_db : public QObject
 {
     Q_OBJECT
 public:
-    Kia_db(std::shared_ptr<Kia_settings> kia_settings);
+    Kia_db(std::shared_ptr<Kia_settings> kia_settings, uint32_t interval_to_send = 0);
     ~Kia_db();
     string get_mac_address();
     void send_status_connection_to_db();
@@ -29,6 +29,7 @@ private:
     void prepare_request(std::shared_ptr<pqxx::connection> conn);
     std::shared_ptr<pqxx::connection> m_conn;
     std::shared_ptr<pqxx::work> m_work;
+    std::shared_ptr<pqxx::pipeline> m_pipeline;
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::future<void> m_stop_commit_thread;
     std::atomic_bool m_stop_commit{false};
@@ -43,8 +44,11 @@ private:
     string m_password = "88005553535";
     string m_hostaddr = "127.0.0.1";
     string m_port = "5432";
-    std::map<std::string, QString> m_map_for_save_sql;
     std::queue<std::string> m_data;
+    std::string m_buffer_data;
+    std::map<std::string, QString> m_prepare_sql;
+    uint32_t m_count_to_send = 0;
+    uint32_t m_interval_to_send = 0;
     std::string m_name_prepare_raw;
     std::string m_name_prepare;
     std::condition_variable m_cv;

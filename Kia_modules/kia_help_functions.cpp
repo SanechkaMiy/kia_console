@@ -321,3 +321,29 @@ QString helpers::format_qstring(const QString &str, const int16_t &shift, const 
 {
     return QString("%1").arg(str, shift, fillchar);
 }
+
+std::pair<uint64_t, uint16_t> helpers::get_seconds_for_bshv()
+{
+    std::chrono::time_point< std::chrono::system_clock > now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    /* UTC: -3:00 = 24 - 3 = 21 */
+    typedef std::chrono::duration< int, std::ratio_multiply< std::chrono::hours::period, std::ratio< 24 > >::type > Days;
+    Days days = std::chrono::duration_cast<Days>(duration);
+    duration -= days;
+
+    auto hours = std::chrono::duration_cast<std::chrono::hours>(duration);
+    duration -= hours;
+
+    auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration);
+    duration -= minutes;
+
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
+    duration -= seconds;
+
+    auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+    duration -= milliseconds;
+    time_t sec;
+    sec = time (NULL);
+    uint64_t sec_whole_part = sec - helpers::second_for_1_jan_2000;
+    return {sec_whole_part, milliseconds.count()};
+}

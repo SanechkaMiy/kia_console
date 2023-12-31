@@ -22,9 +22,9 @@ SOURCES += \
         Kia_bi/kia_biu.cpp \
         Kia_bi/kia_bkpik.cpp \
         Kia_bokz/bokzmf.cpp \
-        Kia_bokz/bokzmr.cpp \
         Kia_cyclogram/kia_cyclogram.cpp \
         Kia_cyclogram/kia_cyclogram_bokzm60.cpp \
+        Kia_cyclogram/kia_cyclogram_bokzmf.cpp \
         Kia_modules/kia_db.cpp \
         Kia_modules/kia_help_functions.cpp \
         Kia_modules/kia_mpi.cpp \
@@ -54,9 +54,9 @@ HEADERS += \
     ../../../../../usr/local/lib/BiLib_20231123_1653/BiLibNE.h \
     ../../kia_gui/source/Kia_enums.h \
     Kia_bokz/bokzmf.h \
-    Kia_bokz/bokzmr.h \
     Kia_cyclogram/kia_cyclogram.h \
     Kia_cyclogram/kia_cyclogram_bokzm60.h \
+    Kia_cyclogram/kia_cyclogram_bokzmf.h \
     Kia_modules/kia_db.h \
     Kia_modules/kia_help_functions.h \
     Kia_modules/kia_mpi.h \

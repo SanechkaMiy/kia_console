@@ -3,9 +3,11 @@
 #include <QObject>
 #include <iostream>
 #include "mainStruct.h"
+#include "kia_protocol.h"
 #include "Kia_mko_struct.h"
 #include "Kia_pio/pio_bokz.h"
 #include "Kia_modules/kia_help_functions.h"
+#include "Kia_modules/kia_mpi.h"
 #include "math.h"
 class Bokz : public QObject
 {
@@ -21,6 +23,7 @@ public:
     virtual uint16_t shtmi2(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t mshior(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t mloc(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t smti(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t vmti(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t synchro(uint16_t parametr = EP_DOALL) = 0;
@@ -39,6 +42,9 @@ public:
     virtual uint16_t block_ou(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t unblock_ou(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t do_frames( uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t command_bshv(uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t command_restart(uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t command_oo(uint16_t parametr = EP_DOALL) = 0;
 
     virtual uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t get_epsilon(uint16_t parametr = EP_DOALL) = 0;
@@ -52,6 +58,8 @@ public:
     double atan2m(double y, double x);
     double asinm(double x);
 
+    void parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_data> kia_data,
+                             int32_t bshv, uint16_t num_bokz);
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;
     std::shared_ptr<Pio_bokz> m_pio_bokz;

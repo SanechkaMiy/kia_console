@@ -29,7 +29,7 @@ void WorkWithMain::set_kia_settings()
 
     m_kia_matrox.reset(new Kia_matrox(m_kia_settings));
 
-    m_kia_mpi.reset(new Kia_mpi(m_kia_protocol, m_kia_settings));
+    m_kia_mpi.reset(new Kia_mpi(m_kia_settings));
 
     connect(m_kia_mpi.get(), SIGNAL(changed_lpi()), this, SLOT(send_data_from_mpi_current_lpi_to_table_settings()));
 
@@ -38,10 +38,9 @@ void WorkWithMain::set_kia_settings()
         m_kia_bi_db[num_conn].reset(new Kia_db(m_kia_settings));
         m_kia_bi_db[num_conn]->start_commit();
 
-        m_kia_bokz_db[num_conn].reset(new Kia_db(m_kia_settings));
+        m_kia_bokz_db[num_conn].reset(new Kia_db(m_kia_settings, m_kia_settings->m_freq_bokz / 5));
         m_kia_bokz_db[num_conn]->start_commit();
     }
-
     for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
     {
         m_kia_timers->m_timer.push_back(std::make_shared<Timer>(ind_bi, m_kia_settings->m_timer_interval, m_kia_settings->m_freq_bokz, m_kia_settings));
@@ -71,7 +70,7 @@ void WorkWithMain::set_kia_settings()
         for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; ++num_bokz)
             m_bokz.push_back(std::make_shared<Bokzmf>(num_bokz, m_kia_bokz_db, m_kia_mpi,
                                                       m_kia_protocol, m_kia_settings));
-        m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_kia_timers, m_bokz, m_kia_protocol, m_kia_settings));
+        m_kia_cyclogram.reset(new Kia_cyclogram_bokzmf(m_kia_timers, m_bokz, m_kia_protocol, m_kia_settings));
         break;
     }
 
@@ -210,6 +209,33 @@ void WorkWithMain::command_otclp(uint16_t parametr)
     check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
 }
 
+void WorkWithMain::command_bshv(uint16_t parametr)
+{
+    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_bokz[num_bokz]->command_bshv(parametr);
+    };
+    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
+}
+
+void WorkWithMain::command_restart(uint16_t parametr)
+{
+    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_bokz[num_bokz]->command_restart(parametr);
+    };
+    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
+}
+
+void WorkWithMain::command_oo(uint16_t parametr)
+{
+    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_bokz[num_bokz]->command_oo(parametr);
+    };
+    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
+}
+
 void WorkWithMain::command_zkr(uint16_t parametr)
 {
     auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
@@ -254,6 +280,15 @@ void WorkWithMain::dtmi_or_dtmi_loc(uint16_t parametr)
     };
     check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
 
+}
+
+void WorkWithMain::mloc(uint16_t parametr)
+{
+    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_bokz[num_bokz]->mloc(parametr);
+    };
+    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
 }
 
 void WorkWithMain::do_frames(uint16_t parametr)
@@ -525,8 +560,6 @@ void WorkWithMain::slot_send_to_client(quint16 num, QStringList data_for_client)
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));
     m_pClientSocket->write(arrBlock);
-    data_for_client.clear();
-    arrBlock.clear();
 }
 
 void WorkWithMain::delete_connection()
@@ -567,6 +600,7 @@ void WorkWithMain::new_connection_slot()
 
     send_kia_initial_settings();
     send_mpi_list_command();
+    send_cyclogams_ai_list();
     send_cyclogams_list();
     send_info_about_connection();
     m_kia_db->send_status_connection_to_db();
@@ -594,7 +628,6 @@ void WorkWithMain::kia_init()
 {
     m_kia_load_initial_settings.reset(new Kia_load_initial_settings(m_kia_settings));
 
-    m_kia_settings->m_freq_bokz = 1;
     m_kia_settings->m_timer_interval = 1000;
 
     Kia_port m_kia_port(m_kia_settings);
@@ -672,16 +705,33 @@ void WorkWithMain::send_mpi_list_command()
 {
     QStringList mpi_command;
     for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_command)
-        mpi_command.push_back(el.second);
+    {
+        mpi_command.push_back(std::get<CYCL_NAME>(el));
+        mpi_command.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
+    }
     emit send_to_client(SEND_MPI_COMMAND, mpi_command);
 }
 
 void WorkWithMain::send_cyclogams_list()
 {
     QStringList cyclograms;
-    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms)
-        cyclograms.push_back(el.second);
-    emit send_to_client(SEND_CYCLOGRAMS, cyclograms);
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms_tp)
+    {
+        cyclograms.push_back(std::get<CYCL_NAME>(el));
+        cyclograms.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
+    }
+    emit send_to_client(SEND_CYCLOGRAMS_TP, cyclograms);
+}
+
+void WorkWithMain::send_cyclogams_ai_list()
+{
+    QStringList cyclograms;
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms_ai)
+    {
+        cyclograms.push_back(std::get<CYCL_NAME>(el));
+        cyclograms.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
+    }
+    emit send_to_client(SEND_CYCLOGRAMS_AI, cyclograms);
 }
 
 void WorkWithMain::kia_profile_load()
@@ -759,6 +809,9 @@ void WorkWithMain::slot_read_client()
             break;
         case DTMI_ONE:
             dtmi_or_dtmi_loc(EP_NOFULLEXCHANGE);
+            break;
+        case MLOCK_ONE:
+            mloc(EP_NOFULLEXCHANGE);
             break;
         case SMTI:
             smti();
@@ -845,6 +898,15 @@ void WorkWithMain::slot_read_client()
             break;
         case COMMAND_OTCLP:
             command_otclp();
+            break;
+        case COMMAND_OO:
+            command_oo();
+            break;
+        case COMMAND_RESTART:
+            command_restart();
+            break;
+        case COMMAND_BSHV:
+            command_bshv();
             break;
         case CYCLOGRAM_OFFLINE_TEST:
             cyclogram_ai();
@@ -940,6 +1002,7 @@ void WorkWithMain::slot_read_client()
             break;
         case SET_EXC_FREQ:
             m_kia_settings->m_freq_bokz = data_from_client[0].toInt();
+            std::cout << m_kia_timers->m_timer.size() << std::endl;
             for (auto timer : m_kia_timers->m_timer)
                 timer->change_divider(m_kia_settings->m_freq_bokz);
             break;
@@ -1087,10 +1150,15 @@ void WorkWithMain::slot_read_client()
         case SET_DO_CYCLOGRAM_IN_TP:
             for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
                 m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
+
             break;
         case SET_COUNT_TO_DO_CYCLOGRAM_IN_TP:
             for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
                 m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_count_to_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
+            break;
+        case SET_DO_CYCLOGRAM_IN_AI:
+            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
+                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_ai[num_cyclogram] = data_from_client[num_cyclogram].toInt();
             break;
         }
         m_nNextBlockSize = 0;

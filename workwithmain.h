@@ -26,6 +26,7 @@
 #include "Kia_modules/kia_port.h"
 #include "kia_cyclogram.h"
 #include "kia_cyclogram_bokzm60.h"
+#include "kia_cyclogram_bokzmf.h"
 #include "Kia_modules/kia_db.h"
 class WorkWithMain : public QObject
 {
@@ -46,11 +47,15 @@ public:
     void command_to(uint16_t parametr = EP_DOALL);
     void command_loc(uint16_t parametr = EP_DOALL);
     void command_otclp(uint16_t parametr = EP_DOALL);
+    void command_bshv(uint16_t parametr = EP_DOALL);
+    void command_restart(uint16_t parametr = EP_DOALL);
+    void command_oo(uint16_t parametr = EP_DOALL);
     void command_zkr(uint16_t parametr = EP_DOALL);
     void command_full_exp(uint16_t parametr = EP_DOALL);
     void kvaor(uint16_t parametr = EP_DOALL);
     void vskou(uint16_t parametr = EP_DOALL);
     void dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL);
+    void mloc(uint16_t parametr = EP_DOALL);
     void do_frames(uint16_t parametr = EP_DOALL);
     void set_epsilon(uint16_t parametr = EP_DOALL);
     void get_epsilon(uint16_t parametr = EP_DOALL);
@@ -58,7 +63,6 @@ public:
     void get_focus(uint16_t parametr = EP_DOALL);
     void set_texp(uint16_t parametr = EP_DOALL);
     void get_texp(uint16_t parametr = EP_DOALL);
-
 
     void cyclogram_state_on(uint16_t parametr = EP_DOALL);
     void cyclogram_state_off(uint16_t parametr = EP_DOALL);
@@ -97,6 +101,7 @@ private:
     void send_kia_initial_settings();
     void send_mpi_list_command();
     void send_cyclogams_list();
+    void send_cyclogams_ai_list();
     void kia_profile_load();
     void send_type_bi_to_table_settings();
     void send_info_about_connection();

@@ -27,6 +27,7 @@ public:
     uint16_t shtmi2(uint16_t parametr = EP_DOALL) override;
     uint16_t mshior(uint16_t parametr = EP_DOALL) override;
     uint16_t dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL) override;
+    uint16_t mloc(uint16_t parametr = EP_DOALL) override;
     uint16_t smti(uint16_t parametr = EP_DOALL) override;
     uint16_t vmti(uint16_t parametr = EP_DOALL) override;
     uint16_t synchro(uint16_t parametr = EP_DOALL) override;
@@ -38,6 +39,10 @@ public:
     uint16_t command_otclp(uint16_t parametr = EP_DOALL) override;
     uint16_t command_openkr(uint16_t parametr = EP_DOALL) override;
     uint16_t command_zkr(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_bshv(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_restart(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_oo(uint16_t parametr = EP_DOALL) override;
+
     uint16_t kvaor(uint16_t parametr = EP_DOALL) override;
     uint16_t os(uint16_t parametr = EP_DOALL) override;
     uint16_t vskou(uint16_t parametr = EP_DOALL) override;
@@ -62,6 +67,7 @@ private:
     std::function<void()> m_set_control_word;
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
+    void execute_exchange();
     void send_mpi_data_to_db();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);

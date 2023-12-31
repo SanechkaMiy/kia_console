@@ -170,8 +170,9 @@ int Timer::getDelta()
     return m_interval;
 }
 
-void Timer::change_divider(int32_t &divider)
+void Timer::change_divider(int32_t divider)
 {
-    m_kia_settings->m_timer_interval = m_interval / divider;
     m_divider = divider;
+    m_kia_settings->m_timer_interval = m_interval / divider;
+    m_interval_divider = m_kia_settings->m_timer_interval;
 }

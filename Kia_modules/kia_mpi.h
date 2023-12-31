@@ -13,8 +13,7 @@ class Kia_mpi : public QObject
 {
     Q_OBJECT
 public:
-    Kia_mpi(shared_ptr<Kia_protocol> kia_protocol,
-            std::shared_ptr<Kia_settings> kia_settings);
+    Kia_mpi(std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_mpi();
     void init();
     void close();
@@ -25,10 +24,8 @@ signals:
     void send_to_client(quint16, QStringList);
     void changed_lpi();
 private:
-    shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
     void reset(std::shared_ptr<Kia_data> kia_data);
-    void parse_mko_protocols(uint16_t& num_bokz, std::shared_ptr<Kia_data> kia_data);
     array<uint16_t, constants::max_tmk_dev> m_mpi_num;
     uint16_t m_count_chip = 0;
 };

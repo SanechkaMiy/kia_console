@@ -15,7 +15,7 @@ ParseToDB::~ParseToDB()
 
 }
 
-void ParseToDB::sendDataIntoMSHIOR(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st_mshior)
+void ParseToDB::sendDataIntoMSHIOR_M60(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st_mshior)
 {
     char data_into_mshior[1024];
     sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
@@ -43,7 +43,7 @@ void ParseToDB::sendDataIntoMSHIOR(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st
     m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
 }
 
-void ParseToDB::sendDataIntoSHTMI1(uint16_t &num_bokz, int32_t& bshv, SHTMI1& st_shtmi1)
+void ParseToDB::sendDataIntoSHTMI1_M60(uint16_t &num_bokz, int32_t& bshv, SHTMI1& st_shtmi1)
 {
     char data_into_shtmi1[1024];
     sprintf(data_into_shtmi1,"{\"experiment_id\":\"%s\","
@@ -78,7 +78,7 @@ void ParseToDB::sendDataIntoSHTMI1(uint16_t &num_bokz, int32_t& bshv, SHTMI1& st
     m_kia_db[TYPE_DATA]->insert_data(data_into_shtmi1, "prepare_insert_into_shtmi1");
 }
 
-void ParseToDB::sendDataIntoSHTMI2(uint16_t &num_bokz, int32_t& bshv, SHTMI2& st_shtmi2)
+void ParseToDB::sendDataIntoSHTMI2_M60(uint16_t &num_bokz, int32_t& bshv, SHTMI2& st_shtmi2)
 {
     char data_into_shtmi2[1024];
     sprintf(data_into_shtmi2,"{\"experiment_id\":\"%s\","
@@ -164,9 +164,9 @@ void ParseToDB::sendDataIntoMPI(uint16_t &num_bokz, int32_t &bshv)
     m_kia_db[TYPE_RAW]->insert_data(m_data_to_mpi, "prepare_insert_into_mpi");
 }
 
-void ParseToDB::sendDataIntoDTMILOC(uint16_t &num_bokz, int32_t& bshv, DTMILoc_1& dtmiLoc_1, DTMILoc_2& dtmiLoc_2, DTMILoc_3& dtmiLoc_3,
-                                    DTMILoc_4& dtmiLoc_4, DTMILoc_5& dtmiLoc_5, DTMILoc_6& dtmiLoc_6,
-                                    DTMILoc_7& dtmiLoc_7, DTMILoc_8& dtmiLoc_8, DTMILoc_9& dtmiLoc_9)
+void ParseToDB::sendDataIntoDTMILOC_M60(uint16_t &num_bokz, int32_t& bshv, DTMILoc_1& dtmiLoc_1, DTMILoc_2& dtmiLoc_2, DTMILoc_3& dtmiLoc_3,
+                                        DTMILoc_4& dtmiLoc_4, DTMILoc_5& dtmiLoc_5, DTMILoc_6& dtmiLoc_6,
+                                        DTMILoc_7& dtmiLoc_7, DTMILoc_8& dtmiLoc_8, DTMILoc_9& dtmiLoc_9)
 {
     SimpleTimer st("DTMI INTO LOC");
     char data_into_dtmiloc[2048];
@@ -239,12 +239,12 @@ void ParseToDB::sendDataIntoDTMILOC(uint16_t &num_bokz, int32_t& bshv, DTMILoc_1
             dtmiLoc_8.Loc_3_4, dtmiLoc_8.Loc_11_12, dtmiLoc_8.Loc_19_20, dtmiLoc_8.Loc_27_28,
             dtmiLoc_9.Loc_5_6, dtmiLoc_9.Loc_13_14, dtmiLoc_9.Loc_21_22, dtmiLoc_9.Loc_29_30,
             dtmiLoc_9.rezerv);
-     m_kia_db[TYPE_DATA]->insert_data(data_into_dtmiloc, "prepare_insert_into_dtmiloc");
+    m_kia_db[TYPE_DATA]->insert_data(data_into_dtmiloc, "prepare_insert_into_dtmiloc");
 }
 
-void ParseToDB::sendDataIntoDTMI(uint16_t &num_bokz, int32_t& bshv, DTMI_1& dtmi_1, DTMI_2& dtmi_2, DTMI_3& dtmi_3, DTMI_4& dtmi_4,
-                                 DTMI_5& dtmi_5, DTMI_6& dtmi_6, DTMI_7& dtmi_7, DTMI_8& dtmi_8,
-                                 DTMI_9& dtmi_9)
+void ParseToDB::sendDataIntoDTMI_M60(uint16_t &num_bokz, int32_t& bshv, DTMI_1& dtmi_1, DTMI_2& dtmi_2, DTMI_3& dtmi_3, DTMI_4& dtmi_4,
+                                     DTMI_5& dtmi_5, DTMI_6& dtmi_6, DTMI_7& dtmi_7, DTMI_8& dtmi_8,
+                                     DTMI_9& dtmi_9)
 {
     char data_into_dtmi[4096];
     sprintf(data_into_dtmi,"{\"experiment_id\":\"%s\","
@@ -360,6 +360,51 @@ void ParseToDB::sendDataIntoDTMI(uint16_t &num_bokz, int32_t& bshv, DTMI_1& dtmi
     m_kia_db[TYPE_DATA]->insert_data(data_into_dtmi, "prepare_insert_into_dtmi");
 }
 
+void ParseToDB::sendDataIntoMSHIOR_MF(uint16_t &num_bokz, int32_t &bshv, MSHIOR_MF &st_mshior)
+{
+    char data_into_mshior[1024];
+    sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
+                             "\"serial_num\":%i,"
+                             "\"datetime\":\"%s\","
+                             "\"host_id\":\"%s\","
+                             "\"unit_id\":\"%s\","
+                             "\"bshv\":%d,"
+                             "\"st1\":%i,"
+                             "\"st2\":%i,"
+                             "\"t\":%i,"
+                             "\"tms\":%i,"
+                             "\"qo\":\"{%f,%f,%f,%f}\","
+                             "\"wox\":%f,"
+                             "\"woy\":%f,"
+                             "\"woz\":%f,"
+                             "\"tcmv\":%i,"
+                             "\"numfrag\":%i,"
+                             "\"numloc_0\":%i,"
+                             "\"numdet\":%i,"
+                             "\"lightmv5\":%i,"
+                             "\"mean\":%i,"
+                             "\"sigma\":%i,"
+                             "\"thmax\":%i,"
+                             "\"m_cur\":%i,"
+                             "\"p\":%i,"
+                             "\"dpf_hotpixels\":%i,"
+                             "\"dpf_updated\":%i,"
+                             "\"dpf_rejected\":%i,"
+                             "\"dpf_threshold\":%i,"
+                             "\"dpf_applied\":%i,"
+                             "\"sernum\":%i,"
+                             "\"alpha\":%f,"
+                             "\"delta\":%f,"
+                             "\"azimuth\":%f}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz, m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(),
+            bshv, st_mshior.KC1 , st_mshior.KC2 , st_mshior.T, st_mshior.Tms, st_mshior.Qo0, st_mshior.Qo1, st_mshior.Qo2, st_mshior.Qo3, st_mshior.wox,
+            st_mshior.woy, st_mshior.woz, st_mshior.Tcmv, st_mshior.NumFrag, st_mshior.NumLoc_0, st_mshior.NumDet,
+            st_mshior.LightMv5, st_mshior.Mean, st_mshior.Sigma, st_mshior.ThMax, st_mshior.m_cur, st_mshior.P,
+            st_mshior.dpf_hotpixels, st_mshior.dpf_updated, st_mshior.dpf_rejected, st_mshior.dpf_threshold,
+            st_mshior.dpf_applied, st_mshior.ser_num,
+            m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth);
+    m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
+}
+
 void ParseToDB::send_to_bkpik(uint16_t &num_bi)
 {
 
@@ -436,7 +481,7 @@ string ParseToDB::parse_td()
     for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]; num_ch++)
     {
         m_kia_settings->m_data_for_bi->m_td.push_back(constants::tarTD[m_kia_data->m_data_bi->m_term_group[num_ch] - 1][0] * (temperature2  + (temperature2 - temperature1)
-                                                                                                                                      * (m_kia_data->m_data_bi->m_commandR[num_ch + 1] - acp2) / (acp2 - acp1)) - constants::tarTD[m_kia_data->m_data_bi->m_term_group[num_ch] - 1][1]);
+                                                                                                                              * (m_kia_data->m_data_bi->m_commandR[num_ch + 1] - acp2) / (acp2 - acp1)) - constants::tarTD[m_kia_data->m_data_bi->m_term_group[num_ch] - 1][1]);
         buffer_td = buffer_td + to_string(m_kia_data->m_data_bi->m_td[num_ch]) + ",";
     }
     buffer_td.pop_back();

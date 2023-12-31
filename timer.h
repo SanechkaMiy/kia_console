@@ -39,7 +39,7 @@ public:
     int64_t getBSHV();
     int getDelta();
 public slots:
-    void change_divider(int32_t& divider);
+    void change_divider(int32_t divider);
 private:
     uint16_t m_num_timer = 0;
     double m_start_time  = 0;

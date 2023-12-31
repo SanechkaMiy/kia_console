@@ -835,22 +835,23 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
                                                           + "Время последнего кватерниона");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Tmslast));
 
-
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Qlst_0,'f',4));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("19,20", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Последний кватернион ориентации, Qo0");
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Qlst_0,'f',4));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Qlst_1,'f',4));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("21,22", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Последний кватернион ориентации, Qo1");
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Qlst_1,'f',4));
+
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Qlst_2,'f',4));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("23,24", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Последний  кватернион ориентации, Qo2");
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Qlst_3,'f',4));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("25,26", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Последний кватернион ориентации, Qo3");
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(QString::number(m_kia_mko_struct->dtmi_1_mf.Qlst_3,'f',4));
+
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers + m_kia_settings->m_format_for_desc->shift_description)
                                                           + helpers::format_qstring("Первый кадр", m_kia_settings->m_format_for_desc->shift_for_dtmi * 4)
@@ -1078,6 +1079,7 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
                 );
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back("\n");
+
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back("");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers + m_kia_settings->m_format_for_desc->shift_description)
                                                           + helpers::format_qstring("Xc", m_kia_settings->m_format_for_desc->shift_for_dtmi)
