@@ -7,15 +7,24 @@ Bokz::Bokz()
 void Bokz::parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_data> kia_data, int32_t bshv, uint16_t num_bokz)
 {
     uint16_t shift_for_numbers = -8;
-     uint16_t shift_description = -50;
+    uint16_t shift_description = -50;
     QString str_mpi_protocol;
     str_mpi_protocol.push_back(helpers::format_qstring("", shift_for_numbers + 3, '-') + helpers::format_qstring(" " + QString::fromStdString(kia_data->m_data_db->struct_id_desc) + " ", shift_description,'-') + '\n');
 
+    QString lpi;
+    if (kia_data->m_data_mpi->m_lpi == 0)
+    {
+        lpi = "A";
+    }
+    else
+    {
+        lpi = "B";
+    }
     str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5).arg("БШВ", -11).arg("МПИ", -11).arg("ФОРМАТ",-11).arg("address", -11).arg("ЛПИ",-11).arg("ДАТА И ВРЕМЯ"));
     str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5)
                                .arg(QString::number(bshv),-11).arg(QString::number(kia_data->m_data_mpi->m_mpi_index), -11)
-            .arg(QString::number(kia_data->m_data_mpi->m_format), -11).arg(QString::number(kia_data->m_data_mpi->m_address),-11)
-            .arg(QString::number(kia_data->m_data_mpi->m_lpi),-11).arg(QString::fromStdString(kia_data->m_data_db->m_datetime)));
+                               .arg(QString::number(kia_data->m_data_mpi->m_format), -11).arg(QString::number(kia_data->m_data_mpi->m_address),-11)
+                               .arg(lpi,-11).arg(QString::fromStdString(kia_data->m_data_db->m_datetime)));
     str_mpi_protocol.push_back(QString("%1 %2 %3\n").arg("КС:", -5)
                                .arg(QString("0x%1")
                                     .arg(QString::number(kia_data->m_data_mpi->m_code_word, 16), 4, '0'), -11)
@@ -113,8 +122,8 @@ double Bokz::atan2m(double y, double x)
     if (fabs(x) > 1e-10f) ang = atan2(y, x);
     else
     {
-      if (y > 0.f) ang = PI/2.f;
-      else ang = -PI/2.f;
+        if (y > 0.f) ang = PI/2.f;
+        else ang = -PI/2.f;
     }
     if (ang<0.f) ang += PI2;
     return ang;
