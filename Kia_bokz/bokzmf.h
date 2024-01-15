@@ -35,6 +35,7 @@ public:
     uint16_t command_no(uint16_t parametr = EP_DOALL) override;
     uint16_t command_to(uint16_t parametr = EP_DOALL) override;
     uint16_t command_full_exp(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_bin_exp(uint16_t parametr = EP_DOALL) override;
     uint16_t command_loc(uint16_t parametr = EP_DOALL) override;
     uint16_t command_otclp(uint16_t parametr = EP_DOALL) override;
     uint16_t command_openkr(uint16_t parametr = EP_DOALL) override;
@@ -49,7 +50,7 @@ public:
     uint16_t initial_state(uint16_t parametr = EP_DOALL) override;
     uint16_t block_ou( uint16_t parametr = EP_DOALL) override;
     uint16_t unblock_ou( uint16_t parametr = EP_DOALL) override;
-    uint16_t do_frames( uint16_t parametr = EP_DOALL) override;
+    uint16_t do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL) override;
     uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL) override;
     uint16_t get_epsilon(uint16_t parametr = EP_DOALL) override;
     uint16_t set_focus(uint16_t parametr = EP_DOALL) override;

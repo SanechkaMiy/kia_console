@@ -9,11 +9,24 @@
 class Kia_cyclogram_bokzm60 : public Kia_cyclogram
 {
 public:
+    enum STATE_CYCLOGRAM_ORDER
+    {
+        SCO_NO = 0,
+        SCO_TO = 1,
+        SCO_LOC = 2,
+    };
 
+    enum PARAM_IF_A_LOT
+    {
+        PIL_TP = 0,
+        PIL_ZKR = 1,
+        PIL_CYCL_FRAMES = 2,
+    };
     Kia_cyclogram_bokzm60(std::shared_ptr<Kia_timers> kia_timers, std::vector<std::shared_ptr<Bokz> > bokz,
                           shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
     uint16_t cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
+    uint16_t cyclogram_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_ai(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
@@ -31,9 +44,9 @@ public:
     uint16_t cyclogram_zkr(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_full_frames(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
 private:
-    uint16_t start_no(uint16_t &num_bokz) override;
-    uint16_t start_to(uint16_t &num_bokz) override;
-    uint16_t start_loc(uint16_t &num_bokz, uint16_t count_do_loc = 0) override;
+    uint16_t start_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
+    uint16_t start_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
+    uint16_t start_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL, uint16_t count_do_loc = 0);
     uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0) override;
 
     void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) override;
@@ -46,6 +59,10 @@ private:
     void create_mpi_commands();
     void create_list_cyclograms_for_tp();
     void create_list_cyclograms_for_ai();
+    void create_list_cyclograms_for_ri();
+    void create_list_command_for_no();
+    void create_list_command_for_to();
+    void create_list_command_for_loc();
     std::shared_ptr<Kia_timers> m_kia_timers;
     std::vector<std::shared_ptr<Bokz>> m_bokz;
     shared_ptr<Kia_protocol> m_kia_protocol;

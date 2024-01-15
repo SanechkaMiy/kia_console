@@ -322,7 +322,7 @@ QString helpers::format_qstring(const QString &str, const int16_t &shift, const 
     return QString("%1").arg(str, shift, fillchar);
 }
 
-std::pair<uint64_t, uint16_t> helpers::get_seconds_for_bshv()
+std::pair<uint32_t, uint16_t> helpers::get_seconds_for_bshv()
 {
     std::chrono::time_point< std::chrono::system_clock > now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
@@ -344,6 +344,6 @@ std::pair<uint64_t, uint16_t> helpers::get_seconds_for_bshv()
     duration -= milliseconds;
     time_t sec;
     sec = time (NULL);
-    uint64_t sec_whole_part = sec - helpers::second_for_1_jan_2000;
+    uint32_t sec_whole_part = sec - helpers::second_for_1_jan_2000;
     return {sec_whole_part, milliseconds.count()};
 }

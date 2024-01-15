@@ -122,7 +122,6 @@ void ParseToDB::sendDataIntoSHTMI2_M60(uint16_t &num_bokz, int32_t& bshv, SHTMI2
             st_shtmi2.Nno, st_shtmi2.Nnosl, st_shtmi2.Nto, st_shtmi2.Ntosl, st_shtmi2.Nsl, st_shtmi2.eCount[0], st_shtmi2.eCount[1], st_shtmi2.eCount[2], st_shtmi2.eCount[3], st_shtmi2.eCount[4],
             st_shtmi2.eCount[5], st_shtmi2.eCount[6], st_shtmi2.eCount[7], st_shtmi2.eCount[8], st_shtmi2.eCount[9], st_shtmi2.eCount[10], st_shtmi2.eCount[11], st_shtmi2.eCount[12], st_shtmi2.eCount[13], st_shtmi2.eCount[14],
             st_shtmi2.eCount[15]);
-    std::cout << st_shtmi2.T << std::endl;
     m_kia_db[TYPE_DATA]->insert_data(data_into_shtmi2, "prepare_insert_into_shtmi2");
 }
 
@@ -403,6 +402,102 @@ void ParseToDB::sendDataIntoMSHIOR_MF(uint16_t &num_bokz, int32_t &bshv, MSHIOR_
             st_mshior.dpf_applied, st_mshior.ser_num,
             m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth);
     m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
+}
+
+void ParseToDB::sendDataIntoSHTMI1_MF(uint16_t &num_bokz, int32_t &bshv, SHTMI1_MF &st_shtmi1)
+{
+    char data_into_shtmi1[1024];
+    sprintf(data_into_shtmi1,"{\"experiment_id\":\"%s\","
+                             "\"serial_num\":%i,"
+                             "\"datetime\":\"%s\","
+                             "\"host_id\":\"%s\","
+                             "\"unit_id\":\"%s\","
+                             "\"bshv\":%d,"
+                             "\"nar\":%i,"
+                             "\"t\":%i,"
+                             "\"tms\":%i,"
+                             "\"st1\":%i,"
+                             "\"st2\":%i,"
+                             "\"sernum\":%i,"
+                             "\"post\":%i,"
+                             "\"foc\":%f,"
+                             "\"xo\":%f,"
+                             "\"yo\":%f,"
+                             "\"texp\":%i,"
+                             "\"meant\":%i,"
+                             "\"sigmat\":%i,"
+                             "\"cntupn\":%i,"
+                             "\"tcmv\":%i,"
+                             "\"confcs\":%i,"
+                             "\"desct\":%i,"
+                             "\"ogconstcrc\":%i,"
+                             "\"reserve\":\"{%i,%i}\","
+                             "\"catcs0\":%i,"
+                             "\"catcs1\":%i,"
+                             "\"constcs0\":%i,"
+                             "\"constcs1\":%i,"
+                             "\"progcs0\":%i,"
+                             "\"progcs1\":%i,"
+                             "\"ver\":%i,"
+                             "\"csum\":%i}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz, m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
+            m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv, st_shtmi1.nAr , st_shtmi1.T , st_shtmi1.Tms, st_shtmi1.KC1,
+            st_shtmi1.KC2, st_shtmi1.SerNum, st_shtmi1.POST, st_shtmi1.Foc, st_shtmi1.Xo,
+            st_shtmi1.Yo, st_shtmi1.Texp, st_shtmi1.Mean, st_shtmi1.Sigma, st_shtmi1.cntUPN, st_shtmi1.Tcmv, st_shtmi1.ConfCS, st_shtmi1.desc, st_shtmi1.ogConstCrc, st_shtmi1.rezerv1, st_shtmi1.rezerv2, st_shtmi1.CatCS0, st_shtmi1.CatCS1,
+            st_shtmi1.ConstCS0, st_shtmi1.ConstCS1, st_shtmi1.ProgCS0, st_shtmi1.ProgCS1,
+            st_shtmi1.Ver1 + st_shtmi1.Ver2 + st_shtmi1.Ver3,
+            st_shtmi1.cs);
+    m_kia_db[TYPE_DATA]->insert_data(data_into_shtmi1, "prepare_insert_into_shtmi1");
+}
+
+void ParseToDB::sendDataIntoSHTMI2_MF(uint16_t &num_bokz, int32_t &bshv, SHTMI2_MF &st_shtmi2)
+{
+    char data_into_shtmi2[1024];
+    sprintf(data_into_shtmi2,"{\"experiment_id\":\"%s\","
+                             "\"serial_num\":%i,"
+                             "\"datetime\":\"%s\","
+                             "\"host_id\":\"%s\","
+                             "\"unit_id\":\"%s\","
+                             "\"bshv\":%d,"
+                             "\"nar\":%i,"
+                             "\"t\":%i,"
+                             "\"t,s\":%i,"
+                             "\"st1\":%i,"
+                             "\"st2\":%i,"
+                             "\"sernum\":%i,"
+                             "\"post\":%i,"
+                             "\"texp\":%i,"
+                             "\"nusd\":%i,"
+                             "\"nno\":%i,"
+                             "\"nnosl\":%i,"
+                             "\"nto\":%i,"
+                             "\"ntosl\":%i,"
+                             "\"nsl\":%i,"
+                             "\"ec1\":%i,"
+                             "\"ec2\":%i,"
+                             "\"ec3\":%i,"
+                             "\"ec4\":%i,"
+                             "\"ec5\":%i,"
+                             "\"ec6\":%i,"
+                             "\"ec7\":%i,"
+                             "\"ec8\":%i,"
+                             "\"ec9\":%i,"
+                             "\"ec10\":%i,"
+                             "\"ec11\":%i,"
+                             "\"ec12\":%i,"
+                             "\"ec13\":%i,"
+                             "\"ec14\":%i,"
+                             "\"ec15\":%i,"
+                             "\"ec16\":%i,"
+                             "\"ec17\":%i,"
+                             "\"ec18\":%i,"
+                             "\"ec19\":%i,"
+                             "\"cs\":%i}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz, m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
+            m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv, st_shtmi2.nAr , st_shtmi2.T , st_shtmi2.Tms, st_shtmi2.KC1,
+            st_shtmi2.KC2, st_shtmi2.SerNum, st_shtmi2.POST, st_shtmi2.Texp, st_shtmi2.Nusd,
+            st_shtmi2.Nno, st_shtmi2.Nnosl, st_shtmi2.Nto, st_shtmi2.Ntosl, st_shtmi2.Nsl, st_shtmi2.eCount1, st_shtmi2.eCount2, st_shtmi2.eCount3, st_shtmi2.eCount4, st_shtmi2.eCount5,
+            st_shtmi2.eCount6, st_shtmi2.eCount7, st_shtmi2.eCount8, st_shtmi2.eCount9, st_shtmi2.eCount10, st_shtmi2.eCount11, st_shtmi2.eCount12, st_shtmi2.eCount13, st_shtmi2.eCount14, st_shtmi2.eCount15,
+            st_shtmi2.eCount16, st_shtmi2.eCount17, st_shtmi2.eCount18, st_shtmi2.eCount19, st_shtmi2.cs);
+    m_kia_db[TYPE_DATA]->insert_data(data_into_shtmi2, "prepare_insert_into_shtmi2");
 }
 
 void ParseToDB::send_to_bkpik(uint16_t &num_bi)

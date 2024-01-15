@@ -20,6 +20,7 @@ public:
     Kia_cyclogram();
     virtual uint16_t cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t cyclogram_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_ai(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
@@ -39,10 +40,8 @@ public:
     virtual ~Kia_cyclogram(){};
     std::shared_ptr<Kia_data_cyclogram> m_kia_data_cyclogram;
     std::map<uint16_t, uint16_t> m_index_for_cyclograms;
+    void sleep_for_pause(uint32_t time_in_microseconds);
 private:
-    virtual uint16_t start_no(uint16_t &num_bokz) = 0;
-    virtual uint16_t start_to(uint16_t &num_bokz) = 0;
-    virtual uint16_t start_loc(uint16_t &num_bokz, uint16_t count_do_loc = 0) = 0;
     virtual uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0) = 0;
 
     virtual void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) = 0;

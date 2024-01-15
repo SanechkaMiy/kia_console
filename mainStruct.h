@@ -191,19 +191,24 @@ struct Wait_and_param_for_cyclogram
     uint16_t m_max_mpi_command;
     uint16_t m_max_cyclogram_tp;
     uint16_t m_max_cyclogram_ai;
+    uint16_t m_max_cyclogram_ri;
+
     std::vector<uint16_t> m_do_mpi_command_in_cyclogram;
     std::vector<uint16_t> m_do_cyclogram_in_tp;
     std::vector<uint16_t> m_count_to_do_cyclogram_in_tp;
+
+    std::vector<std::vector<uint64_t>> m_sleep_to_command_in_do_cyclogram;
+
     std::vector<uint16_t> m_do_cyclogram_in_ai;
+    std::vector<std::vector<uint16_t>> m_do_cyclogram_in_do;
+
     int16_t m_wait_for_on_power_is_stable = 30;
     int16_t m_wait_for_otclp = 2;
     int16_t m_wait_for_takt = 1;
     int16_t m_wait_for_off_power_is_stable = 3;
     int16_t m_wait_for_start_dtmi_loc = 10;
     int16_t m_count_cyclogram_technical_run = 2;
-    std::array<uint16_t, constants::max_count_param> m_param_for_cycl_tech_run;
-    std::array<uint16_t, constants::max_count_param> m_param_for_cycl_zkr;
-    std::array<uint16_t, constants::max_count_param> m_param_for_cycl_full_frames;
+    std::vector<std::array<uint16_t, constants::max_count_param>> m_param_for_run_a_lot;
     int16_t m_count_do_dtmi_in_state_off = 2;
     int16_t m_shift_bshv = 100;
     std::vector<QString> m_is_error;
@@ -213,6 +218,9 @@ struct Wait_and_param_for_cyclogram
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_mpi_command;
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t cound_do_cyclogram, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_tp;
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ai;
+    std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ri;
+
+    std::vector<std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>>> m_command_cycl_do;
 };
 #pragma pack(pop)
 

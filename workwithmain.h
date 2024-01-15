@@ -56,7 +56,7 @@ public:
     void vskou(uint16_t parametr = EP_DOALL);
     void dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL);
     void mloc(uint16_t parametr = EP_DOALL);
-    void do_frames(uint16_t parametr = EP_DOALL);
+    void do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL);
     void set_epsilon(uint16_t parametr = EP_DOALL);
     void get_epsilon(uint16_t parametr = EP_DOALL);
     void set_focus(uint16_t parametr = EP_DOALL);
@@ -102,6 +102,8 @@ private:
     void send_mpi_list_command();
     void send_cyclogams_list();
     void send_cyclogams_ai_list();
+    void send_cyclogams_ri_list();
+    void send_cyclograms_do();
     void kia_profile_load();
     void send_type_bi_to_table_settings();
     void send_info_about_connection();

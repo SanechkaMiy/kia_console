@@ -32,6 +32,12 @@ public:
 
     uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
                                string struct_id, string struct_id_desc, uint16_t parametr = EP_DOALL) override;
+    // ftdi exp
+//    if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
+//    {
+//        m_kia_ftdi->read_frame();
+//        m_kia_protocol->save_to_frames_protocols(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_ftdi->get_frame_buf(), m_kia_ftdi->get_buf_size());
+//    }
 
     uint16_t shtmi1(uint16_t parametr = EP_DOALL) override;
     uint16_t shtmi2(uint16_t parametr = EP_DOALL) override;
@@ -45,6 +51,7 @@ public:
     uint16_t command_no(uint16_t parametr = EP_DOALL) override;
     uint16_t command_to(uint16_t parametr = EP_DOALL) override;
     uint16_t command_full_exp(uint16_t parametr = EP_DOALL) override;
+    uint16_t command_bin_exp(uint16_t parametr = EP_DOALL) override;
     uint16_t command_loc(uint16_t parametr = EP_DOALL) override;
     uint16_t command_otclp(uint16_t parametr = EP_DOALL) override;
     uint16_t command_openkr(uint16_t parametr = EP_DOALL) override;
@@ -59,7 +66,7 @@ public:
     uint16_t initial_state(uint16_t parametr = EP_DOALL) override;
     uint16_t block_ou( uint16_t parametr = EP_DOALL) override;
     uint16_t unblock_ou( uint16_t parametr = EP_DOALL) override;
-    uint16_t do_frames( uint16_t parametr = EP_DOALL) override;
+    uint16_t do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL) override;
     uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL) override;
     uint16_t get_epsilon(uint16_t parametr = EP_DOALL) override;
     uint16_t set_focus(uint16_t parametr = EP_DOALL) override;
@@ -70,7 +77,7 @@ signals:
     void send_to_client(quint16, QStringList) override;
 
 private:
-    const static int32_t frame_size = 512 * 512;
+    void set_type_frame_functions();
     void do_pause(uint16_t interval);
     void check_orientation();
     void getDataToDTMIOrDTMILoc(uint16_t &count_dtmo_or_dtmo_loc);
@@ -81,7 +88,7 @@ private:
     void preset_before_exchange();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
-    void calc_frame_param(std::array<uint8_t, frame_size> frame_buffer);
+    void calc_frame_param(std::vector<uint8_t> frame_buffer);
     void count_of_fails(uint16_t parametr = EP_DOALL);
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
@@ -98,6 +105,8 @@ private:
     uint16_t m_count_dtmi_dtmi_loc;
     std::vector<uint8_t> m_commandR;
 
+    std::vector<std::function<void(uint16_t parametr)>> m_func_type_frames;
+    std::vector<uint32_t> m_frame_resulution;
 };
 
 #endif // BOKZM60_H

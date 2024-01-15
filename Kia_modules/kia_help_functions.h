@@ -28,7 +28,7 @@ float uint32_to_float(uint32_t value);
 std::string currentDateTime();
 uint32_t current_hours();
 float decodeDateTime();
-std::pair<uint64_t, uint16_t> get_seconds_for_bshv();
+std::pair<uint32_t, uint16_t> get_seconds_for_bshv();
 
 QString format_qstring(const QString& str, const int16_t &shift, const char &fillchar = ' ');
 };

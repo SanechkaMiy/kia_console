@@ -23,6 +23,27 @@ uint16_t Kia_cyclogram_bokzmf::cyclogram_state_off(uint16_t &num_bokz, uint16_t 
 
 }
 
+uint16_t Kia_cyclogram_bokzmf::cyclogram_oo(uint16_t &num_bokz, uint16_t parametr)
+{
+    if (m_bokz[num_bokz]->command_otclp() == KiaS_SUCCESS)
+    {
+        wait_some_time(num_bokz, m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_wait_for_otclp
+                       * m_kia_settings->m_freq_bokz);
+        if (m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz] && m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
+        {
+            if(m_bokz[num_bokz]->command_oo() == KiaS_SUCCESS)
+            {
+                wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
+                if(m_bokz[num_bokz]->command_bshv() == KiaS_SUCCESS)
+                {
+                    m_bokz[num_bokz]->command_no();
+                }
+            }
+        }
+    }
+    return m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange;
+}
+
 uint16_t Kia_cyclogram_bokzmf::cyclogram_no(uint16_t &num_bokz, uint16_t parametr)
 {
     save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Начинаем циклограмму НО!") + "\n", parametr);
@@ -205,21 +226,6 @@ uint16_t Kia_cyclogram_bokzmf::cyclogram_zkr(uint16_t &num_bokz, uint16_t parame
 }
 
 uint16_t Kia_cyclogram_bokzmf::cyclogram_full_frames(uint16_t &num_bokz, uint16_t parametr)
-{
-
-}
-
-uint16_t Kia_cyclogram_bokzmf::start_no(uint16_t &num_bokz)
-{
-
-}
-
-uint16_t Kia_cyclogram_bokzmf::start_to(uint16_t &num_bokz)
-{
-
-}
-
-uint16_t Kia_cyclogram_bokzmf::start_loc(uint16_t &num_bokz, uint16_t count_do_loc)
 {
 
 }

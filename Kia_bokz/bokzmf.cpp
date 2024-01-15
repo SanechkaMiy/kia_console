@@ -372,7 +372,7 @@ uint16_t Bokzmf::vmti(uint16_t parametr)
 
 uint16_t Bokzmf::synchro(uint16_t parametr)
 {
-
+    return m_kia_data->m_data_mpi->m_status_exchange;
 }
 
 uint16_t Bokzmf::skor(uint16_t parametr)
@@ -412,6 +412,11 @@ uint16_t Bokzmf::command_to(uint16_t parametr)
 }
 
 uint16_t Bokzmf::command_full_exp(uint16_t parametr)
+{
+
+}
+
+uint16_t Bokzmf::command_bin_exp(uint16_t parametr)
 {
 
 }
@@ -494,16 +499,13 @@ uint16_t Bokzmf::command_bshv(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "synchro";
         m_kia_data->m_data_db->struct_id_desc = "СИНХРО";
-        std::array <uint16_t, 2> ar_bshv = {0x0000, 0x0000};
-        auto sec_mark = m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] / m_kia_settings->m_freq_bokz;
-        memcpy(&ar_bshv, &sec_mark, sizeof(ar_bshv));
-        std::array <uint16_t, 2> ar_epZvKat = {0x0000, 0x0000};
-        float fl_epZvKat = helpers::decodeDateTime();
-        memcpy(&ar_epZvKat,&fl_epZvKat,sizeof(ar_epZvKat));
-        m_kia_data->m_data_mpi->m_data_to_exc[0] = ar_bshv[1];
-        m_kia_data->m_data_mpi->m_data_to_exc[1] = ar_bshv[0];
-        m_kia_data->m_data_mpi->m_data_to_exc[2] = ar_epZvKat[1];
-        m_kia_data->m_data_mpi->m_data_to_exc[3] = ar_epZvKat[0];
+        auto [sec_whole_part, milliseconds] = helpers::get_seconds_for_bshv();
+                std::array <uint16_t, 2> second = {0x0000, 0x0000};
+        memcpy(&second, &sec_whole_part, sizeof(second));
+        m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x002E;
+        m_kia_data->m_data_mpi->m_data_to_exc[1] = second[1];
+        m_kia_data->m_data_mpi->m_data_to_exc[2] = second[0];
+        m_kia_data->m_data_mpi->m_data_to_exc[3] = milliseconds;
     };
     m_set_control_word();
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
@@ -681,7 +683,7 @@ uint16_t Bokzmf::unblock_ou(uint16_t parametr)
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
 
-uint16_t Bokzmf::do_frames(uint16_t parametr)
+uint16_t Bokzmf::do_frames(uint16_t type_frame, uint16_t parametr)
 {
 
 }

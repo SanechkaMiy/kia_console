@@ -14,6 +14,12 @@ class Bokz : public QObject
     Q_OBJECT
 public:
     Bokz();
+    enum TYPE_FRAME
+    {
+        FULL_FRAME = 0,
+        BIN_FRAME = 1
+    };
+
     virtual void set_bokz_settings() = 0;
 
     virtual uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
@@ -31,6 +37,7 @@ public:
     virtual uint16_t command_no(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_to(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_full_exp(uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t command_bin_exp(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_loc(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_otclp(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_openkr(uint16_t parametr = EP_DOALL) = 0;
@@ -41,7 +48,7 @@ public:
     virtual uint16_t initial_state(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t block_ou(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t unblock_ou(uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t do_frames( uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_bshv(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_restart(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_oo(uint16_t parametr = EP_DOALL) = 0;
