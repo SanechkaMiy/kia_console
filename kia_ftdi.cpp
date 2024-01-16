@@ -39,7 +39,7 @@ Kia_ftdi::~Kia_ftdi()
     std::cout << "destrc ftdi" << std::endl;
 }
 
-void Kia_ftdi::read_frame()
+void Kia_ftdi::read_frame(uint32_t resulution)
 {
     FT_STATUS ftStatus;
     uint32_t bytes_received;
@@ -47,13 +47,14 @@ void Kia_ftdi::read_frame()
     //uint16_t read_buffer[512 * 512 + 1];
     uint32_t rx_bytes = sizeof(m_read_buffer);
     std::cout << rx_bytes << std::endl;
-    int32_t count_t = 512 * 512;
-    int32_t pos = 0;
+    uint32_t count_t = resulution;
+    uint32_t pos = 0;
 
     bytes_received = 0;
-    uint8_t buffer[512 * 512 * 2];
+    std::vector<uint8_t> buffer(resulution * 2);
+    //uint8_t buffer[512 * 512 * 2]; - changed on vector --
     //memset(m_read_buffer, 0xff, sizeof(m_read_buffer));
-    while(pos < 512 * 512 * 2)
+    while(pos < resulution * 2)
     {
 
         ftStatus = FT_GetQueueStatus(m_ftHandle[0], &rx_bytes);
@@ -70,7 +71,7 @@ void Kia_ftdi::read_frame()
         }
 
     }
-    memcpy(m_read_buffer, buffer, sizeof(buffer));
+    memcpy(m_read_buffer, buffer.data(), sizeof(buffer));
 }
 
 uint16_t *Kia_ftdi::get_frame_buf()

@@ -19,7 +19,12 @@ public:
         FULL_FRAME = 0,
         BIN_FRAME = 1
     };
-
+    enum TYPE_FRAME_RECIEVE
+    {
+        MKO = 0,
+        FTDI_USB = 1,
+        MATROX_CAM_LINK = 2
+    };
     virtual void set_bokz_settings() = 0;
 
     virtual uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
@@ -48,7 +53,7 @@ public:
     virtual uint16_t initial_state(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t block_ou(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t unblock_ou(uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_bshv(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_restart(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_oo(uint16_t parametr = EP_DOALL) = 0;

@@ -20,7 +20,7 @@ void Bokz::parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::
     {
         lpi = "B";
     }
-    str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5).arg("БШВ", -11).arg("МПИ", -11).arg("ФОРМАТ",-11).arg("address", -11).arg("ЛПИ",-11).arg("ДАТА И ВРЕМЯ"));
+    str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5).arg("БШВ", -11).arg("МПИ", -11).arg("ФОРМАТ",-11).arg("АДРЕС", -11).arg("ЛПИ",-11).arg("ДАТА И ВРЕМЯ"));
     str_mpi_protocol.push_back(QString("%1 %2 %3 %4 %5 %6 %7\n").arg("", -5)
                                .arg(QString::number(bshv),-11).arg(QString::number(kia_data->m_data_mpi->m_mpi_index), -11)
                                .arg(QString::number(kia_data->m_data_mpi->m_format), -11).arg(QString::number(kia_data->m_data_mpi->m_address),-11)
@@ -34,10 +34,15 @@ void Bokz::parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::
                                     .arg(QString::number(kia_data->m_data_mpi->m_word_data), 2, '0')));
     if (kia_data->m_data_mpi->m_format == DATA_BC_RT || kia_data->m_data_mpi->m_format == DATA_BC_RT_BRCST)
     {
+        str_mpi_protocol.push_back("СД:");
+
         for (uint16_t ind = 0; ind < kia_data->m_data_mpi->m_word_data; ++ind)
         {
-            str_mpi_protocol.push_back(QString("%1 %2").arg("", -5).arg(QString("0x%1").arg(QString::number(kia_data->m_data_mpi->m_data_to_exc[ind], 16), 4, '0')));
-            if (ind % 4 == 0 && ind != 0)
+            uint16_t shift = 5;
+            if (ind == 0)
+                shift = 2;
+            str_mpi_protocol.push_back(QString("%1 %2").arg("", -shift).arg(QString("0x%1").arg(QString::number(kia_data->m_data_mpi->m_data_to_exc[ind], 16), 4, '0')));
+            if (ind % 1 == 0 && ind != 0)
                 str_mpi_protocol.push_back("\n");
         }
         str_mpi_protocol.push_back("\n");

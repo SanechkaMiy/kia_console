@@ -11,6 +11,7 @@ BokzM60::BokzM60(uint16_t num_bokz, std::array<std::shared_ptr<Kia_db>, constant
     m_num_bokz = num_bokz;
     set_bokz_settings();
     set_type_frame_functions();
+    set_type_frame_recieve();
 }
 
 BokzM60::~BokzM60()
@@ -349,7 +350,7 @@ void BokzM60::calc_frame_param(std::vector<uint8_t> frame_buffer)
 
     }
     m_kia_data->m_data_db->m_average = m_kia_data->m_data_db->m_average / frame_buffer.size();
-    for (uint32_t el = 2; el < frame_size; el++)
+    for (uint32_t el = 2; el < frame_buffer.size(); el++)
         m_kia_data->m_data_db->m_variance = m_kia_data->m_data_db->m_variance
                 + pow(abs(frame_buffer[el] - (int32_t)m_kia_data->m_data_db->m_average), 2);
     m_kia_data->m_data_db->m_variance = sqrt(m_kia_data->m_data_db->m_variance / (frame_buffer.size()));
@@ -856,78 +857,17 @@ uint16_t BokzM60::unblock_ou(uint16_t parametr)
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
 
-uint16_t BokzM60::do_frames(uint16_t type_frame, uint16_t parametr)
+uint16_t BokzM60::do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t parametr)
 {
-    //    m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    //    m_kia_matrox->matrox_grab_frame(m_kia_data);
-
-    //    m_kia_protocol->save_to_frames_protocols(m_kia_matrox->get_frame_buf(), m_kia_matrox->get_buf_size());
-
-    //    m_parser_db->send_to_frames(num_bokz);
-    //    m_kia_settings->m_flags_for_thread->m_mtx.unlock();
-
-    //    preset_before_exchange();
-    //    m_set_control_word = [this]()
-    //    {
-    //        m_kia_data->m_data_mpi->m_data_to_exc = {0};
-    //        m_kia_data->m_data_mpi->m_direction = 0;
-    //        m_kia_data->m_data_mpi->m_format = DATA_BC_RT;
-    //        m_kia_data->m_data_mpi->m_sub_address = 16;
-    //        m_kia_data->m_data_mpi->m_word_data = 1;
-    //        m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
-    //        m_kia_data->m_data_db->struct_id = "full_exp";
-    //        m_kia_data->m_data_db->struct_id_desc = "Экспонирование";
-    //        for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_sub_address; i++)
-    //        {
-    //            m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x0400;
-    //        }
-    //    };
-    //    m_set_control_word();
-    //    m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
+    m_kia_settings->m_flags_for_thread->m_mtx.lock();
 
     m_func_type_frames[type_frame](parametr);
-    do_pause(1000);
+
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
-        QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
-                + QString("Снимаем кадр!");
-        m_kia_settings->m_flags_for_thread->m_mtx.lock();
-        m_set_control_word = [this]()
-        {
-            m_kia_data->m_data_mpi->m_data_to_exc = {0};
-            m_kia_data->m_data_mpi->m_direction = 1;
-            m_kia_data->m_data_mpi->m_format = DATA_RT_BC;
-            m_kia_data->m_data_mpi->m_sub_address = 23;
-            m_kia_data->m_data_mpi->m_word_data = 32;
-            m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
-            m_kia_data->m_data_db->struct_id = "full_exp_get";
-            m_kia_data->m_data_db->struct_id_desc = "Снять кадр";
-        };
-        m_set_control_word();
-        save_to_protocol(str_to_protocol, parametr);
-
-        uint16_t count_pixel_in_one_arr = 64;
-        std::vector<uint8_t> frame_buffer(m_frame_resulution[type_frame]);
-        uint32_t num_command = 0;
-        uint32_t pos = 0;
-        while (num_command < m_frame_resulution[type_frame] / count_pixel_in_one_arr)
-        {
-            m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
-
-            if ( m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
-            {
-                memcpy(&frame_buffer[pos], &m_kia_data->m_data_mpi->m_data_word[2], sizeof(m_kia_data->m_data_mpi->m_data_word) - 4);
-                pos = pos + count_pixel_in_one_arr;
-                num_command++;
-            }
-            //  save_to_protocol(str_to_protocol, DO_FULL_FRAME, parametr);
-        }
-        m_kia_protocol->save_to_frames_protocols(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], frame_buffer.data(), frame_buffer.size());
-        calc_frame_param(frame_buffer);
-        m_kia_data->m_data_db->frame_name = "frame_num_bokz_" + std::to_string(m_num_bokz) + "_" + std::to_string(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
-        m_parser_db->send_to_frames(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
-        m_kia_settings->m_flags_for_thread->m_mtx.unlock();
+        m_func_type_frame_recieve[type_recieve](type_frame, parametr);
     }
+    m_kia_settings->m_flags_for_thread->m_mtx.unlock();
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
 
@@ -1115,6 +1055,62 @@ void BokzM60::set_type_frame_functions()
     };
     m_frame_resulution.push_back(256 * 256);
     m_func_type_frames.push_back(bin_frame_func);
+}
+
+void BokzM60::set_type_frame_recieve()
+{
+    auto func_mko = [this](uint16_t type_frame, uint16_t parametr = EP_DOALL)
+    {
+        do_pause(1000);
+        QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+                + QString("Снимаем кадр через МКО!");
+        m_kia_settings->m_flags_for_thread->m_mtx.lock();
+        m_set_control_word = [this]()
+        {
+            m_kia_data->m_data_mpi->m_data_to_exc = {0};
+            m_kia_data->m_data_mpi->m_direction = 1;
+            m_kia_data->m_data_mpi->m_format = DATA_RT_BC;
+            m_kia_data->m_data_mpi->m_sub_address = 23;
+            m_kia_data->m_data_mpi->m_word_data = 32;
+            m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
+            m_kia_data->m_data_db->struct_id = "full_exp_get";
+            m_kia_data->m_data_db->struct_id_desc = "Снять кадр";
+        };
+        m_set_control_word();
+        save_to_protocol(str_to_protocol, parametr);
+
+        uint16_t count_pixel_in_one_arr = 64;
+        std::vector<uint8_t> frame_buffer(m_frame_resulution[type_frame]);
+        uint32_t num_command = 0;
+        uint32_t pos = 0;
+        while (num_command < m_frame_resulution[type_frame] / count_pixel_in_one_arr)
+        {
+            m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
+
+            if ( m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
+            {
+                memcpy(&frame_buffer[pos], &m_kia_data->m_data_mpi->m_data_word[2], sizeof(m_kia_data->m_data_mpi->m_data_word) - 4);
+                pos = pos + count_pixel_in_one_arr;
+                num_command++;
+            }
+            //  save_to_protocol(str_to_protocol, DO_FULL_FRAME, parametr);
+        }
+        m_kia_protocol->save_to_frames_protocols(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], frame_buffer.data(), frame_buffer.size());
+        calc_frame_param(frame_buffer);
+        m_kia_data->m_data_db->frame_name = "frame_num_bokz_" + std::to_string(m_num_bokz) + "_" + std::to_string(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
+        m_parser_db->send_to_frames(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
+        m_kia_settings->m_flags_for_thread->m_mtx.unlock();
+    };
+    m_func_type_frame_recieve.push_back(func_mko);
+
+    auto func_ftdi_usb = [this](uint16_t type_frame, uint16_t parametr = EP_DOALL)
+    {
+        QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
+                + QString("Снимаем кадр через FTDI_USB!");
+        m_kia_ftdi->read_frame(m_frame_resulution[type_frame]);
+        m_kia_protocol->save_to_frames_protocols(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_ftdi->get_frame_buf(), m_kia_ftdi->get_buf_size());
+    };
+    m_func_type_frame_recieve.push_back(func_ftdi_usb);
 }
 
 void BokzM60::send_status_info()

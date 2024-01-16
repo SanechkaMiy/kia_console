@@ -10,6 +10,22 @@
 class Kia_cyclogram_bokzmf : public Kia_cyclogram
 {
 public:
+    enum STATE_CYCLOGRAM_ORDER
+    {
+        SCO_OO = 0,
+    };
+    enum COMMAND_IN_OO
+    {
+        CIO_OO = 0,
+        CIO_BSHV = 1,
+        CIO_SKOR = 2
+    };
+
+    enum PARAM_IF_A_LOT
+    {
+        PIL_TP = 0
+    };
+
     Kia_cyclogram_bokzmf(std::shared_ptr<Kia_timers> kia_timers, std::vector<std::shared_ptr<Bokz> > bokz,
                          shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
 
@@ -22,6 +38,7 @@ public:
     uint16_t cyclogram_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     void cyclogram_define_address(uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
+    uint16_t cyclogram_operation_oo(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_no(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_to(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_loc(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
@@ -33,14 +50,16 @@ public:
     uint16_t cyclogram_zkr(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_full_frames(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
 private:
-    uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0) override;
-
+    uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) override;
+    void do_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
     void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) override;
     void wait_for_bi_takt(uint16_t& num_bokz) override;
     void wait_some_time_for_one_launch(const uint16_t& wait_s) override;
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
     void preset_before_exchange(uint16_t num_bokz);
     void create_mpi_commands();
+    void create_list_command_for_oo();
+    void create_list_cyclograms_for_ri();
     void create_list_cyclograms_for_tp();
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi);
     std::shared_ptr<Kia_timers> m_kia_timers;

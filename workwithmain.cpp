@@ -295,7 +295,7 @@ void WorkWithMain::do_frames(uint16_t type_frame, uint16_t parametr)
 {
     auto start_exchange = [this, type_frame](uint16_t num_bokz, uint16_t parametr)
     {
-        m_bokz[num_bokz]->do_frames(type_frame, parametr);
+        m_bokz[num_bokz]->do_frames(m_type_frame_recieve, type_frame, parametr);
     };
     check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
 }
@@ -430,6 +430,15 @@ void WorkWithMain::cyclogram_state_off( uint16_t parametr)
     auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
     {
         m_kia_cyclogram->cyclogram_state_off(num_bokz, parametr);
+    };
+    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
+}
+
+void WorkWithMain::cyclogram_oo(uint16_t parametr)
+{
+    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_kia_cyclogram->cyclogram_oo(num_bokz, parametr);
     };
     check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
 }
@@ -600,6 +609,7 @@ void WorkWithMain::new_connection_slot()
 
     send_kia_initial_settings();
     send_mpi_list_command();
+    send_mpi_list_other_command();
     send_cyclogams_ai_list();
     send_cyclogams_ri_list();
     send_cyclogams_list();
@@ -712,6 +722,17 @@ void WorkWithMain::send_mpi_list_command()
         mpi_command.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
     }
     emit send_to_client(SEND_MPI_COMMAND, mpi_command);
+}
+
+void WorkWithMain::send_mpi_list_other_command()
+{
+    QStringList mpi_other_command;
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_other_command)
+    {
+        mpi_other_command.push_back(std::get<CYCL_NAME>(el));
+        mpi_other_command.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
+    }
+    emit send_to_client(SEND_OTHER_MPI_COMMAND, mpi_other_command);
 }
 
 void WorkWithMain::send_cyclogams_list()
@@ -853,6 +874,9 @@ void WorkWithMain::slot_read_client()
             break;
         case SKOR:
             skor();
+            break;
+        case CYCLOGRAM_OO:
+            cyclogram_no();
             break;
         case CYCLOGRAM_NO:
             cyclogram_no();

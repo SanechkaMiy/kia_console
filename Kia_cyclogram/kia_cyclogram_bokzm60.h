@@ -33,6 +33,7 @@ public:
     uint16_t cyclogram_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     void cyclogram_define_address(uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
+    uint16_t cyclogram_operation_oo(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_no(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_to(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_operation_loc(uint16_t &num_bokz, uint16_t count_do_cyclogram, uint16_t parametr = EP_DOALL) override;
@@ -47,7 +48,7 @@ private:
     uint16_t start_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
     uint16_t start_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
     uint16_t start_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL, uint16_t count_do_loc = 0);
-    uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0) override;
+    uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) override;
 
     void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) override;
     void wait_for_bi_takt(uint16_t& num_bokz) override;
@@ -55,8 +56,8 @@ private:
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi);
     void preset_before_exchange(uint16_t num_bokz);
-    void post_exchange(uint16_t num_bokz);
     void create_mpi_commands();
+    void create_list_other_mpi_commands();
     void create_list_cyclograms_for_tp();
     void create_list_cyclograms_for_ai();
     void create_list_cyclograms_for_ri();

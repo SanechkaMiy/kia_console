@@ -13,7 +13,7 @@ class Kia_ftdi
 public:
     Kia_ftdi(std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_ftdi();
-    void read_frame();
+    void read_frame(uint32_t resulution);
     uint16_t* get_frame_buf();
     uint32_t get_buf_size();
 private:

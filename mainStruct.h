@@ -74,6 +74,7 @@ struct Data_for_mpi
 #pragma pack(push, 1)
 struct Data_for_bokz
 {
+    uint16_t m_type_frame_recieve;
     uint32_t m_count_of_exc_fail;
     uint32_t m_count_of_time_bind_fail;
     uint32_t m_count_of_no_is_not_def_fail;
@@ -202,6 +203,7 @@ struct Wait_and_param_for_cyclogram
     std::vector<uint16_t> m_do_cyclogram_in_ai;
     std::vector<std::vector<uint16_t>> m_do_cyclogram_in_do;
 
+    int16_t m_wait_pre_do_mshior_in_oo = 25;
     int16_t m_wait_for_on_power_is_stable = 30;
     int16_t m_wait_for_otclp = 2;
     int16_t m_wait_for_takt = 1;
@@ -216,6 +218,7 @@ struct Wait_and_param_for_cyclogram
     uint16_t m_off_power_for_tp = 0;
 
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_mpi_command;
+    std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_mpi_other_command;
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t cound_do_cyclogram, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_tp;
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ai;
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ri;

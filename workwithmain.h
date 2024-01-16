@@ -56,7 +56,6 @@ public:
     void vskou(uint16_t parametr = EP_DOALL);
     void dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL);
     void mloc(uint16_t parametr = EP_DOALL);
-    void do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL);
     void set_epsilon(uint16_t parametr = EP_DOALL);
     void get_epsilon(uint16_t parametr = EP_DOALL);
     void set_focus(uint16_t parametr = EP_DOALL);
@@ -64,8 +63,11 @@ public:
     void set_texp(uint16_t parametr = EP_DOALL);
     void get_texp(uint16_t parametr = EP_DOALL);
 
+    void do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL);
+
     void cyclogram_state_on(uint16_t parametr = EP_DOALL);
     void cyclogram_state_off(uint16_t parametr = EP_DOALL);
+    void cyclogram_oo(uint16_t parametr = EP_DOALL);
     void cyclogram_no(uint16_t parametr = EP_DOALL);
     void cyclogram_to(uint16_t parametr = EP_DOALL);
     void cyclogram_ai(uint16_t parametr = EP_DOALL);
@@ -100,6 +102,7 @@ private:
     bool check_used_bokz(uint16_t type_command, std::function<void(uint16_t, uint16_t)> start_exchange, uint16_t parametr = EP_DOALL);
     void send_kia_initial_settings();
     void send_mpi_list_command();
+    void send_mpi_list_other_command();
     void send_cyclogams_list();
     void send_cyclogams_ai_list();
     void send_cyclogams_ri_list();
@@ -124,10 +127,11 @@ private:
     std::vector<std::shared_ptr<Bokz>> m_bokz;
     std::shared_ptr<Kia_cyclogram> m_kia_cyclogram;
     quint16 m_nNextBlockSize = 0;
-    uint8_t m_is_channel_on = 0xff;
     QTcpServer* m_ptcpServer;
     QTcpSocket* m_pClientSocket;
     std::vector<QFile*> m_file;
+
+    uint16_t m_type_frame_recieve = Bokz::MKO;
 };
 
 #endif // WORKWITHMAIN_H

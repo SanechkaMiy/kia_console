@@ -683,7 +683,7 @@ uint16_t Bokzmf::unblock_ou(uint16_t parametr)
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
 
-uint16_t Bokzmf::do_frames(uint16_t type_frame, uint16_t parametr)
+uint16_t Bokzmf::do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t parametr)
 {
 
 }
