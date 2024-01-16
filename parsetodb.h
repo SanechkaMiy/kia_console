@@ -31,6 +31,12 @@ public:
     void sendDataIntoMSHIOR_MF(uint16_t& num_bokz, int32_t& bshv, MSHIOR_MF &st_mshior);
     void sendDataIntoSHTMI1_MF(uint16_t& num_bokz, int32_t& bshv, SHTMI1_MF &st_shtmi1);
     void sendDataIntoSHTMI2_MF(uint16_t& num_bokz, int32_t &bshv, SHTMI2_MF &st_shtmi2);
+    void sendDataIntoMLOC_MF(uint16_t& num_bokz, int32_t &bshv, MLoc_1_MF &dtmiLoc_1, MLoc_2_MF &dtmiLoc_2, MLoc_3_MF &dtmiLoc_3,
+                                 MLoc_4_MF &dtmiLoc_4, MLoc_5_MF &dtmiLoc_5, MLoc_6_MF &dtmiLoc_6,
+                                 MLoc_7_MF &dtmiLoc_7, MLoc_8_MF &dtmiLoc_8, MLoc_9_MF &dtmiLoc_9);
+    void sendDataIntoDTMI_MF(uint16_t& num_bokz, int32_t &bshv, DTMI_1_MF& dtmi_1, DTMI_2_MF& dtmi_2, DTMI_3_MF &dtmi_3, DTMI_4_MF &dtmi_4,
+                              DTMI_5_MF &dtmi_5, DTMI_6_MF &dtmi_6, DTMI_7_MF &dtmi_7, DTMI_8_MF &dtmi_8,
+                              DTMI_9_MF &dtmi_9, DTMI_10_MF &dtmi_10, DTMI_11_MF &dtmi_11, DTMI_12_MF &dtmi_12);
 
     void send_to_bkpik(uint16_t& num_bi);
     void send_to_bi(uint16_t& num_bi);

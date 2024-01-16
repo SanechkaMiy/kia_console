@@ -6,6 +6,7 @@
 namespace helpers
 {
 const int32_t second_for_1_jan_2000 = 946080000;
+const uint16_t max_el_in_to_word = 4;
 inline namespace angular_transform
 {
     QString get_degreze(double value);
@@ -31,5 +32,7 @@ float decodeDateTime();
 std::pair<uint32_t, uint16_t> get_seconds_for_bshv();
 
 QString format_qstring(const QString& str, const int16_t &shift, const char &fillchar = ' ');
+
+std::array<uint16_t, max_el_in_to_word> split_data_from_word(uint16_t data);
 };
 #endif // KIA_HELP_FUNCTIONS_H

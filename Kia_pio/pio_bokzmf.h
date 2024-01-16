@@ -5,7 +5,7 @@
 #include <math.h>
 #include "Kia_pio/pio_bokz.h"
 #include "Kia_modules/kia_help_functions.h"
-const uint16_t max_el_in_to_word = 4;
+
 class Pio_bokzmf : public Pio_bokz
 {
 public:

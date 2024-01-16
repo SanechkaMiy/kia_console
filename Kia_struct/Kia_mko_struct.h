@@ -2169,7 +2169,7 @@ struct MLoc_2_MF
     float Loc_5_X = 0;
     float Loc_5_Y = 0;
     float Loc_5_B = 0;
-    float Loc_5_S = 0;
+    uint16_t Loc_5_S = 0;
     float Loc_6_X = 0;
     float Loc_6_Y = 0;
     float Loc_6_B = 0;

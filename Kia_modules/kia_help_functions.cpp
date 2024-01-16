@@ -347,3 +347,13 @@ std::pair<uint32_t, uint16_t> helpers::get_seconds_for_bshv()
     uint32_t sec_whole_part = sec - helpers::second_for_1_jan_2000;
     return {sec_whole_part, milliseconds.count()};
 }
+
+std::array<uint16_t, helpers::max_el_in_to_word> helpers::split_data_from_word(uint16_t data)
+{
+    std::array<uint16_t, max_el_in_to_word> ret_arr;
+    for (uint16_t ind_shift = 0; ind_shift < max_el_in_to_word; ind_shift++)
+    {
+        ret_arr[ind_shift] = ((data >> (4 * ind_shift)) & 0x000f);
+    }
+    return ret_arr;
+}

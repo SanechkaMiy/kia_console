@@ -129,8 +129,6 @@ private:
     quint16 m_nNextBlockSize = 0;
     QTcpServer* m_ptcpServer;
     QTcpSocket* m_pClientSocket;
-    std::vector<QFile*> m_file;
-
     uint16_t m_type_frame_recieve = Bokz::MKO;
 };
 

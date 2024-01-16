@@ -1084,8 +1084,8 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers + m_kia_settings->m_format_for_desc->shift_description)
                                                           + helpers::format_qstring("Xc", m_kia_settings->m_format_for_desc->shift_for_dtmi)
                                                           + helpers::format_qstring("Yc", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("MeanFrag_X", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("MeanFrag_Y", m_kia_settings->m_format_for_desc->shift_for_dtmi)
+                                                          + helpers::format_qstring("MeanFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
+                                                          + helpers::format_qstring("SigmaFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
                                                           + helpers::format_qstring("ThFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
                                                           + helpers::format_qstring("ObjFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
                                                           + helpers::format_qstring("MultXY", m_kia_settings->m_format_for_desc->shift_for_dtmi)
@@ -1093,9 +1093,9 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
                                                           + helpers::format_qstring("Zip_Y", m_kia_settings->m_format_for_desc->shift_for_dtmi));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back("");
 
-    auto ObjFrag_0_1_2_3 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_0_1_2_3);
-    auto MultXY_0_1_2_3 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_0_1_2_3);
-    auto ZipXY_0_1 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_0_0_0_1_1_0_1_1);
+    auto ObjFrag_0_1_2_3 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_0_1_2_3);
+    auto MultXY_0_1_2_3 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_0_1_2_3);
+    auto ZipXY_0_1 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_0_0_0_1_1_0_1_1);
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
@@ -1126,7 +1126,7 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
             helpers::format_qstring(QString("%1").arg(QString::number(ZipXY_0_1[3], 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi)
             );
 
-    auto ZipXY_2_3 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_2_0_2_1_3_0_3_1);
+    auto ZipXY_2_3 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_2_0_2_1_3_0_3_1);
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("3", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
@@ -1157,9 +1157,10 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
             helpers::format_qstring(QString("%1").arg(QString::number(ZipXY_2_3[3], 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi)
             );
 
-    auto ObjFrag_4_5_6_7 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_4_5_6_7);
-    auto MultXY_4_5_6_7 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_4_5_6_7);
-    auto ZipXY_4_5 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_4_0_4_1_5_0_5_1);
+    auto ObjFrag_4_5_6_7 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_4_5_6_7);
+    auto MultXY_4_5_6_7 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_4_5_6_7);
+    auto ZipXY_4_5 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_4_0_4_1_5_0_5_1);
+
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
@@ -1190,7 +1191,7 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
             helpers::format_qstring(QString("%1").arg(QString::number(ZipXY_4_5[3], 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi)
             );
 
-    auto ZipXY_6_7 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_6_0_6_0_7_0_7_1);
+    auto ZipXY_6_7 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_6_0_6_0_7_0_7_1);
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
@@ -1221,9 +1222,9 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
             helpers::format_qstring(QString("%1").arg(QString::number(ZipXY_6_7[3], 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi)
             );
 
-    auto ObjFrag_8_9_10_11 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_8_9_10_11);
-    auto MultXY_8_9_10_11 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_8_9_10_11);
-    auto ZipXY_8_9 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_8_0_8_0_9_0_9_1);
+    auto ObjFrag_8_9_10_11 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_8_9_10_11);
+    auto MultXY_8_9_10_11 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_8_9_10_11);
+    auto ZipXY_8_9 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_8_0_8_0_9_0_9_1);
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("9", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
@@ -1255,7 +1256,7 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
             helpers::format_qstring(QString("%1").arg(QString::number(ZipXY_8_9[3], 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi)
             );
 
-    auto ZipXY_10_11 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_10_0_10_0_11_0_11_1);
+    auto ZipXY_10_11 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_10_0_10_0_11_0_11_1);
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
@@ -1286,9 +1287,10 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
             helpers::format_qstring(QString("%1").arg(QString::number(ZipXY_10_11[3], 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi)
             );
 
-    auto ObjFrag_12_13_14_Xh = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_12_13_14_Xh);
-    auto MultXY_12_13_14_Xh = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_12_13_14_Xh);
-    auto ZipXY_12_13 = split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_12_0_12_0_13_0_13_1);
+    auto ObjFrag_12_13_14_Xh = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ObjFrag_12_13_14_Xh);
+    auto MultXY_12_13_14_Xh = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.MultXY_12_13_14_Xh);
+    auto ZipXY_12_13 = helpers::split_data_from_word(m_kia_mko_struct->dtmi_11_mf.ZipXY_12_0_12_0_13_0_13_1);
+
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
@@ -1485,15 +1487,6 @@ void Pio_bokzmf::dtmi_2_3_4_5_6_7_converter(DTMIRaw_2_3_4_5_6_7_MF &dtmiRaw_2_3_
     dtmiRaw_2_3_4_5_6_7.RsLoc_4_b = swapHex(dtmiRaw_2_3_4_5_6_7.RsLoc_4_b);
 }
 
-std::array<uint16_t, max_el_in_to_word> Pio_bokzmf::split_data_from_word(uint16_t data)
-{
-    std::array<uint16_t, max_el_in_to_word> ret_arr;
-    for (uint16_t ind_shift = 0; ind_shift < max_el_in_to_word; ind_shift++)
-    {
-        ret_arr[ind_shift] = ((data >> (4 * ind_shift)) & 0x000f);
-    }
-    return ret_arr;
-}
 void Pio_bokzmf::decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord)
 {
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.clear();

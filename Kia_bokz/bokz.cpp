@@ -42,7 +42,7 @@ void Bokz::parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::
             if (ind == 0)
                 shift = 2;
             str_mpi_protocol.push_back(QString("%1 %2").arg("", -shift).arg(QString("0x%1").arg(QString::number(kia_data->m_data_mpi->m_data_to_exc[ind], 16), 4, '0')));
-            if (ind % 1 == 0 && ind != 0)
+            if (ind % 7 == 0 && ind != 0)
                 str_mpi_protocol.push_back("\n");
         }
         str_mpi_protocol.push_back("\n");
