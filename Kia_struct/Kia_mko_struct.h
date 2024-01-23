@@ -865,7 +865,7 @@ struct DTMIRaw_9
 
 };
 #pragma pack(pop)
-
+const uint16_t size_qlst_dtmi = 4;
 #pragma pack(push, 1)
 struct DTMIRaw_1_MF
 {
@@ -889,10 +889,7 @@ struct DTMIRaw_1_MF
     uint8_t NumFrag = 0;
     uint32_t Tlast = 0;
     uint16_t Tmslast = 0;
-    uint32_t Qlst_0 = 0;
-    uint32_t Qlst_1 = 0;
-    uint32_t Qlst_2 = 0;
-    uint32_t Qlst_3 = 0;
+    std::array<uint32_t, size_qlst_dtmi> Qlst;
     uint16_t rezerv = 0;
     uint8_t HistDef_0 = 0;
     uint8_t HistDef_1 = 0;
@@ -1144,14 +1141,7 @@ struct DTMIRaw_12_MF
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct DTMI_MF
-{
-    QStringList dtmi_list_name;
-    QStringList dtmi_list_data;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
+const uint16_t size_histdef_dtmi = 8;
 struct DTMI_1_MF
 {
     uint16_t CW = 0;
@@ -1174,45 +1164,22 @@ struct DTMI_1_MF
     uint8_t NumFrag = 0;
     uint32_t Tlast = 0;
     uint16_t Tmslast = 0;
-    float Qlst_0 = 0;
-    float Qlst_1 = 0;
-    float Qlst_2 = 0;
-    float Qlst_3 = 0;
+    std::array<float, size_qlst_dtmi> Qlst;
     uint16_t rezerv = 0;
-    uint8_t HistDef_0 = 0;
-    uint8_t HistDef_1 = 0;
-    uint8_t HistDef_2 = 0;
-    uint8_t HistDef_3 = 0;
-    uint8_t HistDef_4 = 0;
-    uint8_t HistDef_5 = 0;
-    uint8_t HistDef_6 = 0;
-    uint8_t HistDef_7 = 0;
+    std::array<uint8_t, size_histdef_dtmi> HistDef;
     uint16_t cs = 0;
 
 };
 #pragma pack(pop)
 
+const uint16_t size_loc_dtmi = 15;
 #pragma pack(push, 1)
 struct DTMI_2_MF
 {
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    float RsLoc_0_x = 0;
-    float RsLoc_0_y = 0;
-    float RsLoc_0_b = 0;
-    float RsLoc_1_x = 0;
-    float RsLoc_1_y = 0;
-    float RsLoc_1_b = 0;
-    float RsLoc_2_x = 0;
-    float RsLoc_2_y = 0;
-    float RsLoc_2_b = 0;
-    float RsLoc_3_x = 0;
-    float RsLoc_3_y = 0;
-    float RsLoc_3_b = 0;
-    float RsLoc_4_x = 0;
-    float RsLoc_4_y = 0;
-    float RsLoc_4_b = 0;
+    std::array<float, size_loc_dtmi> rs_loc_0_dtmi2;
     uint16_t cs = 0;
 
 };
@@ -1224,21 +1191,7 @@ struct DTMI_3_MF
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    float RsLoc_5_x = 0;
-    float RsLoc_5_y = 0;
-    float RsLoc_5_b = 0;
-    float RsLoc_6_x = 0;
-    float RsLoc_6_y = 0;
-    float RsLoc_6_b = 0;
-    float RsLoc_7_x = 0;
-    float RsLoc_7_y = 0;
-    float RsLoc_7_b = 0;
-    float RsLoc_8_x = 0;
-    float RsLoc_8_y = 0;
-    float RsLoc_8_b = 0;
-    float RsLoc_9_x = 0;
-    float RsLoc_9_y = 0;
-    float RsLoc_9_b = 0;
+    std::array<float, size_loc_dtmi> rs_loc_0_dtmi3;
     uint16_t cs = 0;
 
 };
@@ -1250,21 +1203,7 @@ struct DTMI_4_MF
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    float RsLoc_10_x = 0;
-    float RsLoc_10_y = 0;
-    float RsLoc_10_b = 0;
-    float RsLoc_11_x = 0;
-    float RsLoc_11_y = 0;
-    float RsLoc_11_b = 0;
-    float RsLoc_12_x = 0;
-    float RsLoc_12_y = 0;
-    float RsLoc_12_b = 0;
-    float RsLoc_13_x = 0;
-    float RsLoc_13_y = 0;
-    float RsLoc_13_b = 0;
-    float RsLoc_14_x = 0;
-    float RsLoc_14_y = 0;
-    float RsLoc_14_b = 0;
+    std::array<float, size_loc_dtmi> rs_loc_0_dtmi4;
     uint16_t cs = 0;
 
 };
@@ -1276,21 +1215,7 @@ struct DTMI_5_MF
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    float RsLoc_0_x = 0;
-    float RsLoc_0_y = 0;
-    float RsLoc_0_b = 0;
-    float RsLoc_1_x = 0;
-    float RsLoc_1_y = 0;
-    float RsLoc_1_b = 0;
-    float RsLoc_2_x = 0;
-    float RsLoc_2_y = 0;
-    float RsLoc_2_b = 0;
-    float RsLoc_3_x = 0;
-    float RsLoc_3_y = 0;
-    float RsLoc_3_b = 0;
-    float RsLoc_4_x = 0;
-    float RsLoc_4_y = 0;
-    float RsLoc_4_b = 0;
+    std::array<float, size_loc_dtmi> rs_loc_1_dtmi5;
     uint16_t cs = 0;
 };
 #pragma pack(pop)
@@ -1301,21 +1226,7 @@ struct DTMI_6_MF
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    float RsLoc_5_x = 0;
-    float RsLoc_5_y = 0;
-    float RsLoc_5_b = 0;
-    float RsLoc_6_x = 0;
-    float RsLoc_6_y = 0;
-    float RsLoc_6_b = 0;
-    float RsLoc_7_x = 0;
-    float RsLoc_7_y = 0;
-    float RsLoc_7_b = 0;
-    float RsLoc_8_x = 0;
-    float RsLoc_8_y = 0;
-    float RsLoc_8_b = 0;
-    float RsLoc_9_x = 0;
-    float RsLoc_9_y = 0;
-    float RsLoc_9_b = 0;
+    std::array<float, size_loc_dtmi> rs_loc_1_dtmi6;
     uint16_t cs = 0;
 };
 #pragma pack(pop)
@@ -1326,21 +1237,7 @@ struct DTMI_7_MF
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    float RsLoc_10_x = 0;
-    float RsLoc_10_y = 0;
-    float RsLoc_10_b = 0;
-    float RsLoc_11_x = 0;
-    float RsLoc_11_y = 0;
-    float RsLoc_11_b = 0;
-    float RsLoc_12_x = 0;
-    float RsLoc_12_y = 0;
-    float RsLoc_12_b = 0;
-    float RsLoc_13_x = 0;
-    float RsLoc_13_y = 0;
-    float RsLoc_13_b = 0;
-    float RsLoc_14_x = 0;
-    float RsLoc_14_y = 0;
-    float RsLoc_14_b = 0;
+    std::array<float, size_loc_dtmi> rs_loc_1_dtmi7;
     uint16_t cs = 0;
 };
 #pragma pack(pop)
@@ -1351,79 +1248,25 @@ struct DTMI_8_MF
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    uint16_t RsLoc_T0_0_S = 0;
-    uint16_t RsLoc_T0_1_S = 0;
-    uint16_t RsLoc_T0_2_S = 0;
-    uint16_t RsLoc_T0_3_S = 0;
-    uint16_t RsLoc_T0_4_S = 0;
-    uint16_t RsLoc_T0_5_S = 0;
-    uint16_t RsLoc_T0_6_S = 0;
-    uint16_t RsLoc_T0_7_S = 0;
-    uint16_t RsLoc_T0_8_S = 0;
-    uint16_t RsLoc_T0_9_S = 0;
-    uint16_t RsLoc_T0_10_S = 0;
-    uint16_t RsLoc_T0_11_S = 0;
-    uint16_t RsLoc_T0_12_S = 0;
-    uint16_t RsLoc_T0_13_S = 0;
-    uint16_t RsLoc_T0_14_S = 0;
-    uint16_t RsLoc_T1_0_S = 0;
-    uint16_t RsLoc_T1_1_S = 0;
-    uint16_t RsLoc_T1_2_S = 0;
-    uint16_t RsLoc_T1_3_S = 0;
-    uint16_t RsLoc_T1_4_S = 0;
-    uint16_t RsLoc_T1_5_S = 0;
-    uint16_t RsLoc_T1_6_S = 0;
-    uint16_t RsLoc_T1_7_S = 0;
-    uint16_t RsLoc_T1_8_S = 0;
-    uint16_t RsLoc_T1_9_S = 0;
-    uint16_t RsLoc_T1_10_S = 0;
-    uint16_t RsLoc_T1_11_S = 0;
-    uint16_t RsLoc_T1_12_S = 0;
-    uint16_t RsLoc_T1_13_S = 0;
-    uint16_t RsLoc_T1_14_S = 0;
+    std::array<uint16_t, size_loc_dtmi> rs_loc_s_0_dtmi8;
+    std::array<uint16_t, size_loc_dtmi> rs_loc_s_1_dtmi8;
     uint16_t cs = 0;
 };
 #pragma pack(pop)
 
+const uint16_t size_xyc_dtmi = 30;
 #pragma pack(push, 1)
 struct DTMI_9_MF
 {
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    uint16_t XYc_0_0 = 0;
-    uint16_t XYc_0_1 = 0;
-    uint16_t XYc_1_0 = 0;
-    uint16_t XYc_1_1 = 0;
-    uint16_t XYc_2_0 = 0;
-    uint16_t XYc_2_1 = 0;
-    uint16_t XYc_3_0 = 0;
-    uint16_t XYc_3_1 = 0;
-    uint16_t XYc_4_0 = 0;
-    uint16_t XYc_4_1 = 0;
-    uint16_t XYc_5_0 = 0;
-    uint16_t XYc_5_1 = 0;
-    uint16_t XYc_6_0 = 0;
-    uint16_t XYc_6_1 = 0;
-    uint16_t XYc_7_0 = 0;
-    uint16_t XYc_7_1 = 0;
-    uint16_t XYc_8_0 = 0;
-    uint16_t XYc_8_1 = 0;
-    uint16_t XYc_9_0 = 0;
-    uint16_t XYc_9_1 = 0;
-    uint16_t XYc_10_0 = 0;
-    uint16_t XYc_10_1 = 0;
-    uint16_t XYc_11_0 = 0;
-    uint16_t XYc_11_1 = 0;
-    uint16_t XYc_12_0 = 0;
-    uint16_t XYc_12_1 = 0;
-    uint16_t XYc_13_0 = 0;
-    uint16_t XYc_13_1 = 0;
-    uint16_t XYc_14_0 = 0;
-    uint16_t XYc_14_1 = 0;
+    std::array<uint16_t, size_xyc_dtmi> Xyc;
     uint16_t cs = 0;
 };
 #pragma pack(pop)
+
+const uint16_t size_mean_dtmi = 30;
 
 #pragma pack(push, 1)
 struct DTMI_10_MF
@@ -1431,80 +1274,29 @@ struct DTMI_10_MF
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    uint16_t Mean_0_0 = 0;
-    uint16_t Mean_0_1 = 0;
-    uint16_t Mean_1_0 = 0;
-    uint16_t Mean_1_1 = 0;
-    uint16_t Mean_2_0 = 0;
-    uint16_t Mean_2_1 = 0;
-    uint16_t Mean_3_0 = 0;
-    uint16_t Mean_3_1 = 0;
-    uint16_t Mean_4_0 = 0;
-    uint16_t Mean_4_1 = 0;
-    uint16_t Mean_5_0 = 0;
-    uint16_t Mean_5_1 = 0;
-    uint16_t Mean_6_0 = 0;
-    uint16_t Mean_6_1 = 0;
-    uint16_t Mean_7_0 = 0;
-    uint16_t Mean_7_1 = 0;
-    uint16_t Mean_8_0 = 0;
-    uint16_t Mean_8_1 = 0;
-    uint16_t Mean_9_0 = 0;
-    uint16_t Mean_9_1 = 0;
-    uint16_t Mean_10_0 = 0;
-    uint16_t Mean_10_1 = 0;
-    uint16_t Mean_11_0 = 0;
-    uint16_t Mean_11_1 = 0;
-    uint16_t Mean_12_0 = 0;
-    uint16_t Mean_12_1 = 0;
-    uint16_t Mean_13_0 = 0;
-    uint16_t Mean_13_1 = 0;
-    uint16_t Mean_14_0 = 0;
-    uint16_t Mean_14_1 = 0;
+    std::array<uint16_t, size_mean_dtmi> Mean;
     uint16_t cs = 0;
 };
 #pragma pack(pop)
 
+const uint16_t size_thfrag_dtmi = 15;
+const uint16_t size_objfrag_dtmi = 4;
+const uint16_t size_multxy_dtmi = 4;
+const uint16_t size_zipxy_dtmi = 7;
 #pragma pack(push, 1)
 struct DTMI_11_MF
 {
     uint16_t CW = 0;
     uint16_t AW = 0;
     uint16_t nAr = 0;
-    uint16_t ThFrag_0 = 0;
-    uint16_t ThFrag_1 = 0;
-    uint16_t ThFrag_2 = 0;
-    uint16_t ThFrag_3 = 0;
-    uint16_t ThFrag_4 = 0;
-    uint16_t ThFrag_5 = 0;
-    uint16_t ThFrag_6 = 0;
-    uint16_t ThFrag_7 = 0;
-    uint16_t ThFrag_8 = 0;
-    uint16_t ThFrag_9 = 0;
-    uint16_t ThFrag_10 = 0;
-    uint16_t ThFrag_11 = 0;
-    uint16_t ThFrag_12 = 0;
-    uint16_t ThFrag_13 = 0;
-    uint16_t ThFrag_14 = 0;
-    uint16_t ObjFrag_0_1_2_3 = 0;
-    uint16_t ObjFrag_4_5_6_7 = 0;
-    uint16_t ObjFrag_8_9_10_11 = 0;
-    uint16_t ObjFrag_12_13_14_Xh = 0;
-    uint16_t MultXY_0_1_2_3 = 0;
-    uint16_t MultXY_4_5_6_7 = 0;
-    uint16_t MultXY_8_9_10_11 = 0;
-    uint16_t MultXY_12_13_14_Xh = 0;
-    uint16_t ZipXY_0_0_0_1_1_0_1_1 = 0;
-    uint16_t ZipXY_2_0_2_1_3_0_3_1 = 0;
-    uint16_t ZipXY_4_0_4_1_5_0_5_1 = 0;
-    uint16_t ZipXY_6_0_6_0_7_0_7_1 = 0;
-    uint16_t ZipXY_8_0_8_0_9_0_9_1 = 0;
-    uint16_t ZipXY_10_0_10_0_11_0_11_1 = 0;
-    uint16_t ZipXY_12_0_12_0_13_0_13_1 = 0;
+    std::array<uint16_t, size_thfrag_dtmi> ThFrag;
+    std::array<uint16_t, size_objfrag_dtmi> ObjFrag;
+    std::array<uint16_t, size_multxy_dtmi> MultXY;
+    std::array<uint16_t, size_zipxy_dtmi> ZipXY;
     uint16_t cs = 0;
 };
 #pragma pack(pop)
-
+const uint16_t size_hist_pix = 15;
 #pragma pack(push, 1)
 struct DTMI_12_MF
 {
@@ -1535,23 +1327,50 @@ struct DTMI_12_MF
     uint8_t Epsilon = 0;
     uint16_t deltaT = 0;
     uint16_t m_cur = 0;
-    uint8_t HistPix_0 = 0;
-    uint8_t HistPix_1 = 0;
-    uint8_t HistPix_2 = 0;
-    uint8_t HistPix_3 = 0;
-    uint8_t HistPix_4 = 0;
-    uint8_t HistPix_5 = 0;
-    uint8_t HistPix_6 = 0;
-    uint8_t HistPix_7 = 0;
-    uint8_t HistPix_8 = 0;
-    uint8_t HistPix_9 = 0;
-    uint8_t HistPix_10 = 0;
-    uint8_t HistPix_11 = 0;
-    uint8_t HistPix_12 = 0;
-    uint8_t HistPix_13 = 1;
-    uint8_t HistPix_14 = 1;
-    uint8_t HistPix_15 = 1;
+    std::array<uint8_t, size_hist_pix> HistPix;
     uint8_t cs = 0;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct DTMI_MF
+{
+    QStringList dtmi_list_name;
+    QStringList dtmi_list_data;
+
+    std::vector<uint16_t> reserve;
+
+    std::vector<float> rsLoc_0_x;
+    std::vector<float> rsLoc_0_y;
+    std::vector<float> rsLoc_0_b;
+    std::vector<uint16_t> rsLoc_0_s;
+
+    std::vector<float> rsLoc_1_x;
+    std::vector<float> rsLoc_1_y;
+    std::vector<float> rsLoc_1_b;
+    std::vector<uint16_t> rsLoc_1_s;
+
+    std::vector<uint16_t> XYc_x;
+    std::vector<uint16_t> XYc_y;
+    std::vector<uint16_t> MeanFrag;
+    std::vector<uint16_t> SigmaFrag;
+    std::vector<uint16_t> ObjFrag;
+    std::vector<uint16_t> MultXY;
+    std::vector<uint16_t> ZipXY_X;
+    std::vector<uint16_t> ZipXY_Y;
+
+    DTMI_1_MF dtmi_1_mf;
+    DTMI_2_MF dtmi_2_mf;
+    DTMI_3_MF dtmi_3_mf;
+    DTMI_4_MF dtmi_4_mf;
+    DTMI_5_MF dtmi_5_mf;
+    DTMI_6_MF dtmi_6_mf;
+    DTMI_7_MF dtmi_7_mf;
+    DTMI_8_MF dtmi_8_mf;
+    DTMI_9_MF dtmi_9_mf;
+    DTMI_10_MF dtmi_10_mf;
+    DTMI_11_MF dtmi_11_mf;
+    DTMI_12_MF dtmi_12_mf;
 };
 #pragma pack(pop)
 
@@ -2112,14 +1931,6 @@ struct DTMILocRaw_9_MF
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct MLoc_MF
-{
-    QStringList mloc_list_name;
-    QStringList mloc_list_data;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
 struct MLoc_1_MF
 {
     uint16_t CW = 0;
@@ -2369,6 +2180,175 @@ struct MLoc_9_MF
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+struct MLoc_MF
+{
+    QStringList mloc_list_name;
+    QStringList mloc_list_data;
+    MLoc_1_MF mLoc_1_mf;
+    MLoc_2_MF mLoc_2_mf;
+    MLoc_3_MF mLoc_3_mf;
+    MLoc_4_MF mLoc_4_mf;
+    MLoc_5_MF mLoc_5_mf;
+    MLoc_6_MF mLoc_6_mf;
+    MLoc_7_MF mLoc_7_mf;
+    MLoc_8_MF mLoc_8_mf;
+    MLoc_9_MF mLoc_9_mf;
+};
+#pragma pack(pop)
+
+const uint16_t count_chpn_matrix = 9;
+#pragma pack(push, 1)
+struct CHPN_1_MF_raw
+{
+    uint16_t nAr;
+    uint16_t Texp;
+    uint32_t Foc;
+    uint32_t XG;
+    uint32_t YG;
+    uint32_t Epsilon;
+    std::array<uint32_t, count_chpn_matrix> m_pr;
+    uint16_t rezerv1;
+    uint16_t rezerv2;
+    uint16_t rezerv3;
+};
+#pragma pack(pop)
+const uint16_t count_chpn_rezerv = 8;
+#pragma pack(push, 1)
+struct CHPN_2_MF_raw
+{
+    uint16_t nAr;
+    uint32_t extBrightThres;
+    uint32_t extOmegaLocalThres;
+    uint16_t extMinPixelCount;
+    uint16_t extMaxPixelCount;
+    uint16_t MaxExp;
+    uint16_t MinExp;
+    uint32_t KSigmaNO;
+    uint32_t KSigmaSL;
+    uint16_t StarNO;
+    uint16_t StarSrcSSL;
+    uint16_t Noise;
+    uint16_t radius;
+    uint16_t fragNormalSizeY;
+    uint16_t stepNormalY;
+    uint16_t fragStatSizeY;
+    uint16_t stepStatY;
+    uint16_t x0;
+    uint16_t y0;
+    std::array<uint16_t, count_chpn_rezerv> rezerv;
+
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CHPN_1_MF
+{
+    uint16_t nAr;
+    uint16_t Texp;
+    float Foc;
+    float XG;
+    float YG;
+    float Epsilon;
+    uint16_t rezerv1;
+    std::array<float, count_chpn_matrix> m_pr;
+    uint16_t rezerv2;
+    uint16_t rezerv3;
+    uint16_t rezerv4;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CHPN_2_MF
+{
+    uint16_t nAr;
+    float extBrightThres;
+    float extOmegaLocalThres;
+    uint16_t extMinPixelCount;
+    uint16_t extMaxPixelCount;
+    uint16_t MaxExp;
+    uint16_t MinExp;
+    float KSigmaNO;
+    float KSigmaSL;
+    uint16_t StarNO;
+    uint16_t StarSrcSSL;
+    uint16_t Noise;
+    uint16_t radius;
+    uint16_t fragNormalSizeY;
+    uint16_t stepNormalY;
+    uint16_t fragStatSizeY;
+    uint16_t stepStatY;
+    uint16_t x0;
+    uint16_t y0;
+    std::array<uint16_t, count_chpn_rezerv> rezerv;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CHPN_MF
+{
+    QStringList chpn_list_name;
+    QStringList chpn_list_data;
+    CHPN_1_MF chpn_1_mf;
+    CHPN_2_MF chpn_2_mf;
+};
+#pragma pack(pop)
+
+const uint16_t count_chkd = 14;
+#pragma pack(push, 1)
+struct CHKD_1_MF_raw
+{
+    uint16_t nAr;
+    std::array<uint32_t, count_chkd> KofDX;
+    uint16_t procCover;
+    uint16_t procFieldCalibr;
+    uint16_t cs;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CHKD_2_MF_raw
+{
+    uint16_t nAr;
+    std::array<uint32_t, count_chkd> KofDY;
+    uint16_t rezerv1;
+    uint16_t rezerve2;
+    uint16_t cs;
+
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CHKD_1_MF
+{
+    uint16_t nAr;
+    std::array<float, count_chkd> KofDX;
+    uint16_t procCover;
+    uint16_t procFieldCalibr;
+    uint16_t cs;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CHKD_2_MF
+{
+    uint16_t nAr;
+    std::array<float, count_chkd> KofDY;
+    uint16_t rezerv1;
+    uint16_t rezerve2;
+    uint16_t cs;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct CHKD_MF
+{
+    QStringList chkd_list_name;
+    QStringList chkd_list_data;
+    CHKD_1_MF chkd_1_mf;
+    CHKD_2_MF chkd_2_mf;
+};
+#pragma pack(pop)
 struct Kia_mko_struct
 {
     SHTMI1 st_shtmi1;
@@ -2399,27 +2379,8 @@ struct Kia_mko_struct
     SHTMI2_MF st_shtmi2_mf;
     MSHIOR_MF st_mshior_mf;
     DTMI_MF st_dtmi_mf;
-    DTMI_1_MF dtmi_1_mf;
-    DTMI_2_MF dtmi_2_mf;
-    DTMI_3_MF dtmi_3_mf;
-    DTMI_4_MF dtmi_4_mf;
-    DTMI_5_MF dtmi_5_mf;
-    DTMI_6_MF dtmi_6_mf;
-    DTMI_7_MF dtmi_7_mf;
-    DTMI_8_MF dtmi_8_mf;
-    DTMI_9_MF dtmi_9_mf;
-    DTMI_10_MF dtmi_10_mf;
-    DTMI_11_MF dtmi_11_mf;
-    DTMI_12_MF dtmi_12_mf;
     MLoc_MF st_mloc_mf;
-    MLoc_1_MF mLoc_1_mf;
-    MLoc_2_MF mLoc_2_mf;
-    MLoc_3_MF mLoc_3_mf;
-    MLoc_4_MF mLoc_4_mf;
-    MLoc_5_MF mLoc_5_mf;
-    MLoc_6_MF mLoc_6_mf;
-    MLoc_7_MF mLoc_7_mf;
-    MLoc_8_MF mLoc_8_mf;
-    MLoc_9_MF mLoc_9_mf;
+    CHPN_MF st_chpn_mf;
+    CHKD_MF st_chkd_mf;
 };
 #endif // KIA_MKO_STRUCT_H

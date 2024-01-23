@@ -38,6 +38,8 @@ public:
     void shtmi1(uint16_t parametr = EP_DOALL);
     void shtmi2(uint16_t parametr = EP_DOALL);
     void mshior(uint16_t parametr = EP_DOALL);
+    void upn(uint16_t type_upn, QStringList value, uint16_t parametr = EP_DOALL);
+    void chpn(QStringList type_chpn, uint16_t parametr = EP_DOALL);
     void os(uint16_t parametr = EP_DOALL);
     void synchro(uint16_t parametr = EP_DOALL);
     void skor(uint16_t parametr = EP_DOALL);
@@ -51,17 +53,12 @@ public:
     void command_restart(uint16_t parametr = EP_DOALL);
     void command_oo(uint16_t parametr = EP_DOALL);
     void command_zkr(uint16_t parametr = EP_DOALL);
+    void command_otkr(uint16_t parametr = EP_DOALL);
     void command_full_exp(uint16_t parametr = EP_DOALL);
     void kvaor(uint16_t parametr = EP_DOALL);
     void vskou(uint16_t parametr = EP_DOALL);
     void dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL);
     void mloc(uint16_t parametr = EP_DOALL);
-    void set_epsilon(uint16_t parametr = EP_DOALL);
-    void get_epsilon(uint16_t parametr = EP_DOALL);
-    void set_focus(uint16_t parametr = EP_DOALL);
-    void get_focus(uint16_t parametr = EP_DOALL);
-    void set_texp(uint16_t parametr = EP_DOALL);
-    void get_texp(uint16_t parametr = EP_DOALL);
 
     void do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL);
 
@@ -103,6 +100,7 @@ private:
     void send_kia_initial_settings();
     void send_mpi_list_command();
     void send_mpi_list_other_command();
+    void send_pn_list_command();
     void send_cyclogams_list();
     void send_cyclogams_ai_list();
     void send_cyclogams_ri_list();
@@ -129,7 +127,7 @@ private:
     quint16 m_nNextBlockSize = 0;
     QTcpServer* m_ptcpServer;
     QTcpSocket* m_pClientSocket;
-    uint16_t m_type_frame_recieve = Bokz::MKO;
+
 };
 
 #endif // WORKWITHMAIN_H

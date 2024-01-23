@@ -18,6 +18,7 @@ Kia_cyclogram_bokzm60::Kia_cyclogram_bokzm60(std::shared_ptr<Kia_timers> kia_tim
     create_list_command_for_no();
     create_list_command_for_to();
     create_list_command_for_loc();
+    create_list_chpn();
 }
 
 uint16_t Kia_cyclogram_bokzm60::cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr)
@@ -490,24 +491,24 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_test_mko(uint16_t &num_bokz, uint16_t 
         m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi = check_lpi;
         save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
                          + QString("Выбор ЛПИ ") + QString::number(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi) + "\n", parametr);
-        uint16_t counter_if_success_vmti_smti_check = 1;
-        for (m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data = 1; m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data < constants::packetSize - 1; m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data++)
-        {
-            m_bokz[num_bokz]->vmti(EP_NOPROTECTEDEXCHANGE);
-            m_bokz[num_bokz]->smti(EP_NOPROTECTEDEXCHANGE);
-            uint16_t count_if_true = 0;
-            for (uint16_t num_word = 0; num_word < m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data; num_word++)
-            {
-                if (m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_data_to_exc[num_word] == m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_data_word[num_word + 2])
-                {
-                    count_if_true++;
-                }
-            }
-            if (count_if_true == m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data)
-                counter_if_success_vmti_smti_check++;
-        }
+        uint16_t counter_if_success_vmti_smti_check = 0;
 
-        if (counter_if_success_vmti_smti_check == m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data < constants::packetSize - 1)
+        m_bokz[num_bokz]->vmti(EP_NOPROTECTEDEXCHANGE);
+        m_bokz[num_bokz]->smti(EP_NOPROTECTEDEXCHANGE);
+        uint16_t count_if_true = 0;
+        for (uint16_t num_word = 0; num_word < m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data; num_word++)
+        {
+            if (m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_data_to_exc[num_word] == m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_data_word[num_word + 2])
+            {
+                count_if_true++;
+            }
+        }
+        if (count_if_true == m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_word_data)
+            counter_if_success_vmti_smti_check++;
+
+        std::cout  << "lpi " << m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi << " " << m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange << std::endl;
+        if (m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS
+                && counter_if_success_vmti_smti_check == 1)
         {
             save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
                              + QString("Для ЛПИ ") + QString::number(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi) + " ВМТИ И СМТИ совпадают""\n", parametr);
@@ -517,7 +518,7 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_test_mko(uint16_t &num_bokz, uint16_t 
         else
         {
             save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time)
-                             + QString("Для ЛПИ ") + QString::number(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi) + " ВМТИ И СМТИ совпадают""\n", parametr);
+                             + QString("Для ЛПИ ") + QString::number(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi) + " ВМТИ И СМТИ не совпадают""\n", parametr);
             m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange = KiaS_FAIL;
             m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - ОШИБКА!";
         }
@@ -587,7 +588,10 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_zkr(uint16_t &num_bokz, uint16_t param
     save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc->shift_date_time) + QString("Начинаем циклограмму Закрытия и открытия крышки!") + "\n", parametr);
     preset_before_exchange(num_bokz);
     uint16_t index_cyclogram_zkr = 0;
-    while ((index_cyclogram_zkr <= m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[PIL_ZKR][SPC_COUNT] && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz]))
+    auto count_do = m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[PIL_ZKR][SPC_COUNT];
+    if (count_do != 0)
+        count_do -= 1;
+    while ((index_cyclogram_zkr <= count_do && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz]))
     {
         m_bokz[num_bokz]->command_openkr();
         wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
@@ -635,11 +639,14 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_full_frames(uint16_t &num_bokz, uint16
                      + QString("Начинаем циклограмму получения кадров!") + "\n", parametr);
     preset_before_exchange(num_bokz);
     uint16_t index_cyclogram_zkr = 0;
-    while ((index_cyclogram_zkr <= m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[PIL_CYCL_FRAMES][SPC_COUNT]
-            && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz]))
+    auto count_do = m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[PIL_CYCL_FRAMES][SPC_COUNT];
+    if (count_do != 0)
+        count_do -= 1;
+    std::cout << "her " << m_kia_settings->m_frame_settings.m_type_frame_recieve << std::endl;
+    while ((index_cyclogram_zkr <= count_do && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz]))
     {
-        //m_kia_matrox->matrox_grab_frame();
 
+        m_bokz[num_bokz]->do_frames(m_kia_settings->m_frame_settings.m_type_frame_recieve, m_kia_settings->m_frame_settings.m_type_frame, parametr);
         if (m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[PIL_CYCL_FRAMES][SPC_COUNT] != 0)
             index_cyclogram_zkr++;
         wait_some_time(num_bokz, m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[PIL_CYCL_FRAMES][SPC_PERIOD]
@@ -651,6 +658,11 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_full_frames(uint16_t &num_bokz, uint16
     return m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange;
 }
 
+void Kia_cyclogram_bokzm60::set_cyclogram_settings()
+{
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_wait_localization = 10;
+}
+
 uint16_t Kia_cyclogram_bokzm60::start_no(uint16_t &num_bokz, uint16_t parametr)
 {
     if (m_bokz[num_bokz]->command_otclp() == KiaS_SUCCESS)
@@ -658,7 +670,6 @@ uint16_t Kia_cyclogram_bokzm60::start_no(uint16_t &num_bokz, uint16_t parametr)
         wait_some_time(num_bokz, m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_wait_for_otclp
                        * m_kia_settings->m_freq_bokz);
         wait_for_bi_takt(num_bokz);
-
 
         for (uint16_t num_cyclogram = 0; num_cyclogram < m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[SCO_NO].size(); num_cyclogram++)
         {
@@ -700,9 +711,12 @@ uint16_t Kia_cyclogram_bokzm60::start_loc(uint16_t &num_bokz, uint16_t parametr,
 {
     uint16_t index_do_loc = 0;
     bool do_breake = false;
+    auto count_cyclogram = count_do_loc;
+    if (count_cyclogram != 0)
+        count_cyclogram -= 1;
     while (index_do_loc <= count_do_loc && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz] && m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
-        for (uint16_t num_cyclogram = 0; num_cyclogram < m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[SCO_NO].size(); num_cyclogram++)
+        for (uint16_t num_cyclogram = 0; num_cyclogram < m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[SCO_LOC].size(); num_cyclogram++)
         {
             if (m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[SCO_LOC][num_cyclogram] == KiaS_SUCCESS
                     && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz])
@@ -718,7 +732,7 @@ uint16_t Kia_cyclogram_bokzm60::start_loc(uint16_t &num_bokz, uint16_t parametr,
         if (do_breake)
             break;
 
-        wait_some_time(num_bokz, m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_wait_for_start_dtmi_loc
+        wait_some_time(num_bokz, m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_wait_localization
                        * m_kia_settings->m_freq_bokz);
         if (m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz] && m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
         {
@@ -874,17 +888,16 @@ void Kia_cyclogram_bokzm60::create_list_other_mpi_commands()
     };
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_other_command.push_back(std::make_tuple(fu_smti, "СМТИ", SMTI));
 
-    auto separator = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
-    {
-        return m_bokz[num_bokz]->smti(parametr);
-    };
-
     auto fu_vmti = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
     {
         return m_bokz[num_bokz]->vmti(parametr);
     };
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_other_command.push_back(std::make_tuple(fu_vmti, "ВМТИ", VMTI));
 
+    auto separator = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
+    {
+        return m_bokz[num_bokz]->smti(parametr);
+    };
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_other_command.push_back(std::make_tuple(separator, "separator", VMTI));
 
     auto fu_synchro = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
@@ -936,6 +949,12 @@ void Kia_cyclogram_bokzm60::create_list_other_mpi_commands()
         return m_bokz[num_bokz]->vskou(parametr);
     };
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_other_command.push_back(std::make_tuple(fu_vskou, "Команда ВСКОУ", COMMAND_VSKOU));
+
+    auto fu_otkr = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
+    {
+        return m_bokz[num_bokz]->command_openkr(parametr);
+    };
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_other_command.push_back(std::make_tuple(fu_otkr, "Команда ОТКР", COMMAND_OTKR));
 
     auto fu_zkr = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
     {
@@ -1068,7 +1087,9 @@ void Kia_cyclogram_bokzm60::create_list_command_for_no()
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> command_cycl;
     auto comm_synchro = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
     {
-        return m_bokz[num_bokz]->synchro(parametr);
+        m_bokz[num_bokz]->synchro(parametr);
+        wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
+        return m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange;
     };
     command_cycl.push_back(std::make_tuple(comm_synchro, "УСД СИНХРО", CYCLOGRAM_TECH_RUN));
 
@@ -1098,8 +1119,11 @@ void Kia_cyclogram_bokzm60::create_list_command_for_to()
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> command_cycl;
     auto comm_synchro = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
     {
-        return m_bokz[num_bokz]->synchro(parametr);
+        m_bokz[num_bokz]->synchro(parametr);
+        wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
+        return m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange;
     };
+
     command_cycl.push_back(std::make_tuple(comm_synchro, "УСД СИНХРО", CYCLOGRAM_TECH_RUN));
 
     auto comm_skor = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
@@ -1143,4 +1167,17 @@ void Kia_cyclogram_bokzm60::create_list_command_for_loc()
     std::vector<uint64_t> sleep_to_command_cyclogram(command_cycl.size());
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do.push_back(do_cyclogram);
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram.push_back(sleep_to_command_cyclogram);
+}
+
+void Kia_cyclogram_bokzm60::create_list_chpn()
+{
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Время экспонирования", "texp", IS_PARAM, BokzM60::TP_TEXP));
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Фокус", "focus", IS_PARAM, BokzM60::TP_FOC));
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Координата X", "cord_x", IS_PARAM, BokzM60::TP_X));
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Координата Y", "cord_y", IS_PARAM, BokzM60::TP_Y));
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Допуск распознавания", "epsilon", IS_PARAM, BokzM60::TP_EPS));
+
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Матрица ПСК", "mat_psk", IS_TABLE, BokzM60::TP_MAT));
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Кватернион ориентации", "q0", IS_TABLE, BokzM60::TP_QA));
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Угловая скорость", "wo", IS_TABLE, BokzM60::TP_W));
 }

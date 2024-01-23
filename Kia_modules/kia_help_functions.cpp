@@ -112,15 +112,22 @@ QString helpers::get_command_complete(uint16_t value, uint16_t shift)
     }
 }
 
-QString helpers::get_last_usd(uint16_t value, uint16_t shift)
+
+QString helpers::get_status(uint16_t value, uint16_t shift, QString is_true, QString is_false)
 {
-    std::map<uint16_t, QString> usd;
-    usd[1] = "ОКР";
-    usd[2] = "ЗКР";
-    usd[3] = "НО";
-    usd[4] = "ТО";
-    usd[5] = "ЛОК";
-    usd[6] = "ОТКЛР";
+    if ((value & (0x0001 << shift)) != 0)
+    {
+        return is_true;
+    }
+    else
+    {
+        return is_false;
+    }
+}
+
+
+QString helpers::get_last_usd(uint16_t value, uint16_t shift, std::map<uint16_t, QString> usd)
+{
     if (value != 0 && (value & (0x000f << shift)) < 7)
         return QString::number((value & (0x000f << shift))) + " - " + usd[(value & (0x000f << shift))];
     else if ((value & (0x000f << shift)) >= 7)
@@ -129,7 +136,7 @@ QString helpers::get_last_usd(uint16_t value, uint16_t shift)
         return "0 - последнего переданного УСД не было";
 }
 
-QString helpers::get_status_error(uint16_t value, uint16_t shift)
+QString helpers::get_status_error_m60(uint16_t value, uint16_t shift)
 {
     switch(value >> shift)
     {
@@ -180,6 +187,120 @@ QString helpers::get_status_error(uint16_t value, uint16_t shift)
         break;
     }
 }
+
+QString helpers::get_status_dev(uint16_t value, uint16_t shift)
+{
+    switch(value & 0x00F0)
+    {
+    case 0x0000:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Ожидание в слежении";
+        break;
+    case 0x0010:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Первый кадр в НО/ТО";
+        break;
+    case 0x0020:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Локализация";
+        break;
+    case 0x0030:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Второй кадр НО/ТО";
+        break;
+    case 0x0040:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Расчет ориентации в НО/ТО";
+        break;
+    case 0x0050:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Локализация двух кадров (с вычитанием)";
+        break;
+    case 0x0060:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Отбраковка помех (с вычитания)";
+        break;
+    case 0x0070:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Локализация двух кадров (без вычитания)";
+        break;
+    case 0x0080:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Отбраковка помех (без вычитания)";
+        break;
+    case 0x0090:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Распознавание первого кадра";
+        break;
+    case 0x00A0:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Распознавание второго кадра";
+        break;
+    case 0x00B0:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Ожидание в НО/ТО";
+        break;
+    case 0x00C0:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Прогноз в слежении";
+        break;
+    case 0x00D0:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Расчет ориентации в слежении";
+        break;
+    case 0x00E0:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Локализация в слежении";
+        break;
+    case 0x00F0:
+        return QString("%1").arg(QString::number(value & 0x00F0, 16), 4, '0') + " - Режим ожидания";
+        break;
+    }
+}
+
+QString helpers::get_status_error_mf(uint16_t value, uint16_t shift)
+{
+    switch(value & 0xFF00)
+    {
+    case 0x0100:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Локализовано < 4-х в НО/ТО";
+        break;
+    case 0x0200:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Локализовано < 4-х в Слежении";
+        break;
+    case 0x0300:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Распознано < 4-х в режиме НО";
+        break;
+    case 0x0400:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Распознано < 4-х в режиме ТО";
+        break;
+    case 0x0500:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Распознано < 4-х в режиме слежении";
+        break;
+    case 0x0600:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - После устранения помех в НО/ТО < 4-х объектов";
+        break;
+    case 0x0700:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - После устранения помех в слежении < 4-х объектов";
+        break;
+    case 0x0800:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Лок. < 4-х объекто в НО/ТО при засветке";
+        break;
+    case 0x0900:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Лок. < 4-х объекто в слежении при засветке";
+        break;
+    case 0x0A00:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Распоз. < 4-х в НО/ТО при засветке";
+        break;
+    case 0x0B00:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Распоз. < 4-х в слежении при засветке";
+        break;
+    case 0x0D00:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - СКО решения системы больше Допуска";
+        break;
+    case 0x0E00:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Недопустимое значение переменной";
+        break;
+    case 0x0F00:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Ошибка чтения звездного каталога";
+        break;
+    case 0x8000:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Получено неподдерживаемое УСД";
+        break;
+    case 0x8100:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - Другая ошибка";
+        break;
+    default:
+        return QString("%1").arg(QString::number(value & 0xFF00, 16), 4, '0') + " - ошибки нет";
+        break;
+    }
+}
+
 
 float helpers::uint32_to_float(uint32_t value)
 {
@@ -357,3 +478,4 @@ std::array<uint16_t, helpers::max_el_in_to_word> helpers::split_data_from_word(u
     }
     return ret_arr;
 }
+

@@ -499,9 +499,10 @@ void ParseToDB::sendDataIntoSHTMI2_MF(uint16_t &num_bokz, int32_t &bshv, SHTMI2_
     m_kia_db[TYPE_DATA]->insert_data(data_into_shtmi2, "prepare_insert_into_shtmi2");
 }
 
-void ParseToDB::sendDataIntoMLOC_MF(uint16_t &num_bokz, int32_t &bshv, MLoc_1_MF &dtmiLoc_1, MLoc_2_MF &dtmiLoc_2, MLoc_3_MF &dtmiLoc_3, MLoc_4_MF &dtmiLoc_4, MLoc_5_MF &dtmiLoc_5, MLoc_6_MF &dtmiLoc_6, MLoc_7_MF &dtmiLoc_7, MLoc_8_MF &dtmiLoc_8, MLoc_9_MF &dtmiLoc_9)
+void ParseToDB::sendDataIntoMLOC_MF(uint16_t &num_bokz, int32_t &bshv, MLoc_MF &mloc_mf)
 {
     SimpleTimer st("DTMI INTO LOC");
+    std::string test;
     char data_into_dtmiloc[2048];
     sprintf(data_into_dtmiloc,"{\"experiment_id\":\"%s\","
                               "\"serial_num\":%i,"
@@ -532,81 +533,66 @@ void ParseToDB::sendDataIntoMLOC_MF(uint16_t &num_bokz, int32_t &bshv, MLoc_1_MF
                               "\"tcmv\":%i}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
             m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
             m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
-            dtmiLoc_1.nAr, dtmiLoc_2.nAr, dtmiLoc_3.nAr, dtmiLoc_4.nAr, dtmiLoc_5.nAr, dtmiLoc_6.nAr, dtmiLoc_7.nAr, dtmiLoc_8.nAr, dtmiLoc_9.nAr,
-            dtmiLoc_1.cs, dtmiLoc_2.cs, dtmiLoc_3.cs, dtmiLoc_4.cs, dtmiLoc_5.cs, dtmiLoc_6.cs, dtmiLoc_7.cs, dtmiLoc_8.cs, dtmiLoc_9.cs,
-            dtmiLoc_1.T, dtmiLoc_1.Tms, dtmiLoc_1.KC1,
-            dtmiLoc_1.KC2, dtmiLoc_1.SerNum, dtmiLoc_1.Texp, dtmiLoc_1.NumLoc, dtmiLoc_1.NumObj,
-            dtmiLoc_1.PixCount,
-            dtmiLoc_1.Mean, dtmiLoc_1.Sigma,
-            dtmiLoc_1.Loc_0_X, dtmiLoc_1.Loc_1_X, dtmiLoc_1.Loc_2_X,
-            dtmiLoc_2.Loc_3_X, dtmiLoc_2.Loc_4_X, dtmiLoc_2.Loc_5_X,
-            dtmiLoc_2.Loc_6_X, dtmiLoc_3.Loc_7_X, dtmiLoc_3.Loc_8_X, dtmiLoc_3.Loc_9_X,
-            dtmiLoc_3.Loc_10_X, dtmiLoc_4.Loc_11_X, dtmiLoc_4.Loc_12_X, dtmiLoc_4.Loc_13_X,
-            dtmiLoc_4.Loc_14_X, dtmiLoc_4.Loc_15_X, dtmiLoc_5.Loc_16_X, dtmiLoc_5.Loc_17_X,
-            dtmiLoc_5.Loc_18_X, dtmiLoc_5.Loc_19_X, dtmiLoc_6.Loc_20_X,
-            dtmiLoc_6.Loc_21_X, dtmiLoc_6.Loc_22_X, dtmiLoc_6.Loc_23_X, dtmiLoc_7.Loc_24_X,
-            dtmiLoc_7.Loc_25_X, dtmiLoc_7.Loc_26_X, dtmiLoc_7.Loc_27_X, dtmiLoc_8.Loc_28_X,
-            dtmiLoc_8.Loc_29_X, dtmiLoc_8.Loc_30_X, dtmiLoc_8.Loc_31_X, dtmiLoc_8.Loc_32_X,
-            dtmiLoc_9.Loc_33_X, dtmiLoc_9.Loc_34_X, dtmiLoc_9.Loc_35_X,
+            mloc_mf.mLoc_1_mf.nAr, mloc_mf.mLoc_2_mf.nAr, mloc_mf.mLoc_3_mf.nAr, mloc_mf.mLoc_4_mf.nAr, mloc_mf.mLoc_5_mf.nAr, mloc_mf.mLoc_6_mf.nAr, mloc_mf.mLoc_7_mf.nAr, mloc_mf.mLoc_8_mf.nAr, mloc_mf.mLoc_9_mf.nAr,
+            mloc_mf.mLoc_1_mf.cs, mloc_mf.mLoc_2_mf.cs, mloc_mf.mLoc_3_mf.cs, mloc_mf.mLoc_4_mf.cs, mloc_mf.mLoc_5_mf.cs, mloc_mf.mLoc_6_mf.cs, mloc_mf.mLoc_7_mf.cs, mloc_mf.mLoc_8_mf.cs, mloc_mf.mLoc_9_mf.cs,
+            mloc_mf.mLoc_1_mf.T, mloc_mf.mLoc_1_mf.Tms, mloc_mf.mLoc_1_mf.KC1,
+            mloc_mf.mLoc_1_mf.KC2, mloc_mf.mLoc_1_mf.SerNum, mloc_mf.mLoc_1_mf.Texp, mloc_mf.mLoc_1_mf.NumLoc, mloc_mf.mLoc_1_mf.NumObj,
+            mloc_mf.mLoc_1_mf.PixCount,
+            mloc_mf.mLoc_1_mf.Mean, mloc_mf.mLoc_1_mf.Sigma,
+            mloc_mf.mLoc_1_mf.Loc_0_X, mloc_mf.mLoc_1_mf.Loc_1_X, mloc_mf.mLoc_1_mf.Loc_2_X,
+            mloc_mf.mLoc_2_mf.Loc_3_X, mloc_mf.mLoc_2_mf.Loc_4_X, mloc_mf.mLoc_2_mf.Loc_5_X,
+            mloc_mf.mLoc_2_mf.Loc_6_X, mloc_mf.mLoc_3_mf.Loc_7_X, mloc_mf.mLoc_3_mf.Loc_8_X, mloc_mf.mLoc_3_mf.Loc_9_X,
+            mloc_mf.mLoc_3_mf.Loc_10_X, mloc_mf.mLoc_4_mf.Loc_11_X, mloc_mf.mLoc_4_mf.Loc_12_X, mloc_mf.mLoc_4_mf.Loc_13_X,
+            mloc_mf.mLoc_4_mf.Loc_14_X, mloc_mf.mLoc_4_mf.Loc_15_X, mloc_mf.mLoc_5_mf.Loc_16_X, mloc_mf.mLoc_5_mf.Loc_17_X,
+            mloc_mf.mLoc_5_mf.Loc_18_X, mloc_mf.mLoc_5_mf.Loc_19_X, mloc_mf.mLoc_6_mf.Loc_20_X,
+            mloc_mf.mLoc_6_mf.Loc_21_X, mloc_mf.mLoc_6_mf.Loc_22_X, mloc_mf.mLoc_6_mf.Loc_23_X, mloc_mf.mLoc_7_mf.Loc_24_X,
+            mloc_mf.mLoc_7_mf.Loc_25_X, mloc_mf.mLoc_7_mf.Loc_26_X, mloc_mf.mLoc_7_mf.Loc_27_X, mloc_mf.mLoc_8_mf.Loc_28_X,
+            mloc_mf.mLoc_8_mf.Loc_29_X, mloc_mf.mLoc_8_mf.Loc_30_X, mloc_mf.mLoc_8_mf.Loc_31_X, mloc_mf.mLoc_8_mf.Loc_32_X,
+            mloc_mf.mLoc_9_mf.Loc_33_X, mloc_mf.mLoc_9_mf.Loc_34_X, mloc_mf.mLoc_9_mf.Loc_35_X,
 
-            dtmiLoc_1.Loc_0_Y, dtmiLoc_1.Loc_1_Y, dtmiLoc_1.Loc_2_Y,
-            dtmiLoc_2.Loc_3_Y, dtmiLoc_2.Loc_4_Y, dtmiLoc_2.Loc_5_Y,
-            dtmiLoc_2.Loc_6_Y, dtmiLoc_3.Loc_7_Y, dtmiLoc_3.Loc_8_Y, dtmiLoc_3.Loc_9_Y,
-            dtmiLoc_3.Loc_10_Y, dtmiLoc_4.Loc_11_Y, dtmiLoc_4.Loc_12_Y, dtmiLoc_4.Loc_13_Y,
-            dtmiLoc_4.Loc_14_Y, dtmiLoc_5.Loc_15_Y, dtmiLoc_5.Loc_16_Y, dtmiLoc_5.Loc_17_Y,
-            dtmiLoc_5.Loc_18_Y, dtmiLoc_5.Loc_19_Y, dtmiLoc_6.Loc_20_Y,
-            dtmiLoc_6.Loc_21_Y, dtmiLoc_6.Loc_22_Y, dtmiLoc_6.Loc_23_Y, dtmiLoc_7.Loc_24_Y,
-            dtmiLoc_7.Loc_25_Y, dtmiLoc_7.Loc_26_Y, dtmiLoc_7.Loc_27_Y, dtmiLoc_8.Loc_28_Y,
-            dtmiLoc_8.Loc_29_Y, dtmiLoc_8.Loc_30_Y, dtmiLoc_8.Loc_31_Y, dtmiLoc_9.Loc_32_Y,
-            dtmiLoc_9.Loc_33_Y, dtmiLoc_9.Loc_34_Y, dtmiLoc_9.Loc_35_Y,
+            mloc_mf.mLoc_1_mf.Loc_0_Y, mloc_mf.mLoc_1_mf.Loc_1_Y, mloc_mf.mLoc_1_mf.Loc_2_Y,
+            mloc_mf.mLoc_2_mf.Loc_3_Y, mloc_mf.mLoc_2_mf.Loc_4_Y, mloc_mf.mLoc_2_mf.Loc_5_Y,
+            mloc_mf.mLoc_2_mf.Loc_6_Y, mloc_mf.mLoc_3_mf.Loc_7_Y, mloc_mf.mLoc_3_mf.Loc_8_Y, mloc_mf.mLoc_3_mf.Loc_9_Y,
+            mloc_mf.mLoc_3_mf.Loc_10_Y, mloc_mf.mLoc_4_mf.Loc_11_Y, mloc_mf.mLoc_4_mf.Loc_12_Y, mloc_mf.mLoc_4_mf.Loc_13_Y,
+            mloc_mf.mLoc_4_mf.Loc_14_Y, mloc_mf.mLoc_5_mf.Loc_15_Y, mloc_mf.mLoc_5_mf.Loc_16_Y, mloc_mf.mLoc_5_mf.Loc_17_Y,
+            mloc_mf.mLoc_5_mf.Loc_18_Y, mloc_mf.mLoc_5_mf.Loc_19_Y, mloc_mf.mLoc_6_mf.Loc_20_Y,
+            mloc_mf.mLoc_6_mf.Loc_21_Y, mloc_mf.mLoc_6_mf.Loc_22_Y, mloc_mf.mLoc_6_mf.Loc_23_Y, mloc_mf.mLoc_7_mf.Loc_24_Y,
+            mloc_mf.mLoc_7_mf.Loc_25_Y, mloc_mf.mLoc_7_mf.Loc_26_Y, mloc_mf.mLoc_7_mf.Loc_27_Y, mloc_mf.mLoc_8_mf.Loc_28_Y,
+            mloc_mf.mLoc_8_mf.Loc_29_Y, mloc_mf.mLoc_8_mf.Loc_30_Y, mloc_mf.mLoc_8_mf.Loc_31_Y, mloc_mf.mLoc_9_mf.Loc_32_Y,
+            mloc_mf.mLoc_9_mf.Loc_33_Y, mloc_mf.mLoc_9_mf.Loc_34_Y, mloc_mf.mLoc_9_mf.Loc_35_Y,
 
 
-            dtmiLoc_1.Loc_0_B, dtmiLoc_1.Loc_1_B, dtmiLoc_2.Loc_2_B,
-            dtmiLoc_2.Loc_3_B, dtmiLoc_2.Loc_4_B, dtmiLoc_2.Loc_5_B,
-            dtmiLoc_2.Loc_6_B, dtmiLoc_3.Loc_7_B, dtmiLoc_3.Loc_8_B, dtmiLoc_3.Loc_9_B,
-            dtmiLoc_3.Loc_10_B, dtmiLoc_4.Loc_11_B, dtmiLoc_4.Loc_12_B, dtmiLoc_4.Loc_13_B,
-            dtmiLoc_4.Loc_14_B, dtmiLoc_5.Loc_15_B, dtmiLoc_5.Loc_16_B, dtmiLoc_5.Loc_17_B,
-            dtmiLoc_5.Loc_18_B, dtmiLoc_6.Loc_19_B, dtmiLoc_6.Loc_20_B,
-            dtmiLoc_6.Loc_21_B, dtmiLoc_6.Loc_22_B, dtmiLoc_6.Loc_23_B, dtmiLoc_7.Loc_24_B,
-            dtmiLoc_7.Loc_25_B, dtmiLoc_7.Loc_26_B, dtmiLoc_7.Loc_27_B, dtmiLoc_8.Loc_28_B,
-            dtmiLoc_8.Loc_29_B, dtmiLoc_8.Loc_30_B, dtmiLoc_8.Loc_31_B, dtmiLoc_9.Loc_32_B,
-            dtmiLoc_9.Loc_33_B, dtmiLoc_9.Loc_34_B, dtmiLoc_9.Loc_35_B,
+            mloc_mf.mLoc_1_mf.Loc_0_B, mloc_mf.mLoc_1_mf.Loc_1_B, mloc_mf.mLoc_2_mf.Loc_2_B,
+            mloc_mf.mLoc_2_mf.Loc_3_B, mloc_mf.mLoc_2_mf.Loc_4_B, mloc_mf.mLoc_2_mf.Loc_5_B,
+            mloc_mf.mLoc_2_mf.Loc_6_B, mloc_mf.mLoc_3_mf.Loc_7_B, mloc_mf.mLoc_3_mf.Loc_8_B, mloc_mf.mLoc_3_mf.Loc_9_B,
+            mloc_mf.mLoc_3_mf.Loc_10_B, mloc_mf.mLoc_4_mf.Loc_11_B, mloc_mf.mLoc_4_mf.Loc_12_B, mloc_mf.mLoc_4_mf.Loc_13_B,
+            mloc_mf.mLoc_4_mf.Loc_14_B, mloc_mf.mLoc_5_mf.Loc_15_B, mloc_mf.mLoc_5_mf.Loc_16_B, mloc_mf.mLoc_5_mf.Loc_17_B,
+            mloc_mf.mLoc_5_mf.Loc_18_B, mloc_mf.mLoc_6_mf.Loc_19_B, mloc_mf.mLoc_6_mf.Loc_20_B,
+            mloc_mf.mLoc_6_mf.Loc_21_B, mloc_mf.mLoc_6_mf.Loc_22_B, mloc_mf.mLoc_6_mf.Loc_23_B, mloc_mf.mLoc_7_mf.Loc_24_B,
+            mloc_mf.mLoc_7_mf.Loc_25_B, mloc_mf.mLoc_7_mf.Loc_26_B, mloc_mf.mLoc_7_mf.Loc_27_B, mloc_mf.mLoc_8_mf.Loc_28_B,
+            mloc_mf.mLoc_8_mf.Loc_29_B, mloc_mf.mLoc_8_mf.Loc_30_B, mloc_mf.mLoc_8_mf.Loc_31_B, mloc_mf.mLoc_9_mf.Loc_32_B,
+            mloc_mf.mLoc_9_mf.Loc_33_B, mloc_mf.mLoc_9_mf.Loc_34_B, mloc_mf.mLoc_9_mf.Loc_35_B,
 
-            dtmiLoc_1.Loc_0_S, dtmiLoc_1.Loc_1_S, dtmiLoc_2.Loc_2_S,
-            dtmiLoc_2.Loc_3_S, dtmiLoc_2.Loc_4_S, dtmiLoc_2.Loc_5_S,
-            dtmiLoc_3.Loc_6_S, dtmiLoc_3.Loc_7_S, dtmiLoc_3.Loc_8_S, dtmiLoc_3.Loc_9_S,
-            dtmiLoc_3.Loc_10_S, dtmiLoc_4.Loc_11_S, dtmiLoc_4.Loc_12_S, dtmiLoc_4.Loc_13_S,
-            dtmiLoc_4.Loc_14_S, dtmiLoc_5.Loc_15_S, dtmiLoc_5.Loc_16_S, dtmiLoc_5.Loc_17_S,
-            dtmiLoc_5.Loc_18_S, dtmiLoc_6.Loc_19_S, dtmiLoc_6.Loc_20_S,
-            dtmiLoc_6.Loc_21_S, dtmiLoc_6.Loc_22_S, dtmiLoc_7.Loc_23_S, dtmiLoc_7.Loc_24_S,
-            dtmiLoc_7.Loc_25_S, dtmiLoc_7.Loc_26_S, dtmiLoc_7.Loc_27_S, dtmiLoc_8.Loc_28_S,
-            dtmiLoc_8.Loc_29_S, dtmiLoc_8.Loc_30_S, dtmiLoc_8.Loc_31_S, dtmiLoc_9.Loc_32_S,
-            dtmiLoc_9.Loc_33_S, dtmiLoc_9.Loc_34_S, dtmiLoc_9.Loc_35_S,
-            dtmiLoc_9.nPixNs,
-            dtmiLoc_9.nPixGrNs,
-            dtmiLoc_9.Th,
-            dtmiLoc_9.Tcmv);
-    m_kia_db[TYPE_DATA]->insert_data(data_into_dtmiloc, "prepare_insert_into_dtmiloc");
+            mloc_mf.mLoc_1_mf.Loc_0_S, mloc_mf.mLoc_1_mf.Loc_1_S, mloc_mf.mLoc_2_mf.Loc_2_S,
+            mloc_mf.mLoc_2_mf.Loc_3_S, mloc_mf.mLoc_2_mf.Loc_4_S, mloc_mf.mLoc_2_mf.Loc_5_S,
+            mloc_mf.mLoc_3_mf.Loc_6_S, mloc_mf.mLoc_3_mf.Loc_7_S, mloc_mf.mLoc_3_mf.Loc_8_S, mloc_mf.mLoc_3_mf.Loc_9_S,
+            mloc_mf.mLoc_3_mf.Loc_10_S, mloc_mf.mLoc_4_mf.Loc_11_S, mloc_mf.mLoc_4_mf.Loc_12_S, mloc_mf.mLoc_4_mf.Loc_13_S,
+            mloc_mf.mLoc_4_mf.Loc_14_S, mloc_mf.mLoc_5_mf.Loc_15_S, mloc_mf.mLoc_5_mf.Loc_16_S, mloc_mf.mLoc_5_mf.Loc_17_S,
+            mloc_mf.mLoc_5_mf.Loc_18_S, mloc_mf.mLoc_6_mf.Loc_19_S, mloc_mf.mLoc_6_mf.Loc_20_S,
+            mloc_mf.mLoc_6_mf.Loc_21_S, mloc_mf.mLoc_6_mf.Loc_22_S, mloc_mf.mLoc_7_mf.Loc_23_S, mloc_mf.mLoc_7_mf.Loc_24_S,
+            mloc_mf.mLoc_7_mf.Loc_25_S, mloc_mf.mLoc_7_mf.Loc_26_S, mloc_mf.mLoc_7_mf.Loc_27_S, mloc_mf.mLoc_8_mf.Loc_28_S,
+            mloc_mf.mLoc_8_mf.Loc_29_S, mloc_mf.mLoc_8_mf.Loc_30_S, mloc_mf.mLoc_8_mf.Loc_31_S, mloc_mf.mLoc_9_mf.Loc_32_S,
+            mloc_mf.mLoc_9_mf.Loc_33_S, mloc_mf.mLoc_9_mf.Loc_34_S, mloc_mf.mLoc_9_mf.Loc_35_S,
+            mloc_mf.mLoc_9_mf.nPixNs,
+            mloc_mf.mLoc_9_mf.nPixGrNs,
+            mloc_mf.mLoc_9_mf.Th,
+            mloc_mf.mLoc_9_mf.Tcmv);
+    m_kia_db[TYPE_DATA]->insert_data(data_into_dtmiloc, "prepare_insert_into_mloc");
 }
 
-void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_1_MF &dtmi_1, DTMI_2_MF &dtmi_2, DTMI_3_MF &dtmi_3, DTMI_4_MF &dtmi_4, DTMI_5_MF &dtmi_5, DTMI_6_MF &dtmi_6, DTMI_7_MF &dtmi_7, DTMI_8_MF &dtmi_8, DTMI_9_MF &dtmi_9, DTMI_10_MF &dtmi_10, DTMI_11_MF &dtmi_11, DTMI_12_MF &dtmi_12)
+void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_MF &dtmi)
 {
     char data_into_dtmi[4096];
-    auto ObjFrag_0_1_2_3 = helpers::split_data_from_word(dtmi_11.ObjFrag_0_1_2_3);
-    auto MultXY_0_1_2_3 = helpers::split_data_from_word(dtmi_11.MultXY_0_1_2_3);
-    auto ZipXY_0_1 = helpers::split_data_from_word(dtmi_11.ZipXY_0_0_0_1_1_0_1_1);
-    auto ZipXY_2_3 = helpers::split_data_from_word(dtmi_11.ZipXY_2_0_2_1_3_0_3_1);
-    auto ObjFrag_4_5_6_7 = helpers::split_data_from_word(dtmi_11.ObjFrag_4_5_6_7);
-    auto MultXY_4_5_6_7 = helpers::split_data_from_word(dtmi_11.MultXY_4_5_6_7);
-    auto ZipXY_4_5 = helpers::split_data_from_word(dtmi_11.ZipXY_4_0_4_1_5_0_5_1);
-    auto ZipXY_6_7 = helpers::split_data_from_word(dtmi_11.ZipXY_6_0_6_0_7_0_7_1);
-    auto ObjFrag_8_9_10_11 = helpers::split_data_from_word(dtmi_11.ObjFrag_8_9_10_11);
-    auto MultXY_8_9_10_11 = helpers::split_data_from_word(dtmi_11.MultXY_8_9_10_11);
-    auto ZipXY_8_9 = helpers::split_data_from_word(dtmi_11.ZipXY_8_0_8_0_9_0_9_1);
-    auto ZipXY_10_11 = helpers::split_data_from_word(dtmi_11.ZipXY_10_0_10_0_11_0_11_1);
-    auto ObjFrag_12_13_14_Xh = helpers::split_data_from_word(dtmi_11.ObjFrag_12_13_14_Xh);
-    auto MultXY_12_13_14_Xh = helpers::split_data_from_word(dtmi_11.MultXY_12_13_14_Xh);
-    auto ZipXY_12_13 = helpers::split_data_from_word(dtmi_11.ZipXY_12_0_12_0_13_0_13_1);
     sprintf(data_into_dtmi,"{\"experiment_id\":\"%s\","
                            "\"serial_num\":%i,"
                            "\"datetime\":\"%s\","
@@ -632,25 +618,25 @@ void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_1_MF
                            "\"numfrag\":%i,"
                            "\"tlast\":%i,"
                            "\"tmslast\":%i,"
-                           "\"qlst\":\"{%f,%f,%f,%f}\","
-                           "\"reserve\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"histdef\":\"{%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"rsloc0x\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"rsloc0y\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"rsloc0b\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"rsloc0s\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"rsloc1x\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"rsloc1y\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"rsloc1b\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"rsloc1s\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"xc\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"yc\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"meanfrag\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"sigmafrag\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"thfrag\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"objfrag\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"multxy\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"zipx\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
+                           "\"qlst\":\"%s\","
+                           "\"histdef\":\"%s\","
+                           "\"rsloc0x\":\"%s\","
+                           "\"rsloc0y\":\"%s\","
+                           "\"rsloc0b\":\"%s\","
+                           "\"rsloc0s\":\"%s\","
+                           "\"rsloc1x\":\"%s\","
+                           "\"rsloc1y\":\"%s\","
+                           "\"rsloc1b\":\"%s\","
+                           "\"rsloc1s\":\"%s\","
+                           "\"xc\":\"%s\","
+                           "\"yc\":\"%s\","
+                           "\"meanfrag\":\"%s\","
+                           "\"sigmafrag\":\"%s\","
+                           "\"thfrag\":\"%s\","
+                           "\"objfrag\":\"%s\","
+                           "\"multxy\":\"%s\","
+                           "\"zipx\":\"%s\","
+                           "\"zipy\":\"%s\","
                            "\"vx\":%i,"
                            "\"vy\":%i,"
                            "\"vz\":%i,"
@@ -665,127 +651,54 @@ void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_1_MF
                            "\"dymaxh\":%i,"
                            "\"numsec\":%i,"
                            "\"epsilon\":%i,"
-                           "\"deltat\":%f,"
-                           "\"m_cur\":%f,"
-                           "\"histpix\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i, %i}\"}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
+                           "\"deltat\":%i,"
+                           "\"m_cur\":%i,"
+                           "\"histpix\":\"%s\"}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
             m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
             m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
-            dtmi_1.nAr, dtmi_2.nAr, dtmi_3.nAr, dtmi_4.nAr, dtmi_5.nAr, dtmi_6.nAr, dtmi_7.nAr, dtmi_8.nAr, dtmi_9.nAr, dtmi_10.nAr, dtmi_11.nAr, dtmi_12.nAr,
-            dtmi_1.cs, dtmi_2.cs, dtmi_3.cs, dtmi_4.cs, dtmi_5.cs, dtmi_6.cs, dtmi_7.cs, dtmi_8.cs, dtmi_9.cs, dtmi_10.cs, dtmi_11.cs, dtmi_12.cs,
-            dtmi_1.T, dtmi_1.Tms, dtmi_1.KC1,
-            dtmi_1.KC2, dtmi_1.SerNum, dtmi_1.POST, dtmi_1.Tcmv, dtmi_1.Mean, dtmi_1.Sigma, dtmi_1.Texp,
-            dtmi_1.PixCount_NumLoc, dtmi_1.NumStore, dtmi_1.NumDet, dtmi_1.NumProgFrag,
-            dtmi_1.NumFrag, dtmi_1.Tlast, dtmi_1.Tmslast,
-            dtmi_1.Qlst_0, dtmi_1.Qlst_1, dtmi_1.Qlst_2, dtmi_1.Qlst_3,
-            dtmi_1.rezerv, dtmi_12.rezerv_8, dtmi_12.rezerv_9, dtmi_12.rezerv_10, dtmi_12.rezerv_11, dtmi_12.rezerv_12, dtmi_12.rezerv_13, dtmi_12.rezerv_14, dtmi_12.rezerv_15,
-
-            dtmi_2.RsLoc_0_x, dtmi_2.RsLoc_1_x, dtmi_2.RsLoc_2_x,
-            dtmi_2.RsLoc_3_x, dtmi_2.RsLoc_4_x, dtmi_3.RsLoc_5_x,
-            dtmi_3.RsLoc_6_x, dtmi_3.RsLoc_7_x, dtmi_3.RsLoc_8_x, dtmi_3.RsLoc_9_x,
-            dtmi_4.RsLoc_10_x, dtmi_4.RsLoc_11_x, dtmi_4.RsLoc_12_x, dtmi_4.RsLoc_13_x,
-            dtmi_4.RsLoc_14_x,
-
-            dtmi_2.RsLoc_0_y, dtmi_2.RsLoc_1_y, dtmi_2.RsLoc_2_y,
-            dtmi_2.RsLoc_3_y, dtmi_2.RsLoc_4_y, dtmi_3.RsLoc_5_y,
-            dtmi_3.RsLoc_6_y, dtmi_3.RsLoc_7_y, dtmi_3.RsLoc_8_y, dtmi_3.RsLoc_9_y,
-            dtmi_4.RsLoc_10_y, dtmi_4.RsLoc_11_y, dtmi_4.RsLoc_12_y, dtmi_4.RsLoc_13_y,
-            dtmi_4.RsLoc_14_y,
-
-            dtmi_2.RsLoc_0_b, dtmi_2.RsLoc_1_b, dtmi_2.RsLoc_2_b,
-            dtmi_2.RsLoc_3_b, dtmi_2.RsLoc_4_b, dtmi_3.RsLoc_5_b,
-            dtmi_3.RsLoc_6_b, dtmi_3.RsLoc_7_b, dtmi_3.RsLoc_8_b, dtmi_3.RsLoc_9_b,
-            dtmi_4.RsLoc_10_b, dtmi_4.RsLoc_11_b, dtmi_4.RsLoc_12_b, dtmi_4.RsLoc_13_b,
-            dtmi_4.RsLoc_14_b,
-
-            dtmi_8.RsLoc_T0_0_S, dtmi_8.RsLoc_T0_1_S, dtmi_8.RsLoc_T0_2_S,
-            dtmi_8.RsLoc_T0_3_S, dtmi_8.RsLoc_T0_4_S, dtmi_8.RsLoc_T0_5_S,
-            dtmi_8.RsLoc_T0_6_S, dtmi_8.RsLoc_T0_7_S, dtmi_8.RsLoc_T0_8_S, dtmi_8.RsLoc_T0_9_S,
-            dtmi_8.RsLoc_T0_10_S, dtmi_8.RsLoc_T0_11_S, dtmi_8.RsLoc_T0_12_S, dtmi_8.RsLoc_T0_13_S,
-            dtmi_8.RsLoc_T0_14_S,
-
-            dtmi_5.RsLoc_0_x, dtmi_5.RsLoc_1_x, dtmi_5.RsLoc_2_x,
-            dtmi_5.RsLoc_3_x, dtmi_5.RsLoc_4_x, dtmi_6.RsLoc_5_x,
-            dtmi_6.RsLoc_6_x, dtmi_6.RsLoc_7_x, dtmi_6.RsLoc_8_x, dtmi_6.RsLoc_9_x,
-            dtmi_7.RsLoc_10_x, dtmi_7.RsLoc_11_x, dtmi_7.RsLoc_12_x, dtmi_7.RsLoc_13_x,
-            dtmi_7.RsLoc_14_x,
-
-            dtmi_5.RsLoc_0_y, dtmi_5.RsLoc_1_y, dtmi_5.RsLoc_2_y,
-            dtmi_5.RsLoc_3_y, dtmi_5.RsLoc_4_y, dtmi_6.RsLoc_5_y,
-            dtmi_6.RsLoc_6_y, dtmi_6.RsLoc_7_y, dtmi_6.RsLoc_8_y, dtmi_6.RsLoc_9_y,
-            dtmi_7.RsLoc_10_y, dtmi_7.RsLoc_11_y, dtmi_7.RsLoc_12_y, dtmi_7.RsLoc_13_y,
-            dtmi_7.RsLoc_14_y,
-
-            dtmi_5.RsLoc_0_b, dtmi_5.RsLoc_1_b, dtmi_5.RsLoc_2_b,
-            dtmi_5.RsLoc_3_b, dtmi_5.RsLoc_4_b, dtmi_6.RsLoc_5_b,
-            dtmi_6.RsLoc_6_b, dtmi_6.RsLoc_7_b, dtmi_6.RsLoc_8_b, dtmi_6.RsLoc_9_b,
-            dtmi_7.RsLoc_10_b, dtmi_7.RsLoc_11_b, dtmi_7.RsLoc_12_b, dtmi_7.RsLoc_13_b,
-            dtmi_7.RsLoc_14_b,
-
-            dtmi_8.RsLoc_T1_0_S, dtmi_8.RsLoc_T1_1_S, dtmi_8.RsLoc_T1_2_S,
-            dtmi_8.RsLoc_T1_3_S, dtmi_8.RsLoc_T1_4_S, dtmi_8.RsLoc_T1_5_S,
-            dtmi_8.RsLoc_T1_6_S, dtmi_8.RsLoc_T1_7_S, dtmi_8.RsLoc_T1_8_S, dtmi_8.RsLoc_T1_9_S,
-            dtmi_8.RsLoc_T1_10_S, dtmi_8.RsLoc_T1_11_S, dtmi_8.RsLoc_T1_12_S, dtmi_8.RsLoc_T1_13_S,
-            dtmi_8.RsLoc_T1_14_S,
-
-
-            dtmi_5.Wo_x, dtmi_5.Wo_y, dtmi_5.Wo_z,
-
-            dtmi_9.XYc_0_0, dtmi_9.XYc_1_0, dtmi_9.XYc_2_0, dtmi_9.XYc_3_0, dtmi_9.XYc_4_0,
-            dtmi_9.XYc_5_0, dtmi_9.XYc_6_0, dtmi_9.XYc_7_0, dtmi_9.XYc_8_0,
-            dtmi_9.XYc_9_0, dtmi_9.XYc_10_0, dtmi_9.XYc_11_0, dtmi_9.XYc_12_0,
-            dtmi_9.XYc_13_0, dtmi_9.XYc_14_0,
-
-            dtmi_9.XYc_0_1, dtmi_9.XYc_1_1, dtmi_9.XYc_2_1, dtmi_9.XYc_3_1, dtmi_9.XYc_4_1,
-            dtmi_9.XYc_5_1, dtmi_9.XYc_6_1, dtmi_9.XYc_7_1, dtmi_9.XYc_8_1,
-            dtmi_9.XYc_9_1, dtmi_9.XYc_10_1, dtmi_9.XYc_11_1, dtmi_9.XYc_12_1,
-            dtmi_9.XYc_13_1, dtmi_9.XYc_14_1,
-
-            dtmi_10.Mean_0_0, dtmi_10.Mean_1_0, dtmi_10.Mean_2_0, dtmi_10.Mean_3_0, dtmi_10.Mean_4_0,
-            dtmi_10.Mean_5_0, dtmi_10.Mean_6_0, dtmi_10.Mean_7_0, dtmi_10.Mean_8_0,
-            dtmi_10.Mean_9_0, dtmi_10.Mean_10_0, dtmi_10.Mean_11_0, dtmi_10.Mean_12_0,
-            dtmi_10.Mean_13_0, dtmi_10.Mean_14_0,
-
-            dtmi_10.Mean_0_1, dtmi_10.Mean_1_1, dtmi_10.Mean_2_1, dtmi_10.Mean_3_1, dtmi_10.Mean_4_1,
-            dtmi_10.Mean_5_1, dtmi_10.Mean_6_1, dtmi_10.Mean_7_1, dtmi_10.Mean_8_1,
-            dtmi_10.Mean_9_1, dtmi_10.Mean_10_1, dtmi_10.Mean_11_1, dtmi_10.Mean_12_1,
-            dtmi_10.Mean_13_1, dtmi_10.Mean_14_1,
-
-            dtmi_11.ThFrag_0, dtmi_11.ThFrag_1, dtmi_11.ThFrag_2, dtmi_11.ThFrag_3, dtmi_11.ThFrag_4,
-            dtmi_11.ThFrag_5, dtmi_11.ThFrag_6, dtmi_11.ThFrag_7, dtmi_11.ThFrag_8,
-            dtmi_11.ThFrag_9, dtmi_11.ThFrag_10, dtmi_11.ThFrag_11, dtmi_11.ThFrag_12,
-            dtmi_11.ThFrag_13, dtmi_11.ThFrag_14,
-
-            dtmi_11.ThFrag_0, dtmi_11.ThFrag_1, dtmi_11.ThFrag_2, dtmi_11.ThFrag_3, dtmi_11.ThFrag_4,
-            dtmi_11.ThFrag_5, dtmi_11.ThFrag_6, dtmi_11.ThFrag_7, dtmi_11.ThFrag_8,
-            dtmi_11.ThFrag_9, dtmi_11.ThFrag_10, dtmi_11.ThFrag_11, dtmi_11.ThFrag_12,
-            dtmi_11.ThFrag_13, dtmi_11.ThFrag_14,
-
-            ObjFrag_0_1_2_3[0], ObjFrag_0_1_2_3[1], ObjFrag_0_1_2_3[2], ObjFrag_0_1_2_3[3],
-            ObjFrag_4_5_6_7[0], ObjFrag_4_5_6_7[1], ObjFrag_4_5_6_7[2], ObjFrag_4_5_6_7[3],
-            ObjFrag_4_5_6_7[0], ObjFrag_4_5_6_7[1], ObjFrag_4_5_6_7[2], ObjFrag_4_5_6_7[3],
-            ObjFrag_8_9_10_11[0], ObjFrag_8_9_10_11[1], ObjFrag_8_9_10_11[2], ObjFrag_8_9_10_11[3],
-            ObjFrag_12_13_14_Xh[0], ObjFrag_12_13_14_Xh[1], ObjFrag_12_13_14_Xh[2], ObjFrag_12_13_14_Xh[3],
-
-            MultXY_0_1_2_3[0], MultXY_0_1_2_3[1], MultXY_0_1_2_3[2], MultXY_0_1_2_3[3],
-            MultXY_4_5_6_7[0], MultXY_4_5_6_7[1], MultXY_4_5_6_7[2], MultXY_4_5_6_7[3],
-            MultXY_8_9_10_11[0], MultXY_8_9_10_11[1], MultXY_8_9_10_11[2], MultXY_8_9_10_11[3],
-            MultXY_12_13_14_Xh[0], MultXY_12_13_14_Xh[1], MultXY_12_13_14_Xh[2], MultXY_12_13_14_Xh[3],
-
-            ZipXY_0_1[0]
-            dtmi_9.Epoch,
-
-            dtmi_9.NumL_0, dtmi_9.NumL_1,
-
-            dtmi_9.maxH,
-
-            dtmi_9.dxmaxH,
-
-            dtmi_9.dymaxH,
-
-            dtmi_9.rezerv_22_32[0], dtmi_9.rezerv_22_32[1], dtmi_9.rezerv_22_32[2], dtmi_9.rezerv_22_32[3],
-            dtmi_9.rezerv_22_32[4], dtmi_9.rezerv_22_32[5], dtmi_9.rezerv_22_32[6], dtmi_9.rezerv_22_32[7],
-            dtmi_9.rezerv_22_32[8], dtmi_9.rezerv_22_32[9], dtmi_9.rezerv_22_32[10]);
-
+            dtmi.dtmi_1_mf.nAr, dtmi.dtmi_2_mf.nAr, dtmi.dtmi_3_mf.nAr, dtmi.dtmi_4_mf.nAr, dtmi.dtmi_5_mf.nAr, dtmi.dtmi_6_mf.nAr,
+            dtmi.dtmi_7_mf.nAr, dtmi.dtmi_8_mf.nAr, dtmi.dtmi_9_mf.nAr, dtmi.dtmi_10_mf.nAr, dtmi.dtmi_11_mf.nAr, dtmi.dtmi_12_mf.nAr,
+            dtmi.dtmi_1_mf.cs, dtmi.dtmi_2_mf.cs, dtmi.dtmi_3_mf.cs, dtmi.dtmi_4_mf.cs, dtmi.dtmi_5_mf.cs, dtmi.dtmi_6_mf.cs,
+            dtmi.dtmi_7_mf.cs, dtmi.dtmi_8_mf.cs, dtmi.dtmi_9_mf.cs, dtmi.dtmi_10_mf.cs, dtmi.dtmi_11_mf.cs, dtmi.dtmi_12_mf.cs,
+            dtmi.dtmi_1_mf.T, dtmi.dtmi_1_mf.Tms, dtmi.dtmi_1_mf.KC1,
+            dtmi.dtmi_1_mf.KC2, dtmi.dtmi_1_mf.SerNum, dtmi.dtmi_1_mf.POST, dtmi.dtmi_1_mf.Tcmv, dtmi.dtmi_1_mf.Mean, dtmi.dtmi_1_mf.Sigma, dtmi.dtmi_1_mf.Texp,
+            dtmi.dtmi_1_mf.PixCount_NumLoc, dtmi.dtmi_1_mf.NumStore, dtmi.dtmi_1_mf.NumDet, dtmi.dtmi_1_mf.NumProgFrag,
+            dtmi.dtmi_1_mf.NumFrag, dtmi.dtmi_1_mf.Tlast, dtmi.dtmi_1_mf.Tmslast, convert_array_to_json_string(dtmi.dtmi_1_mf.Qlst).c_str(),
+            convert_array_to_json_string(dtmi.dtmi_1_mf.HistDef).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_0_x).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_0_y).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_0_b).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_0_s).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_1_x).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_1_y).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_1_b).c_str(),
+            convert_array_to_json_string(dtmi.rsLoc_1_s).c_str(),
+            convert_array_to_json_string(dtmi.XYc_x).c_str(),
+            convert_array_to_json_string(dtmi.XYc_y).c_str(),
+            convert_array_to_json_string(dtmi.MeanFrag).c_str(),
+            convert_array_to_json_string(dtmi.SigmaFrag).c_str(),
+            convert_array_to_json_string(dtmi.dtmi_11_mf.ThFrag).c_str(),
+            convert_array_to_json_string(dtmi.ObjFrag).c_str(),
+            convert_array_to_json_string(dtmi.MultXY).c_str(),
+            convert_array_to_json_string(dtmi.ZipXY_X).c_str(),
+            convert_array_to_json_string(dtmi.ZipXY_Y).c_str(),
+            dtmi.dtmi_12_mf.Vx,
+            dtmi.dtmi_12_mf.Vy,
+            dtmi.dtmi_12_mf.Vz,
+            dtmi.dtmi_12_mf.Wx,
+            dtmi.dtmi_12_mf.Wy,
+            dtmi.dtmi_12_mf.Wz,
+            dtmi.dtmi_12_mf.Epoch,
+            dtmi.dtmi_12_mf.NumL_0,
+            dtmi.dtmi_12_mf.NumL_1,
+            dtmi.dtmi_12_mf.maxH,
+            dtmi.dtmi_12_mf.dxmaxH,
+            dtmi.dtmi_12_mf.dymaxH,
+            dtmi.dtmi_12_mf.NumSec,
+            dtmi.dtmi_12_mf.Epsilon,
+            dtmi.dtmi_12_mf.deltaT,
+            dtmi.dtmi_12_mf.m_cur,
+            convert_array_to_json_string(dtmi.dtmi_12_mf.HistPix).c_str());
     m_kia_db[TYPE_DATA]->insert_data(data_into_dtmi, "prepare_insert_into_dtmi");
 }
 
@@ -927,3 +840,17 @@ void ParseToDB::send_to_frames(uint16_t &num_bokz, int32_t &bshv)
 
 
 
+
+template<typename T>
+string ParseToDB::convert_array_to_json_string(T data)
+{
+    std::string ret;
+    ret = "{";
+    for (uint16_t ind = 0; ind < data.size(); ind++)
+    {
+        ret = ret + std::to_string(data[ind]) + ",";
+    }
+    ret.pop_back();
+    ret.push_back('}');
+    return ret;
+}

@@ -1,6 +1,7 @@
 #ifndef KIA_CYCLOGRAM_BOKZM60_H
 #define KIA_CYCLOGRAM_BOKZM60_H
 #include "Kia_bokz/bokz.h"
+#include "Kia_bokz/bokzm60.h"
 #include "kia_protocol.h"
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
@@ -45,6 +46,7 @@ public:
     uint16_t cyclogram_zkr(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_full_frames(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
 private:
+    void set_cyclogram_settings();
     uint16_t start_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
     uint16_t start_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
     uint16_t start_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL, uint16_t count_do_loc = 0);
@@ -64,6 +66,7 @@ private:
     void create_list_command_for_no();
     void create_list_command_for_to();
     void create_list_command_for_loc();
+    void create_list_chpn();
     std::shared_ptr<Kia_timers> m_kia_timers;
     std::vector<std::shared_ptr<Bokz>> m_bokz;
     shared_ptr<Kia_protocol> m_kia_protocol;

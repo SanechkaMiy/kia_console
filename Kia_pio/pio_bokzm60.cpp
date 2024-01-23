@@ -1319,6 +1319,16 @@ void Pio_bokzm60::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord
     m_kia_settings->m_data_for_db->m_norm_qaor = sqrt(pow(m_kia_mko_struct->st_mshior.Qo0,2) + pow(m_kia_mko_struct->st_mshior.Qo1,2) + pow(m_kia_mko_struct->st_mshior.Qo2, 2)  + pow(m_kia_mko_struct->st_mshior.Qo3,2));
 }
 
+void Pio_bokzm60::decrypt_chpn(array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr)
+{
+
+}
+
+void Pio_bokzm60::decrypt_chkd(array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr)
+{
+
+}
+
 Pio_bokzm60::~Pio_bokzm60()
 {
 

@@ -188,7 +188,7 @@ void Kia_db::prepare_request(std::shared_ptr<pqxx::connection> conn)
     m_prepare_sql["prepare_insert_into_mshior"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_mshior('%1'::json);\n";
     m_prepare_sql["prepare_insert_into_shtmi1"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_shtmi1('%1'::json);\n";
     m_prepare_sql["prepare_insert_into_shtmi2"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_shtmi2('%1'::json);\n";
-
+    m_prepare_sql["prepare_insert_into_dtmi"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_dtmi('%1'::json);\n";
 
     switch(m_kia_settings->m_type_bokz)
     {
@@ -197,10 +197,11 @@ void Kia_db::prepare_request(std::shared_ptr<pqxx::connection> conn)
         conn->prepare("prepare_insert_into_dtmi", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_dtmi($1::json)");
         conn->prepare("prepare_insert_into_frames", "CALL " + m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz] + ".insert_into_frames($1::json)");
         m_prepare_sql["prepare_insert_into_dtmiloc"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_dtmiloc('%1'::json);\n";
-        m_prepare_sql["prepare_insert_into_dtmi"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_dtmi('%1'::json);\n";
         m_prepare_sql["prepare_insert_into_frames"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_frames('%1'::json);\n";
         break;
     case TYPE_BOKZ_BOKZMF:
+        m_prepare_sql["prepare_insert_into_mloc"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_mloc('%1'::json);\n";
+
         break;
     }
 

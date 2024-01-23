@@ -54,7 +54,6 @@ private:
     void wait_1s_biu_1();
     void wait_1s_biu_2();
     void wait_1s_biu_3();
-    void wait_1s_biu();
     void set_sec_mark_period(uint16_t sec_mark_period);
     void get_relay_polarity();
     void get_relay_command_pulse_time();

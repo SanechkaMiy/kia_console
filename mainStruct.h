@@ -63,6 +63,7 @@ struct Data_for_mpi
     array<uint16_t, constants::packetSize> m_data_word;
     array<uint16_t, constants::packetSize> m_qa;
     array<uint16_t, constants::packetSize> m_w;
+    array<uint16_t, constants::packetSize> m_data_upn;
 
     uint16_t m_num_used_channel = 0;
 
@@ -80,6 +81,8 @@ struct Data_for_bokz
     uint32_t m_count_of_no_is_not_def_fail;
     uint32_t m_count_of_time_out_fail;
     uint32_t m_count_of_kvaor_is_not_corr_fail;
+
+    std::vector<std::tuple<uint16_t, uint16_t, QStringList>> m_chpn_data;
 };
 #pragma pack(pop)
 #pragma pack(push, 1)
@@ -155,6 +158,14 @@ struct Data_to_protocols
 
 
 #pragma pack(push, 1)
+struct Frame_settings
+{
+    uint16_t m_type_frame_recieve;
+    uint16_t m_type_frame;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
 struct Format_for_description
 {
     int16_t shift_for_numbers = -8;
@@ -208,7 +219,7 @@ struct Wait_and_param_for_cyclogram
     int16_t m_wait_for_otclp = 2;
     int16_t m_wait_for_takt = 1;
     int16_t m_wait_for_off_power_is_stable = 3;
-    int16_t m_wait_for_start_dtmi_loc = 10;
+    int16_t m_wait_localization = 10;
     int16_t m_count_cyclogram_technical_run = 2;
     std::vector<std::array<uint16_t, constants::max_count_param>> m_param_for_run_a_lot;
     int16_t m_count_do_dtmi_in_state_off = 2;
@@ -224,13 +235,8 @@ struct Wait_and_param_for_cyclogram
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ri;
 
     std::vector<std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>>> m_command_cycl_do;
-};
-#pragma pack(pop)
 
-#pragma pack(push, 1)
-struct Matrox_settings
-{
-    uint16_t m_matrox_num_com_port = 0;
+    std::vector<std::tuple<QString, QString, uint16_t, uint16_t>> m_commands_to_pn;
 };
 #pragma pack(pop)
 
@@ -245,7 +251,6 @@ struct Kia_settings
         m_data_to_protocols.reset(new Data_to_protocols());
         m_format_for_desc.reset(new Format_for_description());
         m_data_for_bi.reset(new Data_for_bi());
-        m_matrox_setting.reset(new Matrox_settings());
     }
 
     std::shared_ptr<Data_for_db> m_data_for_db;
@@ -253,7 +258,8 @@ struct Kia_settings
     std::shared_ptr<Data_to_protocols> m_data_to_protocols;
     std::shared_ptr<Format_for_description> m_format_for_desc;
     std::shared_ptr<Data_for_bi> m_data_for_bi;
-    std::shared_ptr<Matrox_settings> m_matrox_setting;
+
+    Frame_settings m_frame_settings;
     uint16_t m_type_bokz;
     uint16_t m_type_bi;
     uint16_t m_timer_interval;

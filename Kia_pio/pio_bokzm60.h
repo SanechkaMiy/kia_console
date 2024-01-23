@@ -13,6 +13,9 @@ public:
     void decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_mshior(array<uint16_t, constants::packetSize> dataWord, int32_t& bshv) override;
+
+    void decrypt_chpn(array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr) override;
+    void decrypt_chkd(array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr) override;
     ~Pio_bokzm60();
 private:
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;

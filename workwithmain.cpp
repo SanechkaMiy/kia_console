@@ -53,7 +53,8 @@ void WorkWithMain::set_kia_settings()
             m_kia_timers->m_kia_bi.push_back(std::make_shared<Kia_biu>(ind_bi, m_kia_bi_db, m_kia_protocol, m_kia_settings));
             break;
         }
-        m_kia_timers->m_kia_synch_timer.push_back(std::make_shared<Kia_synch_timer>(ind_bi, m_kia_timers->m_timer[ind_bi], m_kia_timers->m_kia_bi[ind_bi], m_kia_settings, m_kia_protocol));
+        if (m_kia_timers->m_kia_bi.size() != 0 && m_kia_timers->m_kia_bi[ind_bi])
+            m_kia_timers->m_kia_synch_timer.push_back(std::make_shared<Kia_synch_timer>(ind_bi, m_kia_timers->m_timer[ind_bi], m_kia_timers->m_kia_bi[ind_bi], m_kia_settings, m_kia_protocol));
         m_kia_timers->m_timer[ind_bi]->start();
     }
     m_kia_ftdi.reset(new Kia_ftdi(m_kia_settings));
@@ -124,6 +125,24 @@ void WorkWithMain::mshior( uint16_t parametr)
     auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
     {
         m_bokz[num_bokz]->mshior(parametr);
+    };
+    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
+}
+
+void WorkWithMain::upn(uint16_t type_upn, QStringList value, uint16_t parametr)
+{
+    auto start_exchange = [this, type_upn, value](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_bokz[num_bokz]->upn(type_upn, value, parametr);
+    };
+    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
+}
+
+void WorkWithMain::chpn(QStringList type_chpn, uint16_t parametr)
+{
+    auto start_exchange = [this, type_chpn](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_bokz[num_bokz]->chpn(type_chpn, parametr);
     };
     check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
 }
@@ -245,6 +264,15 @@ void WorkWithMain::command_zkr(uint16_t parametr)
     check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
 }
 
+void WorkWithMain::command_otkr(uint16_t parametr)
+{
+    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+    {
+        m_bokz[num_bokz]->command_openkr(parametr);
+    };
+    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
+}
+
 void WorkWithMain::command_full_exp(uint16_t parametr)
 {
     auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
@@ -295,63 +323,7 @@ void WorkWithMain::do_frames(uint16_t type_frame, uint16_t parametr)
 {
     auto start_exchange = [this, type_frame](uint16_t num_bokz, uint16_t parametr)
     {
-        m_bokz[num_bokz]->do_frames(m_type_frame_recieve, type_frame, parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::set_epsilon(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-
-        m_bokz[num_bokz]->set_epsilon(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_epsilon, parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::get_epsilon(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->get_epsilon(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-
-}
-
-void WorkWithMain::set_focus(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->set_focus(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::get_focus(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->get_focus(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::set_texp(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->set_texp(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_texp, parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::get_texp(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->get_texp(parametr);
+        m_bokz[num_bokz]->do_frames(m_kia_settings->m_frame_settings.m_type_frame_recieve, type_frame, parametr);
     };
     check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
 }
@@ -597,8 +569,11 @@ void WorkWithMain::new_connection_slot()
     connect(this, SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
     {
-        connect(m_kia_timers->m_kia_bi[ind_bi].get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
-        connect(m_kia_timers->m_kia_synch_timer[ind_bi].get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
+        if (m_kia_timers->m_kia_bi.size() != 0 && m_kia_timers->m_kia_bi[ind_bi])
+        {
+            connect(m_kia_timers->m_kia_bi[ind_bi].get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
+            connect(m_kia_timers->m_kia_synch_timer[ind_bi].get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
+        }
     }
     connect(m_kia_protocol.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
     connect(m_kia_db.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
@@ -614,6 +589,7 @@ void WorkWithMain::new_connection_slot()
     send_cyclogams_ri_list();
     send_cyclogams_list();
     send_cyclograms_do();
+    send_pn_list_command();
     send_info_about_connection();
     m_kia_db->send_status_connection_to_db();
 
@@ -641,6 +617,10 @@ void WorkWithMain::kia_init()
     m_kia_load_initial_settings.reset(new Kia_load_initial_settings(m_kia_settings));
 
     m_kia_settings->m_timer_interval = 1000;
+
+    m_kia_settings->m_frame_settings.m_type_frame_recieve = Bokz::FTDI_USB;
+
+    m_kia_settings->m_frame_settings.m_type_frame = Bokz::FULL_FRAME;
 
     Kia_port m_kia_port(m_kia_settings);
     m_kia_port.check_used_bi_ports(m_kia_settings->m_type_bi);
@@ -733,6 +713,19 @@ void WorkWithMain::send_mpi_list_other_command()
         mpi_other_command.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
     }
     emit send_to_client(SEND_OTHER_MPI_COMMAND, mpi_other_command);
+}
+
+void WorkWithMain::send_pn_list_command()
+{
+    QStringList command;
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn)
+    {
+        command.push_back(std::get<TP_NAME>(el));
+        command.push_back(std::get<TP_KEY>(el));
+        command.push_back(QString::number(std::get<TP_TYPE_VIEW>(el)));
+        command.push_back(QString::number(std::get<TP_TYPE_COMMAND>(el)));
+    }
+    emit send_to_client(SEND_PN_COMMAND, command);
 }
 
 void WorkWithMain::send_cyclogams_list()
@@ -836,7 +829,7 @@ void WorkWithMain::slot_read_client()
         {
             break;
         }
-        QVector<QString> data_from_client;
+        QStringList data_from_client;
         qint16 num;
         qint16 type_bokz;
         qint16 type_bi;
@@ -844,6 +837,7 @@ void WorkWithMain::slot_read_client()
         m_kia_settings->m_type_bokz = type_bokz;
         m_kia_settings->m_type_bi = type_bi;
         uint16_t is_dec_or_hex = 16;
+        uint16_t type_upn_command;
         bool ok;
         //std::cout << num << std::endl;
         switch (num)
@@ -1004,26 +998,6 @@ void WorkWithMain::slot_read_client()
                 m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_mpi_index = data_from_client[num_bokz].toInt();
             }
             break;
-        case SET_QA:
-            array<double, constants::size_qa> qa;
-            for (uint16_t qa_index = 1; qa_index < data_from_client.size(); ++qa_index)
-                qa[qa_index - 1] = data_from_client[qa_index].toDouble();
-            for (auto el : qa)
-            {
-                cout << el << endl;
-            }
-            memcpy(&m_bokz[data_from_client[0].toInt()]->m_kia_data->m_data_mpi->m_qa, &qa, sizeof(qa));
-            break;
-        case SET_W:
-            array<uint16_t, constants::size_w> w;
-            for (uint16_t w_index = 0; w_index < data_from_client.size(); ++w_index)
-                w[w_index] = data_from_client[w_index + 1].toDouble();
-            for (auto el : data_from_client)
-            {
-                cout << el.toFloat() << endl;
-            }
-            memcpy(&m_bokz[data_from_client[0].toInt()]->m_kia_data->m_data_mpi->m_w, &w,sizeof(w));
-            break;
         case SET_BSHV:
             m_kia_settings->m_data_for_db->bshv[data_from_client[0].toInt()] = data_from_client[1].toInt();
             break;
@@ -1139,34 +1113,13 @@ void WorkWithMain::slot_read_client()
                 m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel = data_from_client[num_bokz].toInt();
             }
             break;
-        case SET_EPSILON:
-            m_bokz[data_from_client[0].toInt()]->m_kia_data->m_data_mpi->m_epsilon = data_from_client[1].toInt();
-            set_epsilon();
+        case SET_UPN:
+            type_upn_command = data_from_client[0].toInt();
+            data_from_client.pop_front();
+            upn(type_upn_command, data_from_client);
             break;
-        case GET_EPSILON:
-            get_epsilon();
-            break;
-        case SET_FOCUS:
-            m_bokz[data_from_client[0].toInt()]->m_kia_data->m_data_mpi->m_focus_data[FOCUS] = data_from_client[1].toFloat();
-            set_focus();
-            break;
-        case GET_FOCUS:
-            get_focus();
-            break;
-        case SET_TEXP:
-            m_bokz[data_from_client[0].toInt()]->m_kia_data->m_data_mpi->m_texp = data_from_client[1].toInt();
-            set_texp();
-            break;
-        case GET_TEXP:
-            get_texp();
-            break;
-        case SET_CORD_X:
-            m_bokz[data_from_client[0].toInt()]->m_kia_data->m_data_mpi->m_focus_data[CORD_X] = data_from_client[1].toFloat();
-            set_focus();
-            break;
-        case SET_CORD_Y:
-            m_bokz[data_from_client[0].toInt()]->m_kia_data->m_data_mpi->m_focus_data[CORD_Y] = data_from_client[1].toFloat();
-            set_focus();
+        case GET_CHPN:
+            chpn(data_from_client);
             break;
         case CYCLOGRAM_TEST_ADRESS:
             cyclogram_check_address();
@@ -1196,6 +1149,9 @@ void WorkWithMain::slot_read_client()
         case COMMAND_ZKR:
             command_zkr();
             break;
+        case COMMAND_OTKR:
+            command_otkr();
+            break;
         case SET_IS_OFF_POWER_IN_TP:
             m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_off_power_for_tp = data_from_client[0].toInt();
             break;
@@ -1212,7 +1168,6 @@ void WorkWithMain::slot_read_client()
             for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
                 m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_ai[num_cyclogram] = data_from_client[num_cyclogram].toInt();
             break;
-
         case SET_DO_CYCLOGRAM_IN_DO:
             for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
                 m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[data_from_client[0].toInt()][num_cyclogram] = data_from_client[num_cyclogram + 1].toInt();
@@ -1220,6 +1175,12 @@ void WorkWithMain::slot_read_client()
         case SET_PAUSE_DO_CYCLOGRAM_IN_DO:
             for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
                 m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram[data_from_client[0].toInt()][num_cyclogram] = data_from_client[num_cyclogram + 1].toInt();
+            break;
+        case SET_TYPE_FRAME_RECIEVE:
+            m_kia_settings->m_frame_settings.m_type_frame_recieve = data_from_client[0].toInt();
+            break;
+        case SET_TYPE_FRAME:
+            m_kia_settings->m_frame_settings.m_type_frame = data_from_client[0].toInt();
             break;
         }
         m_nNextBlockSize = 0;

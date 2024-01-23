@@ -1,6 +1,7 @@
 #ifndef KIA_CYCLOGRAM_BOKZMF_H
 #define KIA_CYCLOGRAM_BOKZMF_H
 #include "Kia_bokz/bokz.h"
+#include "Kia_bokz/bokzmf.h"
 #include "kia_protocol.h"
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
@@ -13,6 +14,7 @@ public:
     enum STATE_CYCLOGRAM_ORDER
     {
         SCO_OO = 0,
+        SCO_LOC = 1,
     };
     enum COMMAND_IN_OO
     {
@@ -50,6 +52,8 @@ public:
     uint16_t cyclogram_zkr(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_full_frames(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
 private:
+    void set_cyclogram_settings();
+    uint16_t start_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL, uint16_t count_do_loc = 0);
     uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) override;
     void do_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
     void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) override;
@@ -58,9 +62,12 @@ private:
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
     void preset_before_exchange(uint16_t num_bokz);
     void create_mpi_commands();
+    void create_list_other_mpi_commands();
     void create_list_command_for_oo();
+    void create_list_command_for_loc();
     void create_list_cyclograms_for_ri();
     void create_list_cyclograms_for_tp();
+    void create_list_chpn();
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi);
     std::shared_ptr<Kia_timers> m_kia_timers;
     std::vector<std::shared_ptr<Bokz>> m_bokz;

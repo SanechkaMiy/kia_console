@@ -109,7 +109,6 @@ uint16_t Kia_matrox::matrox_init()
 
         MsysInquire(m_mil.m_sys_id, M_COM_PORT_NUMBER + M_UART_NB(0), &m_com.m_com_num);
         MsysControl(m_mil.m_sys_id, M_UART_FREE + M_UART_NB(0), M_DEFAULT);
-        m_kia_settings->m_matrox_setting->m_matrox_num_com_port = m_com.m_com_num;
         std::cout << "COM num = " << m_com.m_com_num << "\n";
         open_com(m_com.m_com_num);
 

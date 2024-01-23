@@ -22,6 +22,17 @@ class BokzM60 : public Bokz
 {
     Q_OBJECT
 public:
+    enum TYPE_CHPN
+    {
+        TP_TEXP = 0,
+        TP_FOC = 1,
+        TP_X = 2,
+        TP_Y = 3,
+        TP_EPS = 4,
+        TP_MAT = 5,
+        TP_QA = 6,
+        TP_W = 7
+    };
     //using kia_info_p = shared_ptr <KiaInformationBot>;
     BokzM60(uint16_t num_bokz,
             std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db, shared_ptr <Kia_mpi> kia_mpi,
@@ -39,6 +50,8 @@ public:
     uint16_t mshior(uint16_t parametr = EP_DOALL) override;
     uint16_t dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL) override;
     uint16_t mloc(uint16_t parametr = EP_DOALL) override;
+    uint16_t upn(uint16_t type_upn, QStringList value, uint16_t parametr = EP_DOALL) override;
+    uint16_t chpn(QStringList type_chpn, uint16_t parametr = EP_DOALL) override;
     uint16_t smti(uint16_t parametr = EP_DOALL) override;
     uint16_t vmti(uint16_t parametr = EP_DOALL) override;
     uint16_t synchro(uint16_t parametr = EP_DOALL) override;
@@ -62,29 +75,34 @@ public:
     uint16_t block_ou( uint16_t parametr = EP_DOALL) override;
     uint16_t unblock_ou( uint16_t parametr = EP_DOALL) override;
     uint16_t do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t parametr = EP_DOALL) override;
-    uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL) override;
-    uint16_t get_epsilon(uint16_t parametr = EP_DOALL) override;
-    uint16_t set_focus(uint16_t parametr = EP_DOALL) override;
-    uint16_t get_focus( uint16_t parametr = EP_DOALL) override;
-    uint16_t set_texp(uint16_t command, uint16_t parametr = EP_DOALL) override;
-    uint16_t get_texp( uint16_t parametr = EP_DOALL) override;
+
 signals:
     void send_to_client(quint16, QStringList) override;
 
 private:
+    uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL);
+    uint16_t get_epsilon(uint16_t parametr = EP_DOALL);
+    uint16_t set_focus(uint16_t parametr = EP_DOALL);
+    uint16_t get_focus( uint16_t parametr = EP_DOALL);
+    uint16_t set_texp(uint16_t command, uint16_t parametr = EP_DOALL);
+    uint16_t get_texp( uint16_t parametr = EP_DOALL);
+
     void set_type_frame_functions();
     void set_type_frame_recieve();
+    void set_type_upn_func();
+    void set_type_chpn_func();
     void do_pause(uint16_t interval);
     void check_orientation();
     void getDataToDTMIOrDTMILoc(uint16_t &count_dtmo_or_dtmo_loc);
     void send_status_info();
-    void post_status_proc(QString &str_protocol);
+    void post_status_proc(uint16_t st1, uint16_t st2, QString &str_protocol);
     void send_data_to_command(const uint16_t &type_data, const uint16_t &type_command, const QString &data);
     void send_mpi_data_to_db();
     void preset_before_exchange();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
     void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
-    void calc_frame_param(std::vector<uint8_t> frame_buffer);
+    template <typename T>
+    void calc_frame_param(std::vector<T> frame_buffer);
     void count_of_fails(uint16_t parametr = EP_DOALL);
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
@@ -104,6 +122,9 @@ private:
     std::vector<std::function<void(uint16_t parametr)>> m_func_type_frames;
     std::vector<std::function<void(uint16_t type_frame, uint16_t parametr)>> m_func_type_frame_recieve;
     std::vector<uint32_t> m_frame_resulution;
+
+    std::vector<std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
+    std::map<uint16_t, std::function<uint16_t(uint16_t parametr)>> m_map_chpn;
 };
 
 #endif // BOKZM60_H

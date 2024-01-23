@@ -45,15 +45,15 @@ void Kia_ftdi::read_frame(uint32_t resulution)
     uint32_t bytes_received;
     //unsigned char read_buffer[1024 * 1024 * 2 + 2];
     //uint16_t read_buffer[512 * 512 + 1];
-    uint32_t rx_bytes = sizeof(m_read_buffer);
-    std::cout << rx_bytes << std::endl;
-    uint32_t count_t = resulution;
+    uint32_t rx_bytes = resulution;
     uint32_t pos = 0;
 
     bytes_received = 0;
-    std::vector<uint8_t> buffer(resulution * 2);
-    //uint8_t buffer[512 * 512 * 2]; - changed on vector --
+    std::vector<uint8_t> buffer(resulution * 4);
+    m_read_buffer.resize(resulution);
+    //uint8_t buffer[512 * 512 * 2];// - changed on vector --
     //memset(m_read_buffer, 0xff, sizeof(m_read_buffer));
+    std::cout <<"start" << std::endl;
     while(pos < resulution * 2)
     {
 
@@ -61,26 +61,28 @@ void Kia_ftdi::read_frame(uint32_t resulution)
         if ((ftStatus == FT_OK) && (rx_bytes > 0))
         {
             bytes_received = 0;
-            memset(m_read_buffer, 0xff, sizeof(m_read_buffer));
-
+            memset(m_read_buffer.data(), 0xff, m_read_buffer.size());
+            std::cout << pos << std::endl;
             FT_Read(m_ftHandle[0], &buffer[pos], rx_bytes, &bytes_received);
 
-            printf("%d   %u\n", count_t, bytes_received / 2);
             pos = pos + bytes_received;
 
         }
 
     }
-    memcpy(m_read_buffer, buffer.data(), sizeof(buffer));
+    buffer.resize(resulution * 2);
+    //std::cout << "size " << sizeof(buffer) << std::endl;
+    memcpy(m_read_buffer.data(), buffer.data(), resulution * 2);
+    std::cout << "end" << std::endl;
 }
 
-uint16_t *Kia_ftdi::get_frame_buf()
+std::vector<uint16_t> Kia_ftdi::get_frame_buf()
 {
-    return (uint16_t*)m_read_buffer;
+    return m_read_buffer;
 }
 
 uint32_t Kia_ftdi::get_buf_size()
 {
-    return sizeof(m_read_buffer);
+    return m_read_buffer.size() * 2;
 }
 

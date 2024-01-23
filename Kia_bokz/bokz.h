@@ -35,6 +35,8 @@ public:
     virtual uint16_t mshior(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t mloc(uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t upn(uint16_t type_upn, QStringList value, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t chpn(QStringList type_chpn, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t smti(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t vmti(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t synchro(uint16_t parametr = EP_DOALL) = 0;
@@ -58,12 +60,6 @@ public:
     virtual uint16_t command_restart(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_oo(uint16_t parametr = EP_DOALL) = 0;
 
-    virtual uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t get_epsilon(uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t set_focus(uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t get_focus(uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t set_texp(uint16_t command, uint16_t parametr = EP_DOALL) = 0;
-    virtual uint16_t get_texp(uint16_t parametr = EP_DOALL) = 0;
 
 
     std::tuple<double, double, double> math_alpha_delta_azimut(double Qo0, double Qo1, double Qo2, double Qo3);

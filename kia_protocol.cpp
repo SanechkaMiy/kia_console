@@ -59,10 +59,11 @@ void Kia_protocol::create_dir_for_frame_protocols()
     m_kia_settings->m_data_to_protocols->m_is_frames_protocol_used = KiaS_SUCCESS;
     QString name_dir = "exp_" + QString::fromStdString(helpers::currentDateTime());
     QDir dir_frames("/home/alexander/Project/kia_console/frames/");
-    dir_frames.mkdir(name_dir);
+
     m_full_path = "/home/alexander/Project/kia_console/frames/" + name_dir;
-    m_kia_settings->m_data_to_protocols->m_file_for_frames_protocol = new QFile(m_full_path);
-    m_kia_settings->m_data_to_protocols->m_file_for_frames_protocol->open(QIODevice::Append | QIODevice::Text);
+        dir_frames.mkdir(m_full_path);
+    //m_kia_settings->m_data_to_protocols->m_file_for_frames_protocol = new QFile(m_full_path);
+    //m_kia_settings->m_data_to_protocols->m_file_for_frames_protocol->open(QIODevice::Append | QIODevice::Text);
 }
 
 void Kia_protocol::close_dir_for_protocols()
@@ -134,13 +135,21 @@ void Kia_protocol::save_to_frames_protocols(uint16_t &num_bokz, int32_t& bshv, v
     reset_protocol();
     if (m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol == KiaS_SUCCESS)
     {
-        auto full_path = m_full_path + "/frame_num_bokz_" + QString::number(num_bokz) + "_" + QString::number(bshv) + ".mtx";
-        FILE* file = fopen(full_path.toStdString().c_str(), "wb");
+        //auto full_path = m_full_path + "/frame_num_bokz_" + QString::number(num_bokz) + "_" + QString::number(bshv) + ".mtx";
+        //FILE* file = fopen(full_path.toStdString().c_str(), "wb");
+        std::cout << sizeof(lvp_buf) << " " << buf_size << std::endl;
+        QString full_path_and_name = m_full_path + "/frame_num_bokz_" + QString::number(num_bokz) + "_" + QString::number(bshv) + ".mtx";
         if (m_kia_settings->m_data_to_protocols->m_is_frames_protocol_used == KiaS_SUCCESS)
         {
-            fwrite(lvp_buf, buf_size, 1, file);
+            //fwrite(lvp_buf, buf_size, 1, file);
+            auto file_frame_protocol  = new QFile(full_path_and_name);
+            file_frame_protocol->open(QIODevice::Append | QIODevice::Text);
+            QDataStream stream_common(file_frame_protocol);
+            stream_common.writeBytes(static_cast<char*>(lvp_buf), buf_size);
+            file_frame_protocol->close();
+            //stream_common << lvp_buf;
         }
-        fclose(file);
+        //fclose(file);
     }
 
 }

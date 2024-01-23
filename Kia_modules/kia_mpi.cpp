@@ -14,6 +14,16 @@ Kia_mpi::~Kia_mpi()
 void Kia_mpi::init()
 {
     printf("tmk is open = %d\n",TmkOpen());
+//    int hTmk = 8;
+//    if (tmkconfig(hTmk) == 0)
+//    {
+//        tmkselect(hTmk);
+//        bcreset();
+//        m_mpi_num[m_count_chip] = hTmk;
+//        printf("Device number -  %d\n", hTmk);
+//        m_count_chip++;
+//    }
+
     for (int hTmk = 0; hTmk < constants::max_tmk_dev; ++hTmk)
     {
         if (tmkconfig(hTmk) == 0)
@@ -26,6 +36,7 @@ void Kia_mpi::init()
         }
 
     }
+
 }
 
 void Kia_mpi::close()
@@ -34,10 +45,9 @@ void Kia_mpi::close()
     TmkClose();
 }
 
-uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data, uint16_t &num_bokz)
+uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data)
 {
     reset(kia_data);
-
     tmkselect(kia_data->m_data_mpi->m_mpi_index);
     kia_data->m_data_db->send_time = helpers::currentDateTime();
     bcdefbus(kia_data->m_data_mpi->m_lpi);
@@ -89,6 +99,8 @@ void Kia_mpi::send_data_from_mpi_num_mpi_to_table_settings()
     correct_mpi_dev.push_back(QString::number(TS_MPI));
     for (uint16_t num_mpi = 0; num_mpi <  m_count_chip; ++num_mpi)
         correct_mpi_dev.push_back(QString::number(m_mpi_num[num_mpi]));
+    if (m_count_chip == 0)
+        correct_mpi_dev.push_back("-");
     emit send_to_client(SEND_DATA_TO_SETTINGS_WINDOW, correct_mpi_dev);
 }
 

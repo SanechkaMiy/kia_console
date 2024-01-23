@@ -17,7 +17,7 @@ public:
     ~Kia_mpi();
     void init();
     void close();
-    uint16_t execute_exchange(std::shared_ptr<Kia_data> kia_data, uint16_t& num_bokz);
+    uint16_t execute_exchange(std::shared_ptr<Kia_data> kia_data);
     void send_mpi_dev();
     void send_data_from_mpi_num_mpi_to_table_settings();
 signals:

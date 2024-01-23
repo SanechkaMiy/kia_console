@@ -115,11 +115,6 @@ void Kia_biu::wait_1s_biu_3()
     m_cv[3].notify_all();
 }
 
-void Kia_biu::wait_1s_biu()
-{
-
-}
-
 void Kia_biu::get_relay_polarity()
 {
     uint16_t relay_command = 0x0000;

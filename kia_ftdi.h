@@ -14,13 +14,13 @@ public:
     Kia_ftdi(std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_ftdi();
     void read_frame(uint32_t resulution);
-    uint16_t* get_frame_buf();
+    std::vector<uint16_t> get_frame_buf();
     uint32_t get_buf_size();
 private:
     std::shared_ptr<Kia_settings> m_kia_settings;
     uint16_t m_num_devs;
     FT_HANDLE	m_ftHandle[MAX_DEVICES];
-    uint16_t m_read_buffer[512 * 512];
+        std::vector<uint16_t > m_read_buffer;
 };
 
 #endif // KIA_FTDI_H
