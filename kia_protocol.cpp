@@ -77,20 +77,12 @@ void Kia_protocol::close_dir_for_protocols()
         m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol].clear();
     }
     //close_dir_for_sql_protocols();
-    close_dir_for_frame_protocols();
 }
 
 void Kia_protocol::close_dir_for_sql_protocols()
 {
     m_kia_settings->m_data_to_protocols->m_file_for_sql_protocol->close();
 }
-
-void Kia_protocol::close_dir_for_frame_protocols()
-{
-    m_kia_settings->m_data_to_protocols->m_file_for_frames_protocol->close();
-}
-
-
 
 
 void Kia_protocol::save_to_protocols(uint16_t &num_bokz, const QString & data_to_out, const uint16_t &type_protocol)

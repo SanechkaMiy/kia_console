@@ -33,6 +33,19 @@ public:
         TP_QA = 6,
         TP_W = 7
     };
+    enum TYPE_COUNT_OF_FAIL
+    {
+        CHNOB = 0,
+        SVREM = 1,
+        SSBOU = 2,
+        CHNOR = 3,
+        CHAB = 4,
+        CHNKV = 5,
+        CHZLP = 6,
+        CHNRO = 7,
+        CHNEOR = 8,
+        CHPRZ = 9,
+    };
     //using kia_info_p = shared_ptr <KiaInformationBot>;
     BokzM60(uint16_t num_bokz,
             std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db, shared_ptr <Kia_mpi> kia_mpi,
@@ -89,6 +102,7 @@ private:
 
     void set_type_frame_functions();
     void set_type_frame_recieve();
+    void create_count_of_exc_fail();
     void set_type_upn_func();
     void set_type_chpn_func();
     void do_pause(uint16_t interval);

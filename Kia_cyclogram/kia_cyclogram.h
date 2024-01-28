@@ -20,6 +20,8 @@ public:
     Kia_cyclogram();
     virtual uint16_t cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
+    virtual uint16_t do_restart(uint16_t num_bokz, uint16_t parametr = EP_DOALL) = 0;
+
     virtual uint16_t cyclogram_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t cyclogram_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) = 0;

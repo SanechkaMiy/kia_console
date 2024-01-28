@@ -25,6 +25,22 @@ public:
         TP_QA = 7,
         TP_W = 8
     };
+    enum TYPE_COUNT_OF_FAIL
+    {
+        CHNOB = 0,
+        SVREM = 1,
+        SSBOU = 2,
+        CHNOR = 3,
+        CHAB = 4,
+        CHNKV = 5,
+        CHZLP = 6,
+        CHNRO = 7,
+        CHNEOR = 8,
+        CHPRZ = 9,
+        CHNEUPN = 10,
+        СHNEKP = 11,
+        CHRES = 12
+    };
     constexpr static uint16_t kd_size = 14;
 
     Bokzmf(uint16_t num_bokz,
@@ -81,6 +97,8 @@ private:
     std::function<void()> m_set_control_word;
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
+    std::pair<bool, QString> check_post(uint16_t post);
+    void create_count_of_exc_fail();
     void set_type_upn_func();
     void set_type_chpn_func();
     void execute_exchange();

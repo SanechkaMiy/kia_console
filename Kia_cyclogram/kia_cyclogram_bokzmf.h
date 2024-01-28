@@ -22,7 +22,17 @@ public:
         CIO_BSHV = 1,
         CIO_SKOR = 2
     };
+    enum POWER_CYCLOGRAM_ORDER
+    {
+        PCO_STATE_ON = 0,
+        PCO_STATE_OFF = 1,
+        PCO_RESTART = 2
+    };
 
+    enum COMMAND_IN_STATE_ON
+    {
+        CISN_UPN = 0,
+    };
     enum PARAM_IF_A_LOT
     {
         PIL_TP = 0
@@ -33,6 +43,8 @@ public:
 
     uint16_t cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
+    uint16_t do_restart(uint16_t num_bokz, uint16_t parametr = EP_DOALL) override;
+
     uint16_t cyclogram_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
@@ -53,6 +65,7 @@ public:
     uint16_t cyclogram_full_frames(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
 private:
     void set_cyclogram_settings();
+    uint16_t start_state_on(uint16_t num_bokz, uint16_t parametr = EP_DOALL);
     uint16_t start_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL, uint16_t count_do_loc = 0);
     uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) override;
     void do_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
@@ -61,9 +74,11 @@ private:
     void wait_some_time_for_one_launch(const uint16_t& wait_s) override;
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
     void preset_before_exchange(uint16_t num_bokz);
+    void create_list_power_cyclograms();
     void create_mpi_commands();
     void create_list_other_mpi_commands();
     void create_list_command_for_oo();
+    void create_list_command_for_state_on();
     void create_list_command_for_loc();
     void create_list_cyclograms_for_ri();
     void create_list_cyclograms_for_tp();

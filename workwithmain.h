@@ -35,52 +35,8 @@ class WorkWithMain : public QObject
 public:
     WorkWithMain(int nPort);
     ~WorkWithMain();
-    void shtmi1(uint16_t parametr = EP_DOALL);
-    void shtmi2(uint16_t parametr = EP_DOALL);
-    void mshior(uint16_t parametr = EP_DOALL);
-    void upn(uint16_t type_upn, QStringList value, uint16_t parametr = EP_DOALL);
-    void chpn(QStringList type_chpn, uint16_t parametr = EP_DOALL);
-    void os(uint16_t parametr = EP_DOALL);
-    void synchro(uint16_t parametr = EP_DOALL);
-    void skor(uint16_t parametr = EP_DOALL);
-    void smti(uint16_t parametr = EP_DOALL);
-    void vmti(uint16_t parametr = EP_DOALL);
-    void command_no(uint16_t parametr = EP_DOALL);
-    void command_to(uint16_t parametr = EP_DOALL);
-    void command_loc(uint16_t parametr = EP_DOALL);
-    void command_otclp(uint16_t parametr = EP_DOALL);
-    void command_bshv(uint16_t parametr = EP_DOALL);
-    void command_restart(uint16_t parametr = EP_DOALL);
-    void command_oo(uint16_t parametr = EP_DOALL);
-    void command_zkr(uint16_t parametr = EP_DOALL);
-    void command_otkr(uint16_t parametr = EP_DOALL);
-    void command_full_exp(uint16_t parametr = EP_DOALL);
-    void kvaor(uint16_t parametr = EP_DOALL);
-    void vskou(uint16_t parametr = EP_DOALL);
-    void dtmi_or_dtmi_loc(uint16_t parametr = EP_DOALL);
-    void mloc(uint16_t parametr = EP_DOALL);
-
-    void do_frames(uint16_t type_frame, uint16_t parametr = EP_DOALL);
-
-    void cyclogram_state_on(uint16_t parametr = EP_DOALL);
-    void cyclogram_state_off(uint16_t parametr = EP_DOALL);
-    void cyclogram_oo(uint16_t parametr = EP_DOALL);
-    void cyclogram_no(uint16_t parametr = EP_DOALL);
-    void cyclogram_to(uint16_t parametr = EP_DOALL);
-    void cyclogram_ai(uint16_t parametr = EP_DOALL);
-    void cyclogram_loc(uint16_t parametr = EP_DOALL);
-    void cyclogram_define_address(uint16_t parametr = EP_DOALL);
-    void cyclogram_operation(uint16_t parametr = EP_DOALL);
-    void cyclogram_1s_mark(uint16_t parametr = EP_DOALL);
-    void cyclogram_test_mko(uint16_t parametr = EP_DOALL);
-    void cyclogram_test_synchro(uint16_t parametr = EP_DOALL);
-    void cyclogram_technical_run(uint16_t parametr = EP_DOALL);
-    void cyclogram_zkr(uint16_t parametr = EP_DOALL);
-    void cyclogram_full_frames(uint16_t parametr = EP_DOALL);
-    void cyclogram_check_address(uint16_t parametr = EP_DOALL);
 
     void delete_all_threads();
-    void set_stop();
 signals:
     void send_to_client(quint16, QStringList);
 public slots:
@@ -92,12 +48,14 @@ private slots:
     virtual void new_connection_slot();
 private:
     void start_tcp_server(uint16_t nPort);
+    void create_func_to_read();
     void kia_init();
     void start_kia_gui();
     void set_kia_settings();
     void close_db_connection();
     bool check_used_bokz(uint16_t type_command, std::function<void(uint16_t, uint16_t)> start_exchange, uint16_t parametr = EP_DOALL);
     void send_kia_initial_settings();
+    void send_cyclogram_power_list();
     void send_mpi_list_command();
     void send_mpi_list_other_command();
     void send_pn_list_command();
@@ -105,6 +63,7 @@ private:
     void send_cyclogams_ai_list();
     void send_cyclogams_ri_list();
     void send_cyclograms_do();
+    void send_cyclograms_power_do();
     void kia_profile_load();
     void send_type_bi_to_table_settings();
     void send_info_about_connection();
@@ -127,6 +86,7 @@ private:
     quint16 m_nNextBlockSize = 0;
     QTcpServer* m_ptcpServer;
     QTcpSocket* m_pClientSocket;
+    std::map<uint16_t, std::function<void(QStringList)>> m_func_to_read;
 
 };
 

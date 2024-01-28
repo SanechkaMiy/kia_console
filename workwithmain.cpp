@@ -9,6 +9,8 @@ WorkWithMain::WorkWithMain(int nPort) :
     set_kia_settings();
 
     start_kia_gui();
+
+
 }
 
 void WorkWithMain::set_kia_settings()
@@ -75,6 +77,7 @@ void WorkWithMain::set_kia_settings()
         break;
     }
 
+    create_func_to_read();
 }
 
 void WorkWithMain::close_db_connection()
@@ -102,248 +105,6 @@ WorkWithMain::~WorkWithMain()
     m_kia_protocol->close_dir_for_protocols();
 }
 
-void WorkWithMain::shtmi1(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->shtmi1(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::shtmi2(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->shtmi2(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::mshior( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->mshior(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::upn(uint16_t type_upn, QStringList value, uint16_t parametr)
-{
-    auto start_exchange = [this, type_upn, value](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->upn(type_upn, value, parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::chpn(QStringList type_chpn, uint16_t parametr)
-{
-    auto start_exchange = [this, type_chpn](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->chpn(type_chpn, parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::os(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->os(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::synchro(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->synchro(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::skor(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->skor(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::smti(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->smti(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::vmti(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->vmti(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_no(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_no(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_to(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_to(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_loc(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_loc(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_otclp(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_otclp(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_bshv(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_bshv(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_restart(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_restart(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_oo(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_oo(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_zkr(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_zkr(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_otkr(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_openkr(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::command_full_exp(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->command_full_exp(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::kvaor( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->kvaor(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::vskou( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->vskou(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::dtmi_or_dtmi_loc(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->dtmi_or_dtmi_loc(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-
-}
-
-void WorkWithMain::mloc(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->mloc(parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::do_frames(uint16_t type_frame, uint16_t parametr)
-{
-    auto start_exchange = [this, type_frame](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_bokz[num_bokz]->do_frames(m_kia_settings->m_frame_settings.m_type_frame_recieve, type_frame, parametr);
-    };
-    check_used_bokz(IS_MPI_COMMAND, start_exchange, parametr);
-}
-
-void WorkWithMain::set_stop()
-{
-    for (uint16_t cycl_thr = 0; cycl_thr < m_kia_settings->m_flags_for_thread->m_stop_cyclogram_thread.size(); ++cycl_thr)
-    {
-        if ((m_bokz[cycl_thr]->m_is_used_bokz == CS_IS_ON) && (m_kia_settings->m_flags_for_thread->m_stop_cyclogram[cycl_thr]))
-        {
-            m_kia_settings->m_flags_for_thread->m_stop_cyclogram[cycl_thr] = false;
-            m_kia_settings->m_flags_for_thread->m_stop_cyclogram_thread[cycl_thr].get();
-        }
-    }
-    if (m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch)
-    {
-        m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch = false;
-        m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch_thread.get();
-    }
-}
 
 void WorkWithMain::delete_all_threads()
 {
@@ -377,159 +138,6 @@ void WorkWithMain::delete_all_threads()
         m_kia_timers->m_kia_bi[ind_bi]->stop_1s_mark();
         m_kia_timers->m_timer[ind_bi]->closeTimerThread();
     }
-}
-
-void WorkWithMain::cyclogram_ai( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_ai(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_state_on( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_state_on(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_state_off( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_state_off(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_oo(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_oo(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_no( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_no(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_to( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_to(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-
-}
-void WorkWithMain::cyclogram_loc( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_loc(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-void WorkWithMain::cyclogram_define_address( uint16_t parametr)
-{
-    m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch = true;
-    m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch_thread = std::async([this, parametr]()
-    {
-        m_kia_cyclogram->cyclogram_define_address(parametr);
-        if (m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch)
-        {
-            QStringList correct_adress;
-            correct_adress.push_back(QString::number(TS_ADDRESS));
-            for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; num_bokz++)
-            {
-                correct_adress.push_back(QString::number(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_address));
-            }
-            emit send_to_client(SEND_DATA_TO_SETTINGS_WINDOW, correct_adress);
-        }
-    });
-}
-
-void WorkWithMain::cyclogram_operation( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_operation(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_1s_mark( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_1s_mark(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_test_mko( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_test_mko(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_test_synchro( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_test_synchro(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_technical_run( uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_technical_run(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_zkr(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_zkr(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_full_frames(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_full_frames(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
-}
-
-void WorkWithMain::cyclogram_check_address(uint16_t parametr)
-{
-    auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
-    {
-        m_kia_cyclogram->cyclogram_check_address(num_bokz, parametr);
-    };
-    check_used_bokz(IS_CYCLOGRAM, start_exchange, parametr);
 }
 
 void WorkWithMain::slot_send_to_client(quint16 num, QStringList data_for_client)
@@ -583,12 +191,14 @@ void WorkWithMain::new_connection_slot()
         connect(bokz.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
 
     send_kia_initial_settings();
+    send_cyclogram_power_list();
     send_mpi_list_command();
     send_mpi_list_other_command();
     send_cyclogams_ai_list();
     send_cyclogams_ri_list();
     send_cyclogams_list();
     send_cyclograms_do();
+    send_cyclograms_power_do();
     send_pn_list_command();
     send_info_about_connection();
     m_kia_db->send_status_connection_to_db();
@@ -610,6 +220,518 @@ void WorkWithMain::start_tcp_server(uint16_t nPort)
         m_ptcpServer->close();
     }
     connect(m_ptcpServer, SIGNAL(newConnection()), this, SLOT(new_connection_slot()));
+}
+
+void WorkWithMain::create_func_to_read()
+{
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_command)
+    {
+        if (std::get<CYCL_NAME>(el) != "separator")
+        {
+            auto func = [this, el](QStringList data_from_client)
+            {
+                auto start_exchange = [el](uint16_t num_bokz, uint16_t parametr)
+                {
+                    std::get<CYCL_FUNC>(el)(num_bokz, parametr);
+                };
+                check_used_bokz(IS_MPI_COMMAND, start_exchange);
+            };
+            m_func_to_read[std::get<CYCL_TYPE_TO_SEND>(el)] = func;
+        }
+    }
+
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_mpi_other_command)
+    {
+        if (std::get<CYCL_NAME>(el) != "separator")
+        {
+            auto func = [this, el](QStringList data_from_client)
+            {
+                auto start_exchange = [el](uint16_t num_bokz, uint16_t parametr)
+                {
+                    std::get<CYCL_FUNC>(el)(num_bokz, parametr);
+                };
+                check_used_bokz(IS_MPI_COMMAND, start_exchange);
+            };
+            m_func_to_read[std::get<CYCL_TYPE_TO_SEND>(el)] = func;
+        }
+    }
+
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms_state_work)
+    {
+        if (std::get<CYCL_NAME>(el) != "separator")
+        {
+            auto func = [this, el](QStringList data_from_client)
+            {
+                auto start_exchange = [el](uint16_t num_bokz, uint16_t parametr)
+                {
+                    std::get<CYCL_FUNC>(el)(num_bokz, parametr);
+                };
+                check_used_bokz(IS_CYCLOGRAM, start_exchange);
+            };
+            m_func_to_read[std::get<CYCL_TYPE_TO_SEND>(el)] = func;
+        }
+    }
+
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms_ai)
+    {
+        if (std::get<CYCL_NAME>(el) != "separator")
+        {
+            auto func = [this, el](QStringList data_from_client)
+            {
+                auto start_exchange = [el](uint16_t num_bokz, uint16_t parametr)
+                {
+                    std::get<CYCL_FUNC>(el)(num_bokz, parametr);
+                };
+                check_used_bokz(IS_CYCLOGRAM, start_exchange);
+            };
+            m_func_to_read[std::get<CYCL_TYPE_TO_SEND>(el)] = func;
+        }
+    }
+
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms_ri)
+    {
+        if (std::get<CYCL_NAME>(el) != "separator")
+        {
+            auto func = [this, el](QStringList data_from_client)
+            {
+                auto start_exchange = [el](uint16_t num_bokz, uint16_t parametr)
+                {
+                    std::get<CYCL_FUNC>(el)(num_bokz, parametr);
+                };
+                check_used_bokz(IS_CYCLOGRAM, start_exchange);
+            };
+            m_func_to_read[std::get<CYCL_TYPE_TO_SEND>(el)] = func;
+        }
+    }
+
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms_power)
+    {
+        if (std::get<CYCL_NAME>(el) != "separator")
+        {
+            auto func = [this, el](QStringList data_from_client)
+            {
+                auto start_exchange = [el](uint16_t num_bokz, uint16_t parametr)
+                {
+                    std::get<CYCL_FUNC>(el)(num_bokz, parametr);
+                };
+                check_used_bokz(IS_CYCLOGRAM, start_exchange);
+            };
+            m_func_to_read[std::get<CYCL_TYPE_TO_SEND>(el)] = func;
+        }
+    }
+
+    auto func_power_on = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+            {
+                if (data_from_client[0].toInt() < BI_ALL_OFF)
+                    m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                                                                                        data_from_client[0].toInt());
+            }
+        }
+    };
+    m_func_to_read[POWER_ON] = func_power_on;
+
+    auto func_power_off = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+            {
+                if (data_from_client[0].toInt() < BI_ALL_OFF)
+                    m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                                                                                         data_from_client[0].toInt());
+            }
+        }
+    };
+    m_func_to_read[POWER_OFF] = func_power_off;
+
+    auto func_on_1s = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+            {
+                if (data_from_client[0].toInt() < BI_ALL_OFF)
+                    m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                             data_from_client[0].toInt());
+            }
+        }
+    };
+    m_func_to_read[ON_1S] = func_on_1s;
+
+    auto func_off_1s = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+            {
+                if (data_from_client[0].toInt() < BI_ALL_OFF)
+                    m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
+                                                                                                              data_from_client[0].toInt());
+            }
+        }
+    };
+    m_func_to_read[OFF_1S] = func_off_1s;
+
+    auto func_cycl_ai = [this](QStringList data_from_client)
+    {
+        auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+        {
+            m_kia_cyclogram->cyclogram_ai(num_bokz, parametr);
+        };
+        check_used_bokz(IS_CYCLOGRAM, start_exchange);
+    };
+    m_func_to_read[CYCLOGRAM_OFFLINE_TEST] = func_cycl_ai;
+
+    auto func_do_full_frames = [this](QStringList data_from_client)
+    {
+        auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+        {
+            m_bokz[num_bokz]->do_frames(m_kia_settings->m_frame_settings.m_type_frame_recieve, Bokz::FULL_FRAME, parametr);
+        };
+        check_used_bokz(IS_MPI_COMMAND, start_exchange);
+    };
+    m_func_to_read[DO_FULL_FRAME] = func_do_full_frames;
+
+    auto func_do_bin_frames = [this](QStringList data_from_client)
+    {
+        auto start_exchange = [this](uint16_t num_bokz, uint16_t parametr)
+        {
+            m_bokz[num_bokz]->do_frames(m_kia_settings->m_frame_settings.m_type_frame_recieve, Bokz::BIN_FRAME, parametr);
+        };
+        check_used_bokz(IS_MPI_COMMAND, start_exchange);
+    };
+    m_func_to_read[DO_BIN_FRAME] = func_do_bin_frames;
+
+    auto func_set_stop = [this](QStringList data_from_client)
+    {
+        for (uint16_t cycl_thr = 0; cycl_thr < m_kia_settings->m_flags_for_thread->m_stop_cyclogram_thread.size(); ++cycl_thr)
+        {
+            if ((m_bokz[cycl_thr]->m_is_used_bokz == CS_IS_ON) && (m_kia_settings->m_flags_for_thread->m_stop_cyclogram[cycl_thr]))
+            {
+                m_kia_settings->m_flags_for_thread->m_stop_cyclogram[cycl_thr] = false;
+                m_kia_settings->m_flags_for_thread->m_stop_cyclogram_thread[cycl_thr].get();
+            }
+        }
+        if (m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch)
+        {
+            m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch = false;
+            m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch_thread.get();
+        }
+    };
+    m_func_to_read[CYCLOGRAM_STOP] = func_set_stop;
+
+    auto func_cycl_def_address = [this](QStringList data_from_client)
+    {
+        m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch = true;
+        m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch_thread = std::async([this]()
+        {
+            m_kia_cyclogram->cyclogram_define_address();
+            if (m_kia_settings->m_flags_for_thread->m_stop_cyclogram_for_one_launch)
+            {
+                QStringList correct_adress;
+                correct_adress.push_back(QString::number(TS_ADDRESS));
+                for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; num_bokz++)
+                {
+                    correct_adress.push_back(QString::number(m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_address));
+                }
+                emit send_to_client(SEND_DATA_TO_SETTINGS_WINDOW, correct_adress);
+            }
+        });
+    };
+    m_func_to_read[CYCLOGRAM_DEFINE_ADDRESS] = func_cycl_def_address;
+
+    auto func_set_used_bokz = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            m_bokz[num_bokz]->m_is_used_bokz = data_from_client[num_bokz].toInt();
+        }
+    };
+    m_func_to_read[SET_USED_BOKZ] = func_set_used_bokz;
+
+    auto func_set_used_address = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_address = data_from_client[num_bokz].toInt();
+        }
+    };
+    m_func_to_read[SET_USED_ADDRESS] = func_set_used_address;
+
+    auto func_set_td = [this](QStringList data_from_client)
+    {
+        for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
+        {
+            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+            {
+                m_kia_timers->m_kia_bi[ind_bi]->m_kia_data->m_data_bi->m_term_group[num_bokz] = data_from_client[num_bokz].toInt();
+            }
+
+        }
+    };
+    m_func_to_read[SET_TD] = func_set_td;
+
+    auto func_set_num_mpi = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_mpi_index = data_from_client[num_bokz].toInt();
+        }
+    };
+    m_func_to_read[SET_NUM_MPI] = func_set_num_mpi;
+
+    auto func_set_bshv = [this](QStringList data_from_client)
+    {
+        m_kia_settings->m_data_for_db->bshv[data_from_client[0].toInt()] = data_from_client[1].toInt();
+
+    };
+    m_func_to_read[SET_BSHV] = func_set_bshv;
+
+    auto func_set_current_lpi = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi = data_from_client[num_bokz].toInt();
+        }
+    };
+    m_func_to_read[SET_CURRENT_LPI] = func_set_current_lpi;
+
+    auto func_set_used_mpi_in_cycl = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_mpi_command = 0; num_mpi_command < data_from_client.size(); ++num_mpi_command)
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_mpi_command_in_cyclogram[num_mpi_command] = data_from_client[num_mpi_command].toInt();
+    };
+    m_func_to_read[SET_USED_MPI_COMMAND_IN_CYCLOGRAM] = func_set_used_mpi_in_cycl;
+
+    auto func_set_cycl_set_if_do_a_lot = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_param = 0; num_param < data_from_client.size() - 1; ++num_param)
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[data_from_client[0].toInt()][num_param] = data_from_client[num_param + 1].toInt();
+    };
+    m_func_to_read[SET_CYCLOGRAM_SETTINGS_IF_DO_A_LOT] = func_set_cycl_set_if_do_a_lot;
+
+    auto func_set_exc_freq = [this](QStringList data_from_client)
+    {
+        m_kia_settings->m_freq_bokz = data_from_client[0].toInt();
+        for (auto timer : m_kia_timers->m_timer)
+            timer->change_divider(m_kia_settings->m_freq_bokz);
+    };
+    m_func_to_read[SET_EXC_FREQ] = func_set_exc_freq;
+
+    auto func_set_relay_pulse = [this](QStringList data_from_client)
+    {
+        for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
+        {
+            m_kia_timers->m_kia_bi[ind_bi]->set_relay_command(data_from_client[TRC_PULSE].toUInt());
+        }
+    };
+    m_func_to_read[SET_RELAY_PULSE] = func_set_relay_pulse;
+
+    auto func_set_relay_pulse_time = [this](QStringList data_from_client)
+    {
+        for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
+        {
+            m_kia_timers->m_kia_bi[ind_bi]->set_relay_command_pulse_time(data_from_client[TRC_TIME_PULSE].toUInt());
+        }
+    };
+    m_func_to_read[SET_RELAY_PULSE_TIME] = func_set_relay_pulse_time;
+
+    auto func_set_relay_polar = [this](QStringList data_from_client)
+    {
+        for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
+        {
+            m_kia_timers->m_kia_bi[ind_bi]->set_relay_polarity(data_from_client[TRC_POLAR].toUInt());
+        }
+    };
+    m_func_to_read[SET_RELAY_POLAR] = func_set_relay_polar;
+
+    auto func_set_mark_period = [this](QStringList data_from_client)
+    {
+        for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
+        {
+            m_kia_timers->m_kia_bi[ind_bi]->set_sec_mark_pulse_time(data_from_client[0].toInt());
+        }
+    };
+    m_func_to_read[SET_SEC_MARK_PERIOD] = func_set_mark_period;
+
+    auto func_set_num_bi = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < data_from_client.size(); ++num_bokz)
+        {
+            m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi = data_from_client[num_bokz].toInt();
+        }
+    };
+    m_func_to_read[SET_NUM_BI] = func_set_num_bi;
+
+    auto func_set_im_on = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+                m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_imitator_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
+        }
+    };
+    m_func_to_read[IMITATOR_ON] = func_set_im_on;
+
+    auto func_set_im_off = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+                m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_imitator_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
+        }
+    };
+    m_func_to_read[IMITATOR_OFF] = func_set_im_off;
+
+    auto func_set_contr_comm_on = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+                m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_contol_command(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
+        }
+    };
+    m_func_to_read[CONROL_COMMAND_ON] = func_set_contr_comm_on;
+
+    auto func_set_contr_comm_off = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
+                m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_contol_command(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
+        }
+    };
+    m_func_to_read[CONROL_COMMAND_OFF] = func_set_contr_comm_off;
+
+    auto func_set_used_ch = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
+        {
+            m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel = data_from_client[num_bokz].toInt();
+        }
+    };
+    m_func_to_read[SET_USED_CHANNEL] = func_set_used_ch;
+
+    auto func_set_upn = [this](QStringList data_from_client)
+    {
+        auto type_upn_command = data_from_client[0].toInt();
+        data_from_client.pop_front();
+        auto start_exchange = [this, type_upn_command, data_from_client](uint16_t num_bokz, uint16_t parametr)
+        {
+            m_bokz[num_bokz]->upn(type_upn_command, data_from_client, parametr);
+        };
+        check_used_bokz(IS_MPI_COMMAND, start_exchange);
+    };
+    m_func_to_read[SET_UPN] = func_set_upn;
+
+    auto func_get_chpn = [this](QStringList data_from_client)
+    {
+        auto start_exchange = [this, data_from_client](uint16_t num_bokz, uint16_t parametr)
+        {
+            m_bokz[num_bokz]->chpn(data_from_client, parametr);
+        };
+        check_used_bokz(IS_MPI_COMMAND, start_exchange);
+    };
+    m_func_to_read[GET_CHPN] = func_get_chpn;
+
+    auto func_set_ai_skip_or_stop = [this](QStringList data_from_client)
+    {
+        m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_skip_fails_for_continue = data_from_client[0].toInt();
+    };
+    m_func_to_read[SET_AI_SKIP_OR_STOP] = func_set_ai_skip_or_stop;
+
+    auto func_debugging_command = [this](QStringList data_from_client)
+    {
+        bool ok;
+        uint16_t is_dec_or_hex = 16;
+        m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
+        if (data_from_client[CS_DIRECTION].toInt() == 0)
+        {
+            for (uint16_t num_word = 0; num_word < data_from_client[CS_WORD_DATA].toInt(); ++num_word)
+            {
+                if (data_from_client[CS_DATA_TO_EXC + num_word][0] == "0")
+                    is_dec_or_hex = 16;
+                else
+                    is_dec_or_hex = 10;
+                m_bokz[data_from_client[CS_NUM_BOKZ].toInt()]->m_kia_data->m_data_mpi->m_data_to_exc[num_word] = data_from_client[CS_DATA_TO_EXC + num_word].toInt(&ok, is_dec_or_hex);
+            }
+        }
+        m_bokz[data_from_client[CS_NUM_BOKZ].toInt()]->debugging_command(data_from_client[CS_DIRECTION].toInt(), data_from_client[CS_FORMAT].toInt(),
+                                                                         data_from_client[CS_SUB_ADDRESS].toInt(), data_from_client[CS_WORD_DATA].toInt(),
+                                                                         data_from_client[CS_STRUCT_ID].toStdString(), data_from_client[CS_STRUCT_ID_DESCK].toStdString());
+    };
+    m_func_to_read[DEBUGGING_COMMAND] = func_debugging_command;
+
+    auto func_set_is_off_power_in_tp = [this](QStringList data_from_client)
+    {
+        m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_off_power_for_tp = data_from_client[0].toInt();
+    };
+    m_func_to_read[SET_IS_OFF_POWER_IN_TP] = func_set_is_off_power_in_tp;
+
+    auto func_set_do_cyclogram_in_tp = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
+    };
+    m_func_to_read[SET_DO_CYCLOGRAM_IN_TP] = func_set_do_cyclogram_in_tp;
+
+    auto func_set_count_to_do_cyclogram_in_tp = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_count_to_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
+    };
+    m_func_to_read[SET_COUNT_TO_DO_CYCLOGRAM_IN_TP] = func_set_count_to_do_cyclogram_in_tp;
+
+    auto func_set_do_cyclogram_in_ai = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_ai[num_cyclogram] = data_from_client[num_cyclogram].toInt();
+    };
+    m_func_to_read[SET_DO_CYCLOGRAM_IN_AI] = func_set_do_cyclogram_in_ai;
+
+    auto func_set_is_do_cyclogram_in_do = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[data_from_client[0].toInt()][num_cyclogram] =
+                    data_from_client[num_cyclogram + 1].toInt();
+    };
+    m_func_to_read[SET_DO_CYCLOGRAM_IN_DO] = func_set_is_do_cyclogram_in_do;
+
+    auto func_set_pause_do_cyclogram_in_do = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram[data_from_client[0].toInt()][num_cyclogram] =
+                    data_from_client[num_cyclogram + 1].toInt();
+    };
+    m_func_to_read[SET_PAUSE_DO_CYCLOGRAM_IN_DO] = func_set_pause_do_cyclogram_in_do;
+
+    auto func_set_type_frame_recive = [this](QStringList data_from_client)
+    {
+        m_kia_settings->m_frame_settings.m_type_frame_recieve =
+                data_from_client[0].toInt();
+    };
+    m_func_to_read[SET_TYPE_FRAME_RECIEVE] = func_set_type_frame_recive;
+
+    auto func_set_type_frame = [this](QStringList data_from_client)
+    {
+        m_kia_settings->m_frame_settings.m_type_frame = data_from_client[0].toInt();
+
+    };
+    m_func_to_read[SET_TYPE_FRAME] = func_set_type_frame;
+
+    auto func_set_do_cyclogram_power_in_do = [this](QStringList data_from_client)
+    {
+        for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
+        {
+            std::cout <<data_from_client[num_cyclogram + 1].toInt() << std::endl;
+            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_in_power_cycl[data_from_client[0].toInt()][num_cyclogram] = data_from_client[num_cyclogram + 1].toInt();
+        }
+    };
+    m_func_to_read[SET_DO_CYCLOGRAM_POWER_IN_DO] = func_set_do_cyclogram_power_in_do;
 }
 
 void WorkWithMain::kia_init()
@@ -691,6 +813,17 @@ void WorkWithMain::send_kia_initial_settings()
     QStringList settings;
     settings.push_back(QString::number(m_kia_settings->m_data_for_bi->m_count_bi));
     emit send_to_client(SET_KIA_GUI_SETTINGS, settings);
+}
+
+void WorkWithMain::send_cyclogram_power_list()
+{
+    QStringList cyclograms;
+    for (auto el : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_cyclograms_power)
+    {
+        cyclograms.push_back(std::get<CYCL_NAME>(el));
+        cyclograms.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
+    }
+    emit send_to_client(SEND_CYCLOGRAMS_POWER, cyclograms);
 }
 
 void WorkWithMain::send_mpi_list_command()
@@ -776,6 +909,21 @@ void WorkWithMain::send_cyclograms_do()
     }
 }
 
+void WorkWithMain::send_cyclograms_power_do()
+{
+    for (auto cycl : m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_command_do_in_cycl_power)
+    {
+        QStringList commands;
+        for (auto el : cycl)
+        {
+            commands.push_back(std::get<CYCL_NAME>(el));
+            commands.push_back(QString::number(std::get<CYCL_TYPE_TO_SEND>(el)));
+        }
+        if (commands.size() != 0)
+            emit send_to_client(SEND_CYCLOGRAMS_POWER_DO, commands);
+    }
+}
+
 void WorkWithMain::kia_profile_load()
 {
     QStringList load_profile;
@@ -836,353 +984,13 @@ void WorkWithMain::slot_read_client()
         in >> data_from_client >> type_bokz >> type_bi >> num;
         m_kia_settings->m_type_bokz = type_bokz;
         m_kia_settings->m_type_bi = type_bi;
-        uint16_t is_dec_or_hex = 16;
-        uint16_t type_upn_command;
-        bool ok;
-        //std::cout << num << std::endl;
-        switch (num)
+
+        for(auto const& imap: m_func_to_read)
         {
-        case SHTMI_1:
-            shtmi1();
-            break;
-        case SHTMI_2:
-            shtmi2();
-            break;
-        case MSHI_OR:
-            mshior();
-            break;
-        case DTMI_ONE:
-            dtmi_or_dtmi_loc(EP_NOFULLEXCHANGE);
-            break;
-        case MLOCK_ONE:
-            mloc(EP_NOFULLEXCHANGE);
-            break;
-        case SMTI:
-            smti();
-            break;
-        case VMTI:
-            vmti();
-            break;
-        case SYNCHRO:
-            synchro();
-            break;
-        case SKOR:
-            skor();
-            break;
-        case CYCLOGRAM_OO:
-            cyclogram_no();
-            break;
-        case CYCLOGRAM_NO:
-            cyclogram_no();
-            break;
-        case CYCLOGRAM_TO:
-            cyclogram_to();
-            break;
-        case CYCLOGRAM_LOC:
-            cyclogram_loc();
-            break;
-        case CYCLOGRAM_STATE_ON:
-            cyclogram_state_on();
-            break;
-        case CYCLOGRAM_STATE_OFF:
-            cyclogram_state_off();
-            break;
-        case COMMAND_FULL_EXP:
-            command_full_exp();
-            break;
-        case POWER_ON:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                {
-                    if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                                                                                            data_from_client[0].toInt());
-                }
-            }
-            break;
-        case POWER_OFF:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                {
-                    if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_bokz[num_bokz]->m_kia_data->m_data_bi->m_is_powered = m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_power_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                                                                                             data_from_client[0].toInt());
-                }
-            }
-            break;
-        case ON_1S:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                {
-                    if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                                 data_from_client[0].toInt());
-                }
-            }
-            break;
-        case OFF_1S:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                {
-                    if (data_from_client[0].toInt() < BI_ALL_OFF)
-                        m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_1s_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel,
-                                                                                                                  data_from_client[0].toInt());
-                }
-            }
-            break;
-        case COMMAND_NO:
-            command_no();
-            break;
-        case COMMAND_TO:
-            command_to();
-            break;
-        case COMMAND_LOC:
-            command_loc();
-            break;
-        case COMMAND_OTCLP:
-            command_otclp();
-            break;
-        case COMMAND_OO:
-            command_oo();
-            break;
-        case COMMAND_RESTART:
-            command_restart();
-            break;
-        case COMMAND_BSHV:
-            command_bshv();
-            break;
-        case CYCLOGRAM_OFFLINE_TEST:
-            cyclogram_ai();
-            break;
-        case CYCLOGRAM_STOP:
-            set_stop();
-            break;
-        case CYCLOGRAM_DEFINE_ADDRESS:
-            cyclogram_define_address();
-            break;
-        case COMMAND_OS:
-            os();
-            break;
-        case COMMAND_VSKOU:
-            vskou();
-            break;
-        case SET_USED_BOKZ:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                m_bokz[num_bokz]->m_is_used_bokz = data_from_client[num_bokz].toInt();
-            }
-            break;
-        case SET_USED_ADDRESS:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_address = data_from_client[num_bokz].toInt();
-            }
-            break;
-        case SET_TD:
-            for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
-            {
-                for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-                {
-                    m_kia_timers->m_kia_bi[ind_bi]->m_kia_data->m_data_bi->m_term_group[num_bokz] = data_from_client[num_bokz].toInt();
-                }
-
-            }
-            break;
-        case SET_NUM_MPI:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_mpi_index = data_from_client[num_bokz].toInt();
-            }
-            break;
-        case SET_BSHV:
-            m_kia_settings->m_data_for_db->bshv[data_from_client[0].toInt()] = data_from_client[1].toInt();
-            break;
-        case CYCLOGRAM_OPERATION:
-            cyclogram_operation();
-            break;
-        case CYCLOGRAM_1S_MARK:
-            cyclogram_1s_mark();
-            break;
-        case CYCLOGRAM_TEST_MKO:
-            cyclogram_test_mko();
-            break;
-        case CYCLOGRAM_TECH_RUN:
-            cyclogram_technical_run();
-            break;
-        case SET_CURRENT_LPI:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_lpi = data_from_client[num_bokz].toInt();
-            }
-            break;
-        case SET_USED_MPI_COMMAND_IN_CYCLOGRAM:
-            for (uint16_t num_mpi_command = 0; num_mpi_command < data_from_client.size(); ++num_mpi_command)
-                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_mpi_command_in_cyclogram[num_mpi_command] = data_from_client[num_mpi_command].toInt();
-            break;
-        case SET_CYCLOGRAM_SETTINGS_IF_DO_A_LOT:
-            for (uint16_t num_param = 0; num_param < data_from_client.size() - 1; ++num_param)
-                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_param_for_run_a_lot[data_from_client[0].toInt()][num_param] = data_from_client[num_param + 1].toInt();
-            break;
-        case SET_EXC_FREQ:
-            m_kia_settings->m_freq_bokz = data_from_client[0].toInt();
-            for (auto timer : m_kia_timers->m_timer)
-                timer->change_divider(m_kia_settings->m_freq_bokz);
-            break;
-        case CYCLOGRAM_ZKR:
-            cyclogram_zkr();
-            break;
-        case DO_FULL_FRAME:
-            do_frames(Bokz::FULL_FRAME, EP_NOPROTECTEDEXCHANGE);
-            break;
-        case DO_BIN_FRAME:
-            do_frames(Bokz::BIN_FRAME, EP_NOPROTECTEDEXCHANGE);
-            break;
-        case CYCL_FULL_FRAMES:
-            cyclogram_full_frames();
-            break;
-        case SET_RELAY_PULSE:
-            printf("relay command %04x\n", data_from_client[TRC_PULSE].toUInt());
-            for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
-            {
-                m_kia_timers->m_kia_bi[ind_bi]->set_relay_command(data_from_client[TRC_PULSE].toUInt());
-
-            }
-            break;
-        case SET_RELAY_PULSE_TIME:
-            std::cout << "pulse time " << data_from_client[TRC_TIME_PULSE].toUInt() << std::endl;
-            for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
-            {
-                m_kia_timers->m_kia_bi[ind_bi]->set_relay_command_pulse_time(data_from_client[TRC_TIME_PULSE].toUInt());
-
-            }
-            break;
-        case SET_RELAY_POLAR:
-            std::cout << "polar " << data_from_client[TRC_POLAR].toUInt() << std::endl;
-            for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
-            {
-                m_kia_timers->m_kia_bi[ind_bi]->set_relay_polarity(data_from_client[TRC_POLAR].toUInt());
-            }
-            break;
-        case SET_SEC_MARK_PERIOD:
-            for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
-            {
-                m_kia_timers->m_kia_bi[ind_bi]->set_sec_mark_pulse_time(data_from_client[0].toInt());
-            }
-            break;
-        case SET_NUM_BI:
-            for (uint16_t num_bokz = 0; num_bokz < data_from_client.size(); ++num_bokz)
-            {
-                m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi = data_from_client[num_bokz].toInt();
-            }
-            break;
-        case IMITATOR_ON:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                    m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_imitator_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
-            }
-            break;
-        case IMITATOR_OFF:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                    m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_imitator_bi(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
-            }
-            break;
-        case CONROL_COMMAND_ON:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                    m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->on_contol_command(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
-            }
-            break;
-        case CONROL_COMMAND_OFF:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)
-                    m_kia_timers->m_kia_bi[m_bokz[num_bokz]->m_kia_data->m_data_bi->m_num_used_bi]->off_contol_command(num_bokz, m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel);
-            }
-            break;
-        case SET_USED_CHANNEL:
-            for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
-            {
-                m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_num_used_channel = data_from_client[num_bokz].toInt();
-            }
-            break;
-        case SET_UPN:
-            type_upn_command = data_from_client[0].toInt();
-            data_from_client.pop_front();
-            upn(type_upn_command, data_from_client);
-            break;
-        case GET_CHPN:
-            chpn(data_from_client);
-            break;
-        case CYCLOGRAM_TEST_ADRESS:
-            cyclogram_check_address();
-            break;
-        case CYCLOGRAM_SYNCHRO:
-            cyclogram_test_synchro();
-            break;
-        case SET_AI_SKIP_OR_STOP:
-            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_skip_fails_for_continue = data_from_client[0].toInt();
-            break;
-        case DEBUGGING_COMMAND:
-            m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
-            if (data_from_client[CS_DIRECTION].toInt() == 0)
-            {
-                for (uint16_t num_word = 0; num_word < data_from_client[CS_WORD_DATA].toInt(); ++num_word)
-                {
-                    if (data_from_client[CS_DATA_TO_EXC + num_word][0] == "0")
-                        is_dec_or_hex = 16;
-                    else
-                        is_dec_or_hex = 10;
-                    m_bokz[data_from_client[CS_NUM_BOKZ].toInt()]->m_kia_data->m_data_mpi->m_data_to_exc[num_word] = data_from_client[CS_DATA_TO_EXC + num_word].toInt(&ok, is_dec_or_hex);
-                }
-            }
-            m_bokz[data_from_client[CS_NUM_BOKZ].toInt()]->debugging_command(data_from_client[CS_DIRECTION].toInt(), data_from_client[CS_FORMAT].toInt(),
-                                                                             data_from_client[CS_SUB_ADDRESS].toInt(), data_from_client[CS_WORD_DATA].toInt(), data_from_client[CS_STRUCT_ID].toStdString(), data_from_client[CS_STRUCT_ID_DESCK].toStdString());
-            break;
-        case COMMAND_ZKR:
-            command_zkr();
-            break;
-        case COMMAND_OTKR:
-            command_otkr();
-            break;
-        case SET_IS_OFF_POWER_IN_TP:
-            m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_off_power_for_tp = data_from_client[0].toInt();
-            break;
-        case SET_DO_CYCLOGRAM_IN_TP:
-            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
-                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
-
-            break;
-        case SET_COUNT_TO_DO_CYCLOGRAM_IN_TP:
-            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
-                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_count_to_do_cyclogram_in_tp[num_cyclogram] = data_from_client[num_cyclogram].toInt();
-            break;
-        case SET_DO_CYCLOGRAM_IN_AI:
-            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size(); ++num_cyclogram)
-                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_ai[num_cyclogram] = data_from_client[num_cyclogram].toInt();
-            break;
-        case SET_DO_CYCLOGRAM_IN_DO:
-            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
-                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[data_from_client[0].toInt()][num_cyclogram] = data_from_client[num_cyclogram + 1].toInt();
-            break;
-        case SET_PAUSE_DO_CYCLOGRAM_IN_DO:
-            for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
-                m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram[data_from_client[0].toInt()][num_cyclogram] = data_from_client[num_cyclogram + 1].toInt();
-            break;
-        case SET_TYPE_FRAME_RECIEVE:
-            m_kia_settings->m_frame_settings.m_type_frame_recieve = data_from_client[0].toInt();
-            break;
-        case SET_TYPE_FRAME:
-            m_kia_settings->m_frame_settings.m_type_frame = data_from_client[0].toInt();
-            break;
+            if (num == imap.first)
+                m_func_to_read[num](data_from_client);
         }
+
         m_nNextBlockSize = 0;
     }
 }

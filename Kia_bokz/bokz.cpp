@@ -104,6 +104,30 @@ void Bokz::parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::
     kia_protocol->save_and_out_to_mko_protocols(num_bokz, str_mpi_protocol);
 }
 
+QString Bokz::set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double> > list_data)
+{
+    int16_t shift_for_numbers = -8;
+    int16_t shift_description = -50;
+    QString str_protocol;
+    for (uint16_t num_list = 0; num_list < list_name.size(); ++num_list)
+    {
+        uint16_t do_shift_left = 0;
+        if (std::get<PAD_NAME>(list_data[num_list])[0] == '-')
+            do_shift_left = 1;
+        QString is_norma = "";
+        if (std::get<PAD_VALUE>(list_data[num_list]) < std::get<PAD_LOW_INTERVAL>(list_data[num_list]) ||
+                std::get<PAD_VALUE>(list_data[num_list]) > std::get<PAD_HIGH_INTERVAL>(list_data[num_list]))
+        {
+            is_norma = "(не норма)";
+        }
+        str_protocol.push_back(helpers::format_qstring(list_name[num_list],
+                                                       shift_description
+                                                       + shift_for_numbers + do_shift_left)
+                               + std::get<PAD_NAME>(list_data[num_list]) + is_norma + "\n");
+    }
+    return str_protocol;
+}
+
 std::tuple<double, double, double> Bokz::math_alpha_delta_azimut(double Qo0, double Qo1, double Qo2, double Qo3)
 {
     auto De = asinm(Qo0 * Qo0 - Qo1 * Qo1 - Qo2 * Qo2 + Qo3 * Qo3);

@@ -27,6 +27,8 @@ public:
                           shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
     uint16_t cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
+    uint16_t do_restart(uint16_t num_bokz, uint16_t parametr = EP_DOALL) override;
+
     uint16_t cyclogram_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_no(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_to(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
@@ -58,8 +60,10 @@ private:
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi);
     void preset_before_exchange(uint16_t num_bokz);
+    void create_list_power_cyclograms();
     void create_mpi_commands();
     void create_list_other_mpi_commands();
+    void create_list_cyclograms_for_state_work();
     void create_list_cyclograms_for_tp();
     void create_list_cyclograms_for_ai();
     void create_list_cyclograms_for_ri();

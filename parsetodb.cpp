@@ -163,9 +163,7 @@ void ParseToDB::sendDataIntoMPI(uint16_t &num_bokz, int32_t &bshv)
     m_kia_db[TYPE_RAW]->insert_data(m_data_to_mpi, "prepare_insert_into_mpi");
 }
 
-void ParseToDB::sendDataIntoDTMILOC_M60(uint16_t &num_bokz, int32_t& bshv, DTMILoc_1& dtmiLoc_1, DTMILoc_2& dtmiLoc_2, DTMILoc_3& dtmiLoc_3,
-                                        DTMILoc_4& dtmiLoc_4, DTMILoc_5& dtmiLoc_5, DTMILoc_6& dtmiLoc_6,
-                                        DTMILoc_7& dtmiLoc_7, DTMILoc_8& dtmiLoc_8, DTMILoc_9& dtmiLoc_9)
+void ParseToDB::sendDataIntoDTMILOC_M60(uint16_t &num_bokz, int32_t& bshv, DTMILoc &dtmiLoc)
 {
     char data_into_dtmiloc[2048];
     sprintf(data_into_dtmiloc,"{\"experiment_id\":\"%s\","
@@ -174,8 +172,8 @@ void ParseToDB::sendDataIntoDTMILOC_M60(uint16_t &num_bokz, int32_t& bshv, DTMIL
                               "\"host_id\":\"%s\","
                               "\"unit_id\":\"%s\","
                               "\"bshv\":%d,"
-                              "\"cc1\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                              "\"cc2\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
+                              "\"cc1\":\"%s\","
+                              "\"cc2\":\"%s\","
                               "\"t\":%i,"
                               "\"st1\":%i,"
                               "\"st2\":%i,"
@@ -185,64 +183,27 @@ void ParseToDB::sendDataIntoDTMILOC_M60(uint16_t &num_bokz, int32_t& bshv, DTMIL
                               "\"numobj\":%i,"
                               "\"mean\":%u,"
                               "\"sigma\":%u,"
-                              "\"locx\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                              "\"locy\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                              "\"locb\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                              "\"locs\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
+                              "\"locx\":\"%s\","
+                              "\"locy\":\"%s\","
+                              "\"locb\":\"%s\","
+                              "\"locs\":\"%s\","
                               "\"reserve\":%i}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
             m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
             m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
-            dtmiLoc_1.CC1, dtmiLoc_2.CC1, dtmiLoc_3.CC1, dtmiLoc_4.CC1, dtmiLoc_5.CC1, dtmiLoc_6.CC1, dtmiLoc_7.CC1, dtmiLoc_8.CC1, dtmiLoc_9.CC1,
-            dtmiLoc_1.CC2, dtmiLoc_2.CC2, dtmiLoc_3.CC2, dtmiLoc_4.CC2, dtmiLoc_5.CC2, dtmiLoc_6.CC2, dtmiLoc_7.CC2, dtmiLoc_8.CC2, dtmiLoc_9.CC2,
-            dtmiLoc_1.T, dtmiLoc_1.KC1,
-            dtmiLoc_1.KC2, dtmiLoc_1.SerNum, dtmiLoc_1.Texp, dtmiLoc_1.NumLoc, dtmiLoc_1.NumObj,
-            dtmiLoc_1.Mean, dtmiLoc_1.Sigma,
-            dtmiLoc_1.Loc_0_0, dtmiLoc_1.Loc_1_0, dtmiLoc_1.Loc_2_0,
-            dtmiLoc_2.Loc_9_10, dtmiLoc_2.Loc_17_18, dtmiLoc_2.Loc_25_26,
-            dtmiLoc_3.Loc_3_4, dtmiLoc_3.Loc_11_12, dtmiLoc_3.Loc_19_20, dtmiLoc_3.Loc_27_28,
-            dtmiLoc_4.Loc_5_6, dtmiLoc_4.Loc_13_14, dtmiLoc_4.Loc_21_22, dtmiLoc_4.Loc_29_30,
-            dtmiLoc_5.Loc_7_8, dtmiLoc_5.Loc_15_16, dtmiLoc_5.Loc_23_24, dtmiLoc_5.Loc_31_32,
-            dtmiLoc_6.Loc_9_10, dtmiLoc_6.Loc_17_18, dtmiLoc_6.Loc_25_26,
-            dtmiLoc_7.Loc_3_4, dtmiLoc_7.Loc_11_12, dtmiLoc_7.Loc_19_20, dtmiLoc_7.Loc_27_28,
-            dtmiLoc_8.Loc_5_6, dtmiLoc_8.Loc_13_14, dtmiLoc_8.Loc_21_22, dtmiLoc_8.Loc_29_30,
-            dtmiLoc_9.Loc_7_8, dtmiLoc_9.Loc_15_16, dtmiLoc_9.Loc_23_24,
-
-            dtmiLoc_1.Loc_0_1, dtmiLoc_1.Loc_1_1,
-            dtmiLoc_2.Loc_3_4, dtmiLoc_2.Loc_11_12, dtmiLoc_2.Loc_19_20, dtmiLoc_2.Loc_27_28,
-            dtmiLoc_3.Loc_5_6, dtmiLoc_3.Loc_13_14, dtmiLoc_3.Loc_21_22, dtmiLoc_3.Loc_29_30,
-            dtmiLoc_4.Loc_7_8, dtmiLoc_4.Loc_15_16, dtmiLoc_4.Loc_23_24, dtmiLoc_4.Loc_31_32,
-            dtmiLoc_5.Loc_9_10, dtmiLoc_5.Loc_17_18, dtmiLoc_5.Loc_25_26,
-            dtmiLoc_6.Loc_3_4, dtmiLoc_6.Loc_11_12, dtmiLoc_6.Loc_19_20, dtmiLoc_6.Loc_27_28,
-            dtmiLoc_7.Loc_5_6, dtmiLoc_7.Loc_13_14, dtmiLoc_7.Loc_21_22, dtmiLoc_7.Loc_29_30,
-            dtmiLoc_8.Loc_7_8, dtmiLoc_8.Loc_15_16, dtmiLoc_8.Loc_23_24, dtmiLoc_8.Loc_31_32,
-            dtmiLoc_9.Loc_9_10, dtmiLoc_9.Loc_17_18, dtmiLoc_9.Loc_25_26,
-
-            dtmiLoc_1.Loc_0_2, dtmiLoc_1.Loc_1_2,
-            dtmiLoc_2.Loc_5_6, dtmiLoc_2.Loc_13_14, dtmiLoc_2.Loc_21_22, dtmiLoc_2.Loc_29_30,
-            dtmiLoc_3.Loc_7_8, dtmiLoc_3.Loc_15_16, dtmiLoc_3.Loc_23_24, dtmiLoc_3.Loc_31_32,
-            dtmiLoc_4.Loc_9_10, dtmiLoc_4.Loc_17_18, dtmiLoc_4.Loc_25_26,
-            dtmiLoc_5.Loc_3_4, dtmiLoc_5.Loc_11_12, dtmiLoc_5.Loc_19_20, dtmiLoc_5.Loc_27_28,
-            dtmiLoc_6.Loc_5_6, dtmiLoc_6.Loc_13_14, dtmiLoc_6.Loc_21_22, dtmiLoc_6.Loc_29_30,
-            dtmiLoc_7.Loc_7_8, dtmiLoc_7.Loc_15_16, dtmiLoc_7.Loc_23_24, dtmiLoc_7.Loc_31_32,
-            dtmiLoc_8.Loc_9_10, dtmiLoc_8.Loc_17_18, dtmiLoc_8.Loc_25_26,
-            dtmiLoc_9.Loc_3_4, dtmiLoc_9.Loc_11_12, dtmiLoc_9.Loc_19_20, dtmiLoc_9.Loc_27_28,
-
-            dtmiLoc_1.Loc_0_3, dtmiLoc_1.Loc_1_3,
-            dtmiLoc_2.Loc_7_8, dtmiLoc_2.Loc_15_16, dtmiLoc_2.Loc_23_24, dtmiLoc_2.Loc_31_32,
-            dtmiLoc_3.Loc_9_10, dtmiLoc_3.Loc_17_18, dtmiLoc_3.Loc_25_26,
-            dtmiLoc_4.Loc_3_4, dtmiLoc_4.Loc_11_12, dtmiLoc_4.Loc_19_20, dtmiLoc_4.Loc_27_28,
-            dtmiLoc_5.Loc_5_6, dtmiLoc_5.Loc_13_14, dtmiLoc_5.Loc_21_22, dtmiLoc_5.Loc_29_30,
-            dtmiLoc_6.Loc_7_8, dtmiLoc_6.Loc_15_16, dtmiLoc_6.Loc_23_24, dtmiLoc_6.Loc_31_32,
-            dtmiLoc_7.Loc_9_10, dtmiLoc_7.Loc_17_18, dtmiLoc_7.Loc_25_26,
-            dtmiLoc_8.Loc_3_4, dtmiLoc_8.Loc_11_12, dtmiLoc_8.Loc_19_20, dtmiLoc_8.Loc_27_28,
-            dtmiLoc_9.Loc_5_6, dtmiLoc_9.Loc_13_14, dtmiLoc_9.Loc_21_22, dtmiLoc_9.Loc_29_30,
-            dtmiLoc_9.rezerv);
+            convert_array_to_json_string(dtmiLoc.dtmi_cc1).c_str(),
+            convert_array_to_json_string(dtmiLoc.dtmi_cc2).c_str(),
+            dtmiLoc.dtmiLoc_1.T, dtmiLoc.dtmiLoc_1.KC1,
+            dtmiLoc.dtmiLoc_1.KC2, dtmiLoc.dtmiLoc_1.SerNum, dtmiLoc.dtmiLoc_1.Texp, dtmiLoc.dtmiLoc_1.NumLoc, dtmiLoc.dtmiLoc_1.NumObj,
+            dtmiLoc.dtmiLoc_1.Mean, dtmiLoc.dtmiLoc_1.Sigma,
+            convert_array_to_json_string(dtmiLoc.loc_x).c_str(),
+            convert_array_to_json_string(dtmiLoc.loc_y).c_str(),
+            convert_array_to_json_string(dtmiLoc.loc_b).c_str(),
+            convert_array_to_json_string(dtmiLoc.loc_c).c_str(),
+            dtmiLoc.dtmiLoc_9.rezerv);
     m_kia_db[TYPE_DATA]->insert_data(data_into_dtmiloc, "prepare_insert_into_dtmiloc");
 }
 
-void ParseToDB::sendDataIntoDTMI_M60(uint16_t &num_bokz, int32_t& bshv, DTMI_1& dtmi_1, DTMI_2& dtmi_2, DTMI_3& dtmi_3, DTMI_4& dtmi_4,
-                                     DTMI_5& dtmi_5, DTMI_6& dtmi_6, DTMI_7& dtmi_7, DTMI_8& dtmi_8,
-                                     DTMI_9& dtmi_9)
+void ParseToDB::sendDataIntoDTMI_M60(uint16_t &num_bokz, int32_t& bshv, DTMI &dtmi)
 {
     char data_into_dtmi[4096];
     sprintf(data_into_dtmi,"{\"experiment_id\":\"%s\","
@@ -251,8 +212,8 @@ void ParseToDB::sendDataIntoDTMI_M60(uint16_t &num_bokz, int32_t& bshv, DTMI_1& 
                            "\"host_id\":\"%s\","
                            "\"unit_id\":\"%s\","
                            "\"bshv\":%d,"
-                           "\"cc1\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"cc2\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
+                           "\"cc1\":\"%s\","
+                           "\"cc2\":\"%s\","
                            "\"t\":%i,"
                            "\"st1\":%i,"
                            "\"st2\":%i,"
@@ -263,17 +224,17 @@ void ParseToDB::sendDataIntoDTMI_M60(uint16_t &num_bokz, int32_t& bshv, DTMI_1& 
                            "\"numfrag\":%i,"
                            "\"epsilon\":%u,"
                            "\"deltat\":%f,"
-                           "\"locx\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"locy\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"locb\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"locs\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
+                           "\"locx\":\"%s\","
+                           "\"locy\":\"%s\","
+                           "\"locb\":\"%s\","
+                           "\"locs\":\"%s\","
                            "\"wx\":%f,"
                            "\"wy\":%f,"
                            "\"wz\":%f,"
-                           "\"xc\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"yc\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                           "\"thfrag\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"objfrag\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
+                           "\"xc\":\"%s\","
+                           "\"yc\":\"%s\","
+                           "\"thfrag\":\"%s\","
+                           "\"objfrag\":\"%s\","
                            "\"tolg\":%i,"
                            "\"qolg\":\"{%f,%f,%f,%f}\","
                            "\"epoch\":%f,"
@@ -281,79 +242,40 @@ void ParseToDB::sendDataIntoDTMI_M60(uint16_t &num_bokz, int32_t& bshv, DTMI_1& 
                            "\"numl1\":%i,"
                            "\"maxh\":%i,"
                            "\"dxmaxh\":%i,"
-                           "\"dymaxh\":%i,"
-                           "\"reserve\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\"}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
+                           "\"dymaxh\":%i}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
             m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
             m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
-            dtmi_1.CC1, dtmi_2.CC1, dtmi_3.CC1, dtmi_4.CC1, dtmi_5.CC1, dtmi_6.CC1, dtmi_7.CC1, dtmi_8.CC1, dtmi_9.CC1,
-            dtmi_1.CC2, dtmi_2.CC2, dtmi_3.CC2, dtmi_4.CC2, dtmi_5.CC2, dtmi_6.CC2, dtmi_7.CC2, dtmi_8.CC2, dtmi_9.CC2,
-            dtmi_1.T, dtmi_1.KC1,
-            dtmi_1.KC2, dtmi_1.SerNum, dtmi_1.Texp, dtmi_1.NumLoc, dtmi_1.NumObj,
-            dtmi_1.NumFrag, dtmi_1.Epsilon, dtmi_1.deltaT,
-            dtmi_1.Loc_0_0, dtmi_1.Loc_1_0, dtmi_1.Loc_2_0,
-            dtmi_2.Loc_9_10, dtmi_2.Loc_17_18, dtmi_2.Loc_25_26,
-            dtmi_3.Loc_3_4, dtmi_3.Loc_11_12, dtmi_3.Loc_19_20, dtmi_3.Loc_27_28,
-            dtmi_4.Loc_5_6, dtmi_4.Loc_13_14, dtmi_4.Loc_21_22, dtmi_4.Loc_29_30,
-            dtmi_5.Loc_7_8, dtmi_5.Loc_15_16,
+            convert_array_to_json_string(dtmi.dtmi_cc1).c_str(),
+            convert_array_to_json_string(dtmi.dtmi_cc2).c_str(),
+            dtmi.dtmi_1.T, dtmi.dtmi_1.KC1,
+            dtmi.dtmi_1.KC2, dtmi.dtmi_1.SerNum, dtmi.dtmi_1.Texp, dtmi.dtmi_1.NumLoc, dtmi.dtmi_1.NumObj,
+            dtmi.dtmi_1.NumFrag, dtmi.dtmi_1.Epsilon, dtmi.dtmi_1.deltaT,
+            convert_array_to_json_string(dtmi.loc_x).c_str(),
+            convert_array_to_json_string(dtmi.loc_y).c_str(),
+            convert_array_to_json_string(dtmi.loc_b).c_str(),
+            convert_array_to_json_string(dtmi.loc_c).c_str(),
 
-            dtmi_1.Loc_0_1, dtmi_1.Loc_1_1,
-            dtmi_2.Loc_3_4, dtmi_2.Loc_11_12, dtmi_2.Loc_19_20, dtmi_2.Loc_27_28,
-            dtmi_3.Loc_5_6, dtmi_3.Loc_13_14, dtmi_3.Loc_21_22, dtmi_3.Loc_29_30,
-            dtmi_4.Loc_7_8, dtmi_4.Loc_15_16, dtmi_4.Loc_23_24, dtmi_4.Loc_31_32,
-            dtmi_5.Loc_9_10, dtmi_5.Loc_17_18,
+            dtmi.dtmi_5.Wo_x, dtmi.dtmi_5.Wo_y, dtmi.dtmi_5.Wo_z,
 
-            dtmi_1.Loc_0_2, dtmi_1.Loc_1_2,
-            dtmi_2.Loc_5_6, dtmi_2.Loc_13_14, dtmi_2.Loc_21_22, dtmi_2.Loc_29_30,
-            dtmi_3.Loc_7_8, dtmi_3.Loc_15_16, dtmi_3.Loc_23_24, dtmi_3.Loc_31_32,
-            dtmi_4.Loc_9_10, dtmi_4.Loc_17_18, dtmi_4.Loc_25_26,
-            dtmi_5.Loc_3_4, dtmi_4.Loc_11_12, dtmi_5.Loc_19_20,
+            convert_array_to_json_string(dtmi.XY_x).c_str(),
+            convert_array_to_json_string(dtmi.XY_y).c_str(),
 
+            convert_array_to_json_string(dtmi.ThFrag).c_str(),
+            convert_array_to_json_string(dtmi.ObjFrag).c_str(),
 
-            dtmi_1.Loc_0_3, dtmi_1.Loc_1_3,
-            dtmi_2.Loc_7_8, dtmi_2.Loc_15_16, dtmi_2.Loc_23_24, dtmi_2.Loc_31_32,
-            dtmi_3.Loc_9_10, dtmi_3.Loc_17_18, dtmi_3.Loc_25_26,
-            dtmi_4.Loc_3_4, dtmi_4.Loc_11_12, dtmi_4.Loc_19_20, dtmi_4.Loc_27_28,
-            dtmi_5.Loc_5_6, dtmi_5.Loc_13_14, dtmi_5.Loc_21_22,
+            dtmi.dtmi_9.TOlg,
 
-            dtmi_5.Wo_x, dtmi_5.Wo_y, dtmi_5.Wo_z,
+            dtmi.dtmi_9.QOlg_0, dtmi.dtmi_9.QOlg_1, dtmi.dtmi_9.QOlg_2, dtmi.dtmi_9.QOlg_3,
 
-            dtmi_5.XYc_0_0, dtmi_6.XYc_3_4, dtmi_6.XYc_7_8, dtmi_6.XYc_11_12, dtmi_6.XYc_15_16,
-            dtmi_6.XYc_19_20, dtmi_6.XYc_23_24, dtmi_6.XYc_27_28, dtmi_6.XYc_31_32,
-            dtmi_7.XYc_3_4, dtmi_7.XYc_7_8, dtmi_7.XYc_11_12, dtmi_7.XYc_15_16,
-            dtmi_7.XYc_19_20, dtmi_7.XYc_23_24, dtmi_7.XYc_27_28, dtmi_7.XYc_31_32,
+            dtmi.dtmi_9.Epoch,
 
-            dtmi_5.XYc_0_1, dtmi_6.XYc_5_6, dtmi_6.XYc_9_10, dtmi_6.XYc_13_14, dtmi_6.XYc_17_18,
-            dtmi_6.XYc_21_22, dtmi_6.XYc_25_26, dtmi_6.XYc_29_30, dtmi_7.XYc_5_6,
-            dtmi_7.XYc_9_10, dtmi_7.XYc_13_14, dtmi_7.XYc_17_18, dtmi_7.XYc_21_22,
-            dtmi_7.XYc_25_26, dtmi_7.XYc_29_30,
+            dtmi.dtmi_9.NumL_0, dtmi.dtmi_9.NumL_1,
 
-            dtmi_8.TheFrag_0, dtmi_8.TheFrag_1, dtmi_8.TheFrag_2, dtmi_8.TheFrag_3, dtmi_8.TheFrag_4,
-            dtmi_8.TheFrag_5, dtmi_8.TheFrag_6, dtmi_8.TheFrag_7, dtmi_8.TheFrag_8, dtmi_8.TheFrag_9,
-            dtmi_8.TheFrag_10, dtmi_8.TheFrag_11, dtmi_8.TheFrag_12, dtmi_8.TheFrag_13, dtmi_8.TheFrag_14,
-            dtmi_8.TheFrag_15,
+            dtmi.dtmi_9.maxH,
 
-            dtmi_8.ObjFrag_0, dtmi_8.ObjFrag_1, dtmi_8.ObjFrag_2, dtmi_8.ObjFrag_3, dtmi_8.ObjFrag_4,
-            dtmi_8.ObjFrag_5, dtmi_8.ObjFrag_6, dtmi_8.ObjFrag_7, dtmi_8.ObjFrag_8, dtmi_8.ObjFrag_9,
-            dtmi_8.ObjFrag_10, dtmi_8.ObjFrag_11, dtmi_8.ObjFrag_12, dtmi_8.ObjFrag_13, dtmi_9.ObjFrag_14,
-            dtmi_9.ObjFrag_15,
+            dtmi.dtmi_9.dxmaxH,
 
-            dtmi_9.TOlg,
-
-            dtmi_9.QOlg_0, dtmi_9.QOlg_1, dtmi_9.QOlg_2, dtmi_9.QOlg_3,
-
-            dtmi_9.Epoch,
-
-            dtmi_9.NumL_0, dtmi_9.NumL_1,
-
-            dtmi_9.maxH,
-
-            dtmi_9.dxmaxH,
-
-            dtmi_9.dymaxH,
-
-            dtmi_9.rezerv_22_32[0], dtmi_9.rezerv_22_32[1], dtmi_9.rezerv_22_32[2], dtmi_9.rezerv_22_32[3],
-            dtmi_9.rezerv_22_32[4], dtmi_9.rezerv_22_32[5], dtmi_9.rezerv_22_32[6], dtmi_9.rezerv_22_32[7],
-            dtmi_9.rezerv_22_32[8], dtmi_9.rezerv_22_32[9], dtmi_9.rezerv_22_32[10]);
+            dtmi.dtmi_9.dymaxH);
 
     m_kia_db[TYPE_DATA]->insert_data(data_into_dtmi, "prepare_insert_into_dtmi");
 }
@@ -510,8 +432,8 @@ void ParseToDB::sendDataIntoMLOC_MF(uint16_t &num_bokz, int32_t &bshv, MLoc_MF &
                               "\"host_id\":\"%s\","
                               "\"unit_id\":\"%s\","
                               "\"bshv\":%d,"
-                              "\"nar\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                              "\"cs\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
+                              "\"nar\":\"%s\","
+                              "\"cs\":\"%s\","
                               "\"t\":%i,"
                               "\"tms\":%i,"
                               "\"st1\":%i,"
@@ -523,66 +445,26 @@ void ParseToDB::sendDataIntoMLOC_MF(uint16_t &num_bokz, int32_t &bshv, MLoc_MF &
                               "\"pixcount\":%i,"
                               "\"mean\":%u,"
                               "\"sigma\":%u,"
-                              "\"locx\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                              "\"locy\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                              "\"locb\":\"{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f}\","
-                              "\"locs\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
+                              "\"locx\":\"%s\","
+                              "\"locy\":\"%s\","
+                              "\"locb\":\"%s\","
+                              "\"locs\":\"%s\","
                               "\"npixns\":%i,"
                               "\"npixgrns\":%i,"
                               "\"th\":%i,"
                               "\"tcmv\":%i}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
             m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
             m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
-            mloc_mf.mLoc_1_mf.nAr, mloc_mf.mLoc_2_mf.nAr, mloc_mf.mLoc_3_mf.nAr, mloc_mf.mLoc_4_mf.nAr, mloc_mf.mLoc_5_mf.nAr, mloc_mf.mLoc_6_mf.nAr, mloc_mf.mLoc_7_mf.nAr, mloc_mf.mLoc_8_mf.nAr, mloc_mf.mLoc_9_mf.nAr,
-            mloc_mf.mLoc_1_mf.cs, mloc_mf.mLoc_2_mf.cs, mloc_mf.mLoc_3_mf.cs, mloc_mf.mLoc_4_mf.cs, mloc_mf.mLoc_5_mf.cs, mloc_mf.mLoc_6_mf.cs, mloc_mf.mLoc_7_mf.cs, mloc_mf.mLoc_8_mf.cs, mloc_mf.mLoc_9_mf.cs,
+            convert_array_to_json_string(mloc_mf.nAr).c_str(),
+            convert_array_to_json_string(mloc_mf.cs).c_str(),
             mloc_mf.mLoc_1_mf.T, mloc_mf.mLoc_1_mf.Tms, mloc_mf.mLoc_1_mf.KC1,
             mloc_mf.mLoc_1_mf.KC2, mloc_mf.mLoc_1_mf.SerNum, mloc_mf.mLoc_1_mf.Texp, mloc_mf.mLoc_1_mf.NumLoc, mloc_mf.mLoc_1_mf.NumObj,
             mloc_mf.mLoc_1_mf.PixCount,
             mloc_mf.mLoc_1_mf.Mean, mloc_mf.mLoc_1_mf.Sigma,
-            mloc_mf.mLoc_1_mf.Loc_0_X, mloc_mf.mLoc_1_mf.Loc_1_X, mloc_mf.mLoc_1_mf.Loc_2_X,
-            mloc_mf.mLoc_2_mf.Loc_3_X, mloc_mf.mLoc_2_mf.Loc_4_X, mloc_mf.mLoc_2_mf.Loc_5_X,
-            mloc_mf.mLoc_2_mf.Loc_6_X, mloc_mf.mLoc_3_mf.Loc_7_X, mloc_mf.mLoc_3_mf.Loc_8_X, mloc_mf.mLoc_3_mf.Loc_9_X,
-            mloc_mf.mLoc_3_mf.Loc_10_X, mloc_mf.mLoc_4_mf.Loc_11_X, mloc_mf.mLoc_4_mf.Loc_12_X, mloc_mf.mLoc_4_mf.Loc_13_X,
-            mloc_mf.mLoc_4_mf.Loc_14_X, mloc_mf.mLoc_4_mf.Loc_15_X, mloc_mf.mLoc_5_mf.Loc_16_X, mloc_mf.mLoc_5_mf.Loc_17_X,
-            mloc_mf.mLoc_5_mf.Loc_18_X, mloc_mf.mLoc_5_mf.Loc_19_X, mloc_mf.mLoc_6_mf.Loc_20_X,
-            mloc_mf.mLoc_6_mf.Loc_21_X, mloc_mf.mLoc_6_mf.Loc_22_X, mloc_mf.mLoc_6_mf.Loc_23_X, mloc_mf.mLoc_7_mf.Loc_24_X,
-            mloc_mf.mLoc_7_mf.Loc_25_X, mloc_mf.mLoc_7_mf.Loc_26_X, mloc_mf.mLoc_7_mf.Loc_27_X, mloc_mf.mLoc_8_mf.Loc_28_X,
-            mloc_mf.mLoc_8_mf.Loc_29_X, mloc_mf.mLoc_8_mf.Loc_30_X, mloc_mf.mLoc_8_mf.Loc_31_X, mloc_mf.mLoc_8_mf.Loc_32_X,
-            mloc_mf.mLoc_9_mf.Loc_33_X, mloc_mf.mLoc_9_mf.Loc_34_X, mloc_mf.mLoc_9_mf.Loc_35_X,
-
-            mloc_mf.mLoc_1_mf.Loc_0_Y, mloc_mf.mLoc_1_mf.Loc_1_Y, mloc_mf.mLoc_1_mf.Loc_2_Y,
-            mloc_mf.mLoc_2_mf.Loc_3_Y, mloc_mf.mLoc_2_mf.Loc_4_Y, mloc_mf.mLoc_2_mf.Loc_5_Y,
-            mloc_mf.mLoc_2_mf.Loc_6_Y, mloc_mf.mLoc_3_mf.Loc_7_Y, mloc_mf.mLoc_3_mf.Loc_8_Y, mloc_mf.mLoc_3_mf.Loc_9_Y,
-            mloc_mf.mLoc_3_mf.Loc_10_Y, mloc_mf.mLoc_4_mf.Loc_11_Y, mloc_mf.mLoc_4_mf.Loc_12_Y, mloc_mf.mLoc_4_mf.Loc_13_Y,
-            mloc_mf.mLoc_4_mf.Loc_14_Y, mloc_mf.mLoc_5_mf.Loc_15_Y, mloc_mf.mLoc_5_mf.Loc_16_Y, mloc_mf.mLoc_5_mf.Loc_17_Y,
-            mloc_mf.mLoc_5_mf.Loc_18_Y, mloc_mf.mLoc_5_mf.Loc_19_Y, mloc_mf.mLoc_6_mf.Loc_20_Y,
-            mloc_mf.mLoc_6_mf.Loc_21_Y, mloc_mf.mLoc_6_mf.Loc_22_Y, mloc_mf.mLoc_6_mf.Loc_23_Y, mloc_mf.mLoc_7_mf.Loc_24_Y,
-            mloc_mf.mLoc_7_mf.Loc_25_Y, mloc_mf.mLoc_7_mf.Loc_26_Y, mloc_mf.mLoc_7_mf.Loc_27_Y, mloc_mf.mLoc_8_mf.Loc_28_Y,
-            mloc_mf.mLoc_8_mf.Loc_29_Y, mloc_mf.mLoc_8_mf.Loc_30_Y, mloc_mf.mLoc_8_mf.Loc_31_Y, mloc_mf.mLoc_9_mf.Loc_32_Y,
-            mloc_mf.mLoc_9_mf.Loc_33_Y, mloc_mf.mLoc_9_mf.Loc_34_Y, mloc_mf.mLoc_9_mf.Loc_35_Y,
-
-
-            mloc_mf.mLoc_1_mf.Loc_0_B, mloc_mf.mLoc_1_mf.Loc_1_B, mloc_mf.mLoc_2_mf.Loc_2_B,
-            mloc_mf.mLoc_2_mf.Loc_3_B, mloc_mf.mLoc_2_mf.Loc_4_B, mloc_mf.mLoc_2_mf.Loc_5_B,
-            mloc_mf.mLoc_2_mf.Loc_6_B, mloc_mf.mLoc_3_mf.Loc_7_B, mloc_mf.mLoc_3_mf.Loc_8_B, mloc_mf.mLoc_3_mf.Loc_9_B,
-            mloc_mf.mLoc_3_mf.Loc_10_B, mloc_mf.mLoc_4_mf.Loc_11_B, mloc_mf.mLoc_4_mf.Loc_12_B, mloc_mf.mLoc_4_mf.Loc_13_B,
-            mloc_mf.mLoc_4_mf.Loc_14_B, mloc_mf.mLoc_5_mf.Loc_15_B, mloc_mf.mLoc_5_mf.Loc_16_B, mloc_mf.mLoc_5_mf.Loc_17_B,
-            mloc_mf.mLoc_5_mf.Loc_18_B, mloc_mf.mLoc_6_mf.Loc_19_B, mloc_mf.mLoc_6_mf.Loc_20_B,
-            mloc_mf.mLoc_6_mf.Loc_21_B, mloc_mf.mLoc_6_mf.Loc_22_B, mloc_mf.mLoc_6_mf.Loc_23_B, mloc_mf.mLoc_7_mf.Loc_24_B,
-            mloc_mf.mLoc_7_mf.Loc_25_B, mloc_mf.mLoc_7_mf.Loc_26_B, mloc_mf.mLoc_7_mf.Loc_27_B, mloc_mf.mLoc_8_mf.Loc_28_B,
-            mloc_mf.mLoc_8_mf.Loc_29_B, mloc_mf.mLoc_8_mf.Loc_30_B, mloc_mf.mLoc_8_mf.Loc_31_B, mloc_mf.mLoc_9_mf.Loc_32_B,
-            mloc_mf.mLoc_9_mf.Loc_33_B, mloc_mf.mLoc_9_mf.Loc_34_B, mloc_mf.mLoc_9_mf.Loc_35_B,
-
-            mloc_mf.mLoc_1_mf.Loc_0_S, mloc_mf.mLoc_1_mf.Loc_1_S, mloc_mf.mLoc_2_mf.Loc_2_S,
-            mloc_mf.mLoc_2_mf.Loc_3_S, mloc_mf.mLoc_2_mf.Loc_4_S, mloc_mf.mLoc_2_mf.Loc_5_S,
-            mloc_mf.mLoc_3_mf.Loc_6_S, mloc_mf.mLoc_3_mf.Loc_7_S, mloc_mf.mLoc_3_mf.Loc_8_S, mloc_mf.mLoc_3_mf.Loc_9_S,
-            mloc_mf.mLoc_3_mf.Loc_10_S, mloc_mf.mLoc_4_mf.Loc_11_S, mloc_mf.mLoc_4_mf.Loc_12_S, mloc_mf.mLoc_4_mf.Loc_13_S,
-            mloc_mf.mLoc_4_mf.Loc_14_S, mloc_mf.mLoc_5_mf.Loc_15_S, mloc_mf.mLoc_5_mf.Loc_16_S, mloc_mf.mLoc_5_mf.Loc_17_S,
-            mloc_mf.mLoc_5_mf.Loc_18_S, mloc_mf.mLoc_6_mf.Loc_19_S, mloc_mf.mLoc_6_mf.Loc_20_S,
-            mloc_mf.mLoc_6_mf.Loc_21_S, mloc_mf.mLoc_6_mf.Loc_22_S, mloc_mf.mLoc_7_mf.Loc_23_S, mloc_mf.mLoc_7_mf.Loc_24_S,
-            mloc_mf.mLoc_7_mf.Loc_25_S, mloc_mf.mLoc_7_mf.Loc_26_S, mloc_mf.mLoc_7_mf.Loc_27_S, mloc_mf.mLoc_8_mf.Loc_28_S,
-            mloc_mf.mLoc_8_mf.Loc_29_S, mloc_mf.mLoc_8_mf.Loc_30_S, mloc_mf.mLoc_8_mf.Loc_31_S, mloc_mf.mLoc_9_mf.Loc_32_S,
-            mloc_mf.mLoc_9_mf.Loc_33_S, mloc_mf.mLoc_9_mf.Loc_34_S, mloc_mf.mLoc_9_mf.Loc_35_S,
+            convert_array_to_json_string(mloc_mf.loc_x).c_str(),
+            convert_array_to_json_string(mloc_mf.loc_y).c_str(),
+            convert_array_to_json_string(mloc_mf.loc_b).c_str(),
+            convert_array_to_json_string(mloc_mf.loc_c).c_str(),
             mloc_mf.mLoc_9_mf.nPixNs,
             mloc_mf.mLoc_9_mf.nPixGrNs,
             mloc_mf.mLoc_9_mf.Th,
@@ -599,8 +481,8 @@ void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_MF &
                            "\"host_id\":\"%s\","
                            "\"unit_id\":\"%s\","
                            "\"bshv\":%d,"
-                           "\"nar\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
-                           "\"cs\":\"{%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i}\","
+                           "\"nar\":\"%s\","
+                           "\"cs\":\"%s\","
                            "\"t\":%i,"
                            "\"tms\":%i,"
                            "\"st1\":%i,"
@@ -656,15 +538,13 @@ void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_MF &
                            "\"histpix\":\"%s\"}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
             m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(),
             m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
-            dtmi.dtmi_1_mf.nAr, dtmi.dtmi_2_mf.nAr, dtmi.dtmi_3_mf.nAr, dtmi.dtmi_4_mf.nAr, dtmi.dtmi_5_mf.nAr, dtmi.dtmi_6_mf.nAr,
-            dtmi.dtmi_7_mf.nAr, dtmi.dtmi_8_mf.nAr, dtmi.dtmi_9_mf.nAr, dtmi.dtmi_10_mf.nAr, dtmi.dtmi_11_mf.nAr, dtmi.dtmi_12_mf.nAr,
-            dtmi.dtmi_1_mf.cs, dtmi.dtmi_2_mf.cs, dtmi.dtmi_3_mf.cs, dtmi.dtmi_4_mf.cs, dtmi.dtmi_5_mf.cs, dtmi.dtmi_6_mf.cs,
-            dtmi.dtmi_7_mf.cs, dtmi.dtmi_8_mf.cs, dtmi.dtmi_9_mf.cs, dtmi.dtmi_10_mf.cs, dtmi.dtmi_11_mf.cs, dtmi.dtmi_12_mf.cs,
+            convert_array_to_json_string(dtmi.nAr).c_str(),
+            convert_array_to_json_string(dtmi.cs).c_str(),
             dtmi.dtmi_1_mf.T, dtmi.dtmi_1_mf.Tms, dtmi.dtmi_1_mf.KC1,
             dtmi.dtmi_1_mf.KC2, dtmi.dtmi_1_mf.SerNum, dtmi.dtmi_1_mf.POST, dtmi.dtmi_1_mf.Tcmv, dtmi.dtmi_1_mf.Mean, dtmi.dtmi_1_mf.Sigma, dtmi.dtmi_1_mf.Texp,
             dtmi.dtmi_1_mf.PixCount_NumLoc, dtmi.dtmi_1_mf.NumStore, dtmi.dtmi_1_mf.NumDet, dtmi.dtmi_1_mf.NumProgFrag,
-            dtmi.dtmi_1_mf.NumFrag, dtmi.dtmi_1_mf.Tlast, dtmi.dtmi_1_mf.Tmslast, convert_array_to_json_string(dtmi.dtmi_1_mf.Qlst).c_str(),
-            convert_array_to_json_string(dtmi.dtmi_1_mf.HistDef).c_str(),
+            dtmi.dtmi_1_mf.NumFrag, dtmi.dtmi_1_mf.Tlast, dtmi.dtmi_1_mf.Tmslast, convert_array_to_json_string(dtmi.qlst).c_str(),
+            convert_array_to_json_string(dtmi.HistDef).c_str(),
             convert_array_to_json_string(dtmi.rsLoc_0_x).c_str(),
             convert_array_to_json_string(dtmi.rsLoc_0_y).c_str(),
             convert_array_to_json_string(dtmi.rsLoc_0_b).c_str(),
@@ -677,7 +557,7 @@ void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_MF &
             convert_array_to_json_string(dtmi.XYc_y).c_str(),
             convert_array_to_json_string(dtmi.MeanFrag).c_str(),
             convert_array_to_json_string(dtmi.SigmaFrag).c_str(),
-            convert_array_to_json_string(dtmi.dtmi_11_mf.ThFrag).c_str(),
+            convert_array_to_json_string(dtmi.ThFrag).c_str(),
             convert_array_to_json_string(dtmi.ObjFrag).c_str(),
             convert_array_to_json_string(dtmi.MultXY).c_str(),
             convert_array_to_json_string(dtmi.ZipXY_X).c_str(),
@@ -698,7 +578,7 @@ void ParseToDB::sendDataIntoDTMI_MF(uint16_t &num_bokz, int32_t &bshv, DTMI_MF &
             dtmi.dtmi_12_mf.Epsilon,
             dtmi.dtmi_12_mf.deltaT,
             dtmi.dtmi_12_mf.m_cur,
-            convert_array_to_json_string(dtmi.dtmi_12_mf.HistPix).c_str());
+            convert_array_to_json_string(dtmi.HistPix).c_str());
     m_kia_db[TYPE_DATA]->insert_data(data_into_dtmi, "prepare_insert_into_dtmi");
 }
 
@@ -848,9 +728,10 @@ string ParseToDB::convert_array_to_json_string(T data)
     ret = "{";
     for (uint16_t ind = 0; ind < data.size(); ind++)
     {
-        ret = ret + std::to_string(data[ind]) + ",";
+        ret = ret + std::to_string(std::get<0>(data[ind])) + ",";
     }
     ret.pop_back();
     ret.push_back('}');
     return ret;
 }
+

@@ -68,6 +68,8 @@ public:
 
     void parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_data> kia_data,
                              int32_t bshv, uint16_t num_bokz);
+
+    QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double>> list_data);
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;
     std::shared_ptr<Pio_bokz> m_pio_bokz;

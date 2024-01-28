@@ -13,6 +13,8 @@ public:
                std::shared_ptr<Kia_settings> kia_settings);
     void decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWord, uint16_t count) override;
     void decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, uint16_t count) override;
+    void parse_dtmi_loc() override;
+    void parse_dtmi() override;
     void decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_mshior(array<uint16_t, constants::packetSize> dataWord, int32_t& bshv) override;
