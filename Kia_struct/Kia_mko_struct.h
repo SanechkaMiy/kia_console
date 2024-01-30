@@ -1165,6 +1165,7 @@ struct DTMI_MF
     QStringList dtmi_list_name;
     std::vector<std::tuple<QString, double, double, double>> dtmi_list_data;
     std::vector<std::pair<uint16_t, uint16_t>> nAr;
+    std::vector<uint16_t> calc_cs;
     std::vector<std::pair<uint16_t, uint16_t>> cs;
     std::vector<std::tuple<float, double, double>> qlst;
     std::vector<std::tuple<uint8_t, double, double>> HistDef;
@@ -1889,6 +1890,7 @@ struct MLoc_MF
 {
     QStringList mloc_list_name;
     std::vector<std::tuple<QString, double, double, double>> mloc_list_data;
+    std::vector<uint16_t> calc_cs;
     MLoc_1_MF mLoc_1_mf;
     MLoc_2_MF mLoc_2_mf;
     MLoc_3_MF mLoc_3_mf;

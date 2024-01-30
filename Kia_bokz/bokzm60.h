@@ -65,6 +65,7 @@ public:
     uint16_t mloc(uint16_t parametr = EP_DOALL) override;
     uint16_t upn(uint16_t type_upn, QStringList value, uint16_t parametr = EP_DOALL) override;
     uint16_t chpn(QStringList type_chpn, uint16_t parametr = EP_DOALL) override;
+    uint16_t chkd(uint16_t parametr = EP_DOALL) override;
     uint16_t smti(uint16_t parametr = EP_DOALL) override;
     uint16_t vmti(uint16_t parametr = EP_DOALL) override;
     uint16_t synchro(uint16_t parametr = EP_DOALL) override;

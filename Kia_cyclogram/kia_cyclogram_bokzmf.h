@@ -18,9 +18,10 @@ public:
     };
     enum COMMAND_IN_OO
     {
-        CIO_OO = 0,
-        CIO_BSHV = 1,
-        CIO_SKOR = 2
+        CIO_UPN_KD = 0,
+        CIO_OO = 1,
+        CIO_BSHV = 2,
+        CIO_SKOR = 3
     };
     enum POWER_CYCLOGRAM_ORDER
     {
@@ -36,6 +37,17 @@ public:
     enum PARAM_IF_A_LOT
     {
         PIL_TP = 0
+    };
+
+    enum TYPE_PAUSE_IN_CYCLOGRAMS
+    {
+        WAIT_FOR_TAKT = 0,
+        WAIT_AFTER_POWER = 1,
+        WAIT_OTCLR = 2,
+        WAIT_RESTART = 3,
+        WAIT_LOC = 4,
+        WAIT_MSHIOR_IN_OO = 5,
+        WAIT_AFTER_OFF_POWER = 6,
     };
 
     Kia_cyclogram_bokzmf(std::shared_ptr<Kia_timers> kia_timers, std::vector<std::shared_ptr<Bokz> > bokz,
@@ -68,17 +80,19 @@ private:
     uint16_t start_state_on(uint16_t num_bokz, uint16_t parametr = EP_DOALL);
     uint16_t start_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL, uint16_t count_do_loc = 0);
     uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) override;
-    void do_oo(uint16_t &num_bokz, uint16_t parametr = EP_DOALL);
+    uint16_t do_oo(uint16_t &num_bokz, int64_t &begin_skor_time, uint16_t parametr = EP_DOALL);
     void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) override;
     void wait_for_bi_takt(uint16_t& num_bokz) override;
     void wait_some_time_for_one_launch(const uint16_t& wait_s) override;
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
     void preset_before_exchange(uint16_t num_bokz);
     void create_list_power_cyclograms();
+    void create_func_type_do_oo();
     void create_mpi_commands();
     void create_list_other_mpi_commands();
     void create_list_command_for_oo();
     void create_list_command_for_state_on();
+    void create_list_cyclograms_for_state_work();
     void create_list_command_for_loc();
     void create_list_cyclograms_for_ri();
     void create_list_cyclograms_for_tp();
@@ -88,6 +102,7 @@ private:
     std::vector<std::shared_ptr<Bokz>> m_bokz;
     shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
+    std::vector<std::function<uint16_t(uint16_t, uint16_t, uint16_t)>> m_type_do_oo;
 };
 
 #endif // KIA_CYCLOGRAM_BOKZMF_H

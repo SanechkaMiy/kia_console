@@ -467,7 +467,7 @@ void Pio_bokzm60::parse_dtmi_loc()
 
 }
 
-void Pio_bokzm60::parse_dtmi()
+void Pio_bokzm60::parse_dtmi(uint16_t type_orient)
 {
     m_kia_mko_struct->st_dtmi.dtmi_list_data.clear();
     m_kia_mko_struct->st_dtmi.dtmi_list_name.clear();

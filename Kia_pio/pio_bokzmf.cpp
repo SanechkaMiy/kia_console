@@ -1,5 +1,8 @@
 #include "pio_bokzmf.h"
-
+extern "C"
+{
+#include "Kia_pio/crc.c"
+}
 Pio_bokzmf::Pio_bokzmf(std::shared_ptr<Kia_mko_struct> kia_mko_struct,
                        std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_mko_struct(kia_mko_struct),
@@ -24,6 +27,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
     {
     case 0:
         memcpy(&dtmi_raw_1,&dataWord,sizeof(dtmi_raw_1));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_1.T = swapHex(dtmi_raw_1.T);
         dtmi_raw_1.Loc_0_X = swapHex(dtmi_raw_1.Loc_0_X);
         dtmi_raw_1.Loc_0_Y = swapHex(dtmi_raw_1.Loc_0_Y);
@@ -39,6 +43,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
         break;
     case 1:
         memcpy(&dtmi_raw_2, &dataWord, sizeof(dtmi_raw_2));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_2.Loc_2_B = swapHex(dtmi_raw_2.Loc_2_B);
         dtmi_raw_2.Loc_2_S = swapHex(dtmi_raw_2.Loc_2_S);
         dtmi_raw_2.Loc_3_X = swapHex(dtmi_raw_2.Loc_3_X);
@@ -60,6 +65,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
         break;
     case 2:
         memcpy(&dtmi_raw_3,&dataWord,sizeof(dtmi_raw_3));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_3.Loc_6_S = swapHex(dtmi_raw_3.Loc_6_S);
         dtmi_raw_3.Loc_7_X = swapHex(dtmi_raw_3.Loc_7_X);
         dtmi_raw_3.Loc_7_Y = swapHex(dtmi_raw_3.Loc_7_Y);
@@ -81,6 +87,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
         break;
     case 3:
         memcpy(&dtmi_raw_4,&dataWord,sizeof(dtmi_raw_4));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_4.Loc_11_X = swapHex(dtmi_raw_4.Loc_11_X);
         dtmi_raw_4.Loc_11_Y = swapHex(dtmi_raw_4.Loc_11_Y);
         dtmi_raw_4.Loc_11_B = swapHex(dtmi_raw_4.Loc_11_B);
@@ -102,6 +109,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
         break;
     case 4:
         memcpy(&dtmi_raw_5,&dataWord,sizeof(dtmi_raw_5));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_5.Loc_15_Y = swapHex(dtmi_raw_5.Loc_15_Y);
         dtmi_raw_5.Loc_15_B = swapHex(dtmi_raw_5.Loc_15_B);
         dtmi_raw_5.Loc_15_S = swapHex(dtmi_raw_5.Loc_15_S);
@@ -144,6 +152,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
         break;
     case 6:
         memcpy(&dtmi_raw_7,&dataWord,sizeof(dtmi_raw_7));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_7.Loc_23_S = swapHex(dtmi_raw_7.Loc_23_S);
         dtmi_raw_7.Loc_24_X = swapHex(dtmi_raw_7.Loc_24_X);
         dtmi_raw_7.Loc_24_Y = swapHex(dtmi_raw_7.Loc_24_Y);
@@ -165,6 +174,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
         break;
     case 7:
         memcpy(&dtmi_raw_8,&dataWord,sizeof(dtmi_raw_8));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_8.Loc_28_X = swapHex(dtmi_raw_8.Loc_28_X);
         dtmi_raw_8.Loc_28_Y = swapHex(dtmi_raw_8.Loc_28_Y);
         dtmi_raw_8.Loc_28_B = swapHex(dtmi_raw_8.Loc_28_B);
@@ -186,6 +196,7 @@ void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWor
         break;
     case 8:
         memcpy(&dtmi_raw_9, &dataWord, sizeof(dtmi_raw_9));
+        m_kia_mko_struct->st_mloc_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_raw_9.Loc_32_Y = swapHex(dtmi_raw_9.Loc_32_Y);
         dtmi_raw_9.Loc_32_B = swapHex(dtmi_raw_9.Loc_32_B);
         dtmi_raw_9.Loc_32_S = swapHex(dtmi_raw_9.Loc_32_S);
@@ -219,6 +230,7 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
     {
     case 0:
         memcpy(&dtmiRaw_1,&dataWord,sizeof(dtmiRaw_1));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmiRaw_1.T = swapHex(dtmiRaw_1.T);
         dtmiRaw_1.Tlast = swapHex(dtmiRaw_1.Tlast);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf, &dtmiRaw_1, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf));
@@ -229,40 +241,48 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
         break;
     case 1:
         memcpy(&dtmiRaw_2_3_4_5_6_7, &dataWord,sizeof(dtmiRaw_2_3_4_5_6_7));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_2_3_4_5_6_7_converter(dtmiRaw_2_3_4_5_6_7);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_2_mf, &dtmiRaw_2_3_4_5_6_7, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_2_mf));
         break;
     case 2:
         memcpy(&dtmiRaw_2_3_4_5_6_7, &dataWord,sizeof(dtmiRaw_2_3_4_5_6_7));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_2_3_4_5_6_7_converter(dtmiRaw_2_3_4_5_6_7);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_3_mf, &dtmiRaw_2_3_4_5_6_7, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_3_mf));
         break;
     case 3:
         memcpy(&dtmiRaw_2_3_4_5_6_7, &dataWord,sizeof(dtmiRaw_2_3_4_5_6_7));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_2_3_4_5_6_7_converter(dtmiRaw_2_3_4_5_6_7);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_4_mf, &dtmiRaw_2_3_4_5_6_7, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_4_mf));
         break;
     case 4:
         memcpy(&dtmiRaw_2_3_4_5_6_7, &dataWord,sizeof(dtmiRaw_2_3_4_5_6_7));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_2_3_4_5_6_7_converter(dtmiRaw_2_3_4_5_6_7);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_5_mf, &dtmiRaw_2_3_4_5_6_7, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_5_mf));
         break;
     case 5:
         memcpy(&dtmiRaw_2_3_4_5_6_7, &dataWord,sizeof(dtmiRaw_2_3_4_5_6_7));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_2_3_4_5_6_7_converter(dtmiRaw_2_3_4_5_6_7);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_6_mf, &dtmiRaw_2_3_4_5_6_7, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_6_mf));
         break;
     case 6:
         memcpy(&dtmiRaw_2_3_4_5_6_7, &dataWord,sizeof(dtmiRaw_2_3_4_5_6_7));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmi_2_3_4_5_6_7_converter(dtmiRaw_2_3_4_5_6_7);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_7_mf, &dtmiRaw_2_3_4_5_6_7, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_7_mf));
         break;
     case 7:
         memcpy(&dtmiRaw_8, &dataWord, sizeof(dtmiRaw_8));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf, &dtmiRaw_8, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf));
         break;
     case 8:
         memcpy(&dtmiRaw_9,&dataWord,sizeof(dtmiRaw_9));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_9_mf, &dtmiRaw_9, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_9_mf));
         break;
     case 9:
@@ -272,10 +292,12 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
         break;
     case 10:
         memcpy(&dtmiRaw_11,&dataWord, sizeof(dtmiRaw_11));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_11_mf, &dtmiRaw_11, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_11_mf));
         break;
     case 11:
         memcpy(&dtmiRaw_12,&dataWord,sizeof(dtmiRaw_12));
+        m_kia_mko_struct->st_dtmi_mf.calc_cs.push_back(calculate_cs(dataWord));
         dtmiRaw_12.Epoch = swapHex(dtmiRaw_12.Epoch);
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf, &dtmiRaw_12, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf));
         break;
@@ -308,18 +330,18 @@ void Pio_bokzmf::parse_dtmi_loc()
     is_norma.resize(m_kia_mko_struct->st_mloc_mf.nAr.size());
     QString nAr;
     QString check_norma;
-    for (uint16_t num_cc = 0; num_cc < m_kia_mko_struct->st_mloc_mf.nAr.size(); num_cc++)
+    for (uint16_t num_nAr = 0; num_nAr < m_kia_mko_struct->st_mloc_mf.nAr.size(); num_nAr++)
     {
-        if (m_kia_mko_struct->st_mloc_mf.nAr[num_cc].first != m_kia_mko_struct->st_mloc_mf.nAr[num_cc].second)
+        if (m_kia_mko_struct->st_mloc_mf.nAr[num_nAr].first != m_kia_mko_struct->st_mloc_mf.nAr[num_nAr].second)
         {
-            is_norma[num_cc] = "не норма";
+            is_norma[num_nAr] = "не норма";
         }
         else
         {
-            is_norma[num_cc] = "норма";
+            is_norma[num_nAr] = "норма";
         }
-        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.nAr[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.nAr[num_nAr].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        check_norma.push_back(helpers::format_qstring(is_norma[num_nAr], m_kia_settings->m_format_for_desc->shift_for_dtmi));
     }
 
     m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
@@ -341,10 +363,11 @@ void Pio_bokzmf::parse_dtmi_loc()
     m_kia_mko_struct->st_mloc_mf.cs.push_back(std::make_pair(m_kia_mko_struct->st_mloc_mf.mLoc_8_mf.cs, 0x42c3));
     m_kia_mko_struct->st_mloc_mf.cs.push_back(std::make_pair(m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.cs, 0x42c3));
     QString cs;
+    QString calc_cs;
     check_norma.clear();
-    for (uint16_t num_cc = 0; num_cc < m_kia_mko_struct->st_mloc_mf.nAr.size(); num_cc++)
+    for (uint16_t num_cc = 0; num_cc < m_kia_mko_struct->st_mloc_mf.cs.size(); num_cc++)
     {
-        if (m_kia_mko_struct->st_mloc_mf.nAr[num_cc].first != m_kia_mko_struct->st_mloc_mf.nAr[num_cc].second)
+        if (m_kia_mko_struct->st_mloc_mf.cs[num_cc].first != m_kia_mko_struct->st_mloc_mf.calc_cs[num_cc])
         {
             is_norma[num_cc] = "не норма";
         }
@@ -352,14 +375,19 @@ void Pio_bokzmf::parse_dtmi_loc()
         {
             is_norma[num_cc] = "норма";
         }
-        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.nAr[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.cs[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        calc_cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.calc_cs[num_cc], 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
         check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc->shift_for_dtmi));
     }
 
     m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + "Контрольная сумма");
-
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(cs, m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.cs, -m_max_double_value, m_max_double_value));
+
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
+                                                          + " ");
+    m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(calc_cs, m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.cs, -m_max_double_value, m_max_double_value));
+
     m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(check_norma, 0, 0, 0));
@@ -688,7 +716,7 @@ void Pio_bokzmf::parse_dtmi_loc()
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.Tcmv), m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.Tcmv, -75, 150));
 }
 
-void Pio_bokzmf::parse_dtmi()
+void Pio_bokzmf::parse_dtmi(uint16_t type_orient)
 {
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.clear();
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.clear();
@@ -723,35 +751,35 @@ void Pio_bokzmf::parse_dtmi()
     {
         m_kia_mko_struct->st_dtmi_mf.rsLoc_0_x.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_2_mf.rs_loc_0_dtmi2[ind], 0, 2048));
         m_kia_mko_struct->st_dtmi_mf.rsLoc_0_y.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_2_mf.rs_loc_0_dtmi2[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_2_mf.rs_loc_0_dtmi2[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_2_mf.rs_loc_0_dtmi2[ind + 2], 100, 100000));
 
         m_kia_mko_struct->st_dtmi_mf.rsLoc_0_x.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_3_mf.rs_loc_0_dtmi3[ind], 0, 2048));
         m_kia_mko_struct->st_dtmi_mf.rsLoc_0_y.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_3_mf.rs_loc_0_dtmi3[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_3_mf.rs_loc_0_dtmi3[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_3_mf.rs_loc_0_dtmi3[ind + 2], 100, 100000));
 
         m_kia_mko_struct->st_dtmi_mf.rsLoc_0_x.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_4_mf.rs_loc_0_dtmi4[ind], 0, 2048));
         m_kia_mko_struct->st_dtmi_mf.rsLoc_0_y.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_4_mf.rs_loc_0_dtmi4[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_4_mf.rs_loc_0_dtmi4[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_4_mf.rs_loc_0_dtmi4[ind + 2], 100, 100000));
 
         m_kia_mko_struct->st_dtmi_mf.rsLoc_1_x.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_5_mf.rs_loc_1_dtmi5[ind], 0, 2048));
         m_kia_mko_struct->st_dtmi_mf.rsLoc_1_y.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_5_mf.rs_loc_1_dtmi5[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_5_mf.rs_loc_1_dtmi5[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_5_mf.rs_loc_1_dtmi5[ind + 2], 100, 100000));
 
         m_kia_mko_struct->st_dtmi_mf.rsLoc_1_x.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_6_mf.rs_loc_1_dtmi6[ind], 0, 2048));
         m_kia_mko_struct->st_dtmi_mf.rsLoc_1_y.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_6_mf.rs_loc_1_dtmi6[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_6_mf.rs_loc_1_dtmi6[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_6_mf.rs_loc_1_dtmi6[ind + 2], 100, 100000));
 
         m_kia_mko_struct->st_dtmi_mf.rsLoc_1_x.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_7_mf.rs_loc_1_dtmi7[ind], 0, 2048));
         m_kia_mko_struct->st_dtmi_mf.rsLoc_1_y.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_7_mf.rs_loc_1_dtmi7[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_7_mf.rs_loc_1_dtmi7[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_7_mf.rs_loc_1_dtmi7[ind + 2], 100, 100000));
 
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_0_dtmi8[ind], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_0_dtmi8[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_0_dtmi8[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_0_dtmi8[ind], 2, 120));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_0_dtmi8[ind + 1], 2, 120));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_0_dtmi8[ind + 2], 2, 120));
 
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_1_dtmi8[ind], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_1_dtmi8[ind + 1], 0, 2048));
-        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_1_dtmi8[ind + 2], 0, 2048));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_1_dtmi8[ind], 2, 120));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_1_dtmi8[ind + 1], 2, 120));
+        m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_8_mf.rs_loc_s_1_dtmi8[ind + 2], 2, 120));
         ind = ind + 3;
     }
 
@@ -1011,18 +1039,18 @@ void Pio_bokzmf::parse_dtmi()
     is_norma.resize(m_kia_mko_struct->st_dtmi_mf.nAr.size());
     QString nAr;
     QString check_norma;
-    for (uint16_t num_cc = 0; num_cc < m_kia_mko_struct->st_dtmi_mf.nAr.size(); num_cc++)
+    for (uint16_t num_nAr = 0; num_nAr < m_kia_mko_struct->st_dtmi_mf.nAr.size(); num_nAr++)
     {
-        if (m_kia_mko_struct->st_dtmi_mf.nAr[num_cc].first != m_kia_mko_struct->st_dtmi_mf.nAr[num_cc].second)
+        if (m_kia_mko_struct->st_dtmi_mf.nAr[num_nAr].first != m_kia_mko_struct->st_dtmi_mf.nAr[num_nAr].second)
         {
-            is_norma[num_cc] = "не норма";
+            is_norma[num_nAr] = "не норма";
         }
         else
         {
-            is_norma[num_cc] = "норма";
+            is_norma[num_nAr] = "норма";
         }
-        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.nAr[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.nAr[num_nAr].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        check_norma.push_back(helpers::format_qstring(is_norma[num_nAr], m_kia_settings->m_format_for_desc->shift_for_dtmi));
     }
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
@@ -1047,10 +1075,11 @@ void Pio_bokzmf::parse_dtmi()
     m_kia_mko_struct->st_dtmi_mf.cs.push_back(std::make_pair(m_kia_mko_struct->st_dtmi_mf.dtmi_11_mf.cs, 0x42c3));
     m_kia_mko_struct->st_dtmi_mf.cs.push_back(std::make_pair(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.cs, 0x42c3));
     QString cs;
+    QString calc_cs;
     check_norma.clear();
-    for (uint16_t num_cc = 0; num_cc < m_kia_mko_struct->st_dtmi_mf.nAr.size(); num_cc++)
+    for (uint16_t num_cc = 0; num_cc < m_kia_mko_struct->st_dtmi_mf.cs.size(); num_cc++)
     {
-        if (m_kia_mko_struct->st_dtmi_mf.nAr[num_cc].first != m_kia_mko_struct->st_dtmi_mf.nAr[num_cc].second)
+        if (m_kia_mko_struct->st_dtmi_mf.nAr[num_cc].first != m_kia_mko_struct->st_dtmi_mf.calc_cs[num_cc])
         {
             is_norma[num_cc] = "не норма";
         }
@@ -1058,13 +1087,18 @@ void Pio_bokzmf::parse_dtmi()
         {
             is_norma[num_cc] = "норма";
         }
-        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.nAr[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.cs[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        calc_cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.calc_cs[num_cc], 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
         check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc->shift_for_dtmi));
     }
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + "Контрольная сумма");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(cs, m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.cs, -m_max_double_value, m_max_double_value));
+
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
+                                                          + " ");
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(calc_cs, m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.cs, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + " ");
@@ -1109,12 +1143,18 @@ void Pio_bokzmf::parse_dtmi()
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("12", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + "Время экспонирования");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Texp), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Texp, 10, 400));
-
-    QString dtmi_1_wd_num_13 = "Число пикселей выше порог в НО/ТО";
-    uint16_t upper = 5000;
-
-    dtmi_1_wd_num_13 = "Число локализованных объектов в слежении";
-    upper = 200;
+    QString dtmi_1_wd_num_13;
+    uint16_t upper;
+    if (type_orient == Bokzmf::TO_NO)
+    {
+        QString dtmi_1_wd_num_13 = "Число пикселей выше порог в НО/ТО";
+        upper = 5000;
+    }
+    else
+    {
+        dtmi_1_wd_num_13 = "Число локализованных объектов в слежении";
+        upper = 200;
+    }
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                           + dtmi_1_wd_num_13);
@@ -1348,6 +1388,13 @@ void Pio_bokzmf::dtmi_2_3_4_5_6_7_converter(DTMIRaw_2_3_4_5_6_7_MF &dtmiRaw_2_3_
     dtmiRaw_2_3_4_5_6_7.RsLoc_4_b = swapHex(dtmiRaw_2_3_4_5_6_7.RsLoc_4_b);
 }
 
+uint16_t Pio_bokzmf::calculate_cs(array<uint16_t, constants::packetSize> dataWord)
+{
+    std::array<uint16_t, 31> temp;
+    memcpy(&temp, &dataWord[2], sizeof(temp));
+    return Crc16(temp.data(), temp.size());
+}
+
 void Pio_bokzmf::decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord)
 {
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.clear();
@@ -1455,37 +1502,37 @@ void Pio_bokzmf::decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord)
     m_kia_mko_struct->st_shtmi1_mf.ogConstCrc = shmti1_raw.ogConstCrc;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("24", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма констант ЭО ЗД");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.ogConstCrc), m_kia_mko_struct->st_shtmi1_mf.ogConstCrc, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ogConstCrc, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ogConstCrc, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.CatCS0 = shmti1_raw.CatCS0;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("25", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма каталога 0");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.CatCS0), m_kia_mko_struct->st_shtmi1_mf.CatCS0, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.CatCS0, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.CatCS0, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.CatCS1 = shmti1_raw.CatCS1;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("26", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма каталога 1");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.CatCS1), m_kia_mko_struct->st_shtmi1_mf.CatCS1, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.CatCS1, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.CatCS1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ConstCS0 = shmti1_raw.ConstCS0;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("27", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма констант 1");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.ConstCS0), m_kia_mko_struct->st_shtmi1_mf.ConstCS0, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ConstCS0, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ConstCS0, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ConstCS1 = shmti1_raw.ConstCS1;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("28", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма констант 1");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.ConstCS1), m_kia_mko_struct->st_shtmi1_mf.ConstCS1, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ConstCS1, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ConstCS1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ProgCS0 = shmti1_raw.ProgCS0;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("29", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма программы 0");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.ProgCS0), m_kia_mko_struct->st_shtmi1_mf.ProgCS0, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ProgCS0, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ProgCS0, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ProgCS1 = shmti1_raw.ProgCS1;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("30", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма программы 1");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.ProgCS1), m_kia_mko_struct->st_shtmi1_mf.ProgCS1, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ProgCS1, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ProgCS1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.Ver1 = (shmti1_raw.Ver >> 12);
     m_kia_mko_struct->st_shtmi1_mf.Ver2 = ((shmti1_raw.Ver & 0x0fff) >> 8);
@@ -1499,7 +1546,12 @@ void Pio_bokzmf::decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord)
     m_kia_mko_struct->st_shtmi1_mf.cs = shmti1_raw.cs;
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма");
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.cs), m_kia_mko_struct->st_shtmi1_mf.cs, 0, 65535));
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.cs, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.cs, 0, 65535));
+
+    auto calc_cs = calculate_cs(dataWord);
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+                                                              + " ");
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(calc_cs, 16), 4, '0'), calc_cs, 0, 2e31));
 
 }
 
@@ -1576,7 +1628,7 @@ void Pio_bokzmf::decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord)
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Ntosl), m_kia_mko_struct->st_shtmi2_mf.Ntosl, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.Nsl = swapHex(shtmi2_raw.Nsl);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("15, 16", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("15,16", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Счетчик слежения");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Nsl), m_kia_mko_struct->st_shtmi2_mf.Nsl, 0, 2e32));
 
@@ -1679,6 +1731,12 @@ void Pio_bokzmf::decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord)
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc->shift_for_numbers)
                                                               + "Контрольная сумма");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.cs), m_kia_mko_struct->st_shtmi2_mf.cs, 0, 2e31));
+
+    auto calc_cs = calculate_cs(dataWord);
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+                                                              + " ");
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(calc_cs), calc_cs, 0, 2e31));
+
 }
 
 void Pio_bokzmf::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord, int32_t &bshv)

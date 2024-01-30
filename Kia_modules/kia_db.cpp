@@ -201,7 +201,6 @@ void Kia_db::prepare_request(std::shared_ptr<pqxx::connection> conn)
         break;
     case TYPE_BOKZ_BOKZMF:
         m_prepare_sql["prepare_insert_into_mloc"] = "CALL " + QString::fromStdString(m_kia_settings->m_data_for_db->m_type_bokz[m_kia_settings->m_type_bokz]) + ".insert_into_mloc('%1'::json);\n";
-
         break;
     }
 

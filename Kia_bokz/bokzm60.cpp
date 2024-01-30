@@ -235,7 +235,7 @@ uint16_t BokzM60::dtmi_or_dtmi_loc(uint16_t parametr)
     {
         if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
         {
-            m_pio_bokz->parse_dtmi();
+            m_pio_bokz->parse_dtmi(m_kia_data->m_data_bokz->m_type_orient);
             set_data_to_device_protocol(str_protocol);
             str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_dtmi.dtmi_list_name, m_kia_mko_struct->st_dtmi.dtmi_list_data));
             str_protocol.push_back("\n\n");
@@ -273,6 +273,11 @@ uint16_t BokzM60::chpn(QStringList type_chpn, uint16_t parametr)
         }
     }
     return m_kia_data->m_data_mpi->m_status_exchange;
+}
+
+uint16_t BokzM60::chkd(uint16_t parametr)
+{
+
 }
 
 

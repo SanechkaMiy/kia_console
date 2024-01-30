@@ -11,7 +11,7 @@ public:
     virtual void decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWord, uint16_t count) = 0;
     virtual void decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, uint16_t count) = 0;
     virtual void parse_dtmi_loc() = 0;
-    virtual void parse_dtmi() = 0;
+    virtual void parse_dtmi(uint16_t type_orient) = 0;
     virtual void decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord) = 0;
     virtual void decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord) = 0;
     virtual void decrypt_mshior(array<uint16_t, constants::packetSize> dataWord, int32_t& bshv) = 0;

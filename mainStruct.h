@@ -34,6 +34,7 @@ const static uint16_t max_avalable_address = 31;
 const static uint16_t max_count_param = 3;
 const static uint16_t max_count_bi = 4;
 const static uint16_t max_count_same_connection = 2;
+const uint32_t microsecond_in_second = 1000 * 1000;
 }
 
 
@@ -81,6 +82,7 @@ struct Data_for_bokz
     std::vector<std::tuple<uint16_t, uint16_t, QStringList>> m_chpn_data;
 
     uint16_t m_bokz_status_in_cycl = KCS_SUCCES;
+    uint16_t m_type_orient = 0;
 };
 #pragma pack(pop)
 #pragma pack(push, 1)
@@ -213,12 +215,7 @@ struct Wait_and_param_for_cyclogram
     std::vector<std::vector<uint16_t>> m_do_cyclogram_in_do;
 
     std::vector<std::vector<uint16_t>> m_do_in_power_cycl;
-    int16_t m_wait_pre_do_mshior_in_oo = 25;
-    int16_t m_wait_for_on_power_is_stable = 30;
-    int16_t m_wait_for_otclp = 2;
-    int16_t m_wait_for_takt = 1;
-    int16_t m_wait_for_off_power_is_stable = 3;
-    int16_t m_wait_localization = 10;
+    std::map<uint16_t, int32_t> m_wait_time_for_cyclogram;
     int16_t m_count_cyclogram_technical_run = 2;
     std::vector<std::array<uint16_t, constants::max_count_param>> m_param_for_run_a_lot;
     int16_t m_count_do_dtmi_in_state_off = 2;

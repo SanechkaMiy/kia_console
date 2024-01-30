@@ -23,6 +23,16 @@ public:
         PIL_ZKR = 1,
         PIL_CYCL_FRAMES = 2,
     };
+    enum TYPE_PAUSE_IN_CYCLOGRAMS
+    {
+        WAIT_FOR_TAKT = 0,
+        WAIT_AFTER_POWER = 1,
+        WAIT_OTCLR = 2,
+        WAIT_LOC = 3,
+        WAIT_AFTER_OFF_POWER = 4
+    };
+
+
     Kia_cyclogram_bokzm60(std::shared_ptr<Kia_timers> kia_timers, std::vector<std::shared_ptr<Bokz> > bokz,
                           shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
     uint16_t cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;

@@ -29,6 +29,7 @@ SOURCES += \
         Kia_modules/kia_help_functions.cpp \
         Kia_modules/kia_mpi.cpp \
         Kia_modules/kia_port.cpp \
+        Kia_pio/crc.c \
         Kia_pio/pio_bokz.cpp \
         Kia_pio/pio_bokzm60.cpp \
         Kia_pio/pio_bokzmf.cpp \

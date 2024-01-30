@@ -2,6 +2,7 @@
 
 Kia_cyclogram::Kia_cyclogram()
 {
+
 }
 
 void Kia_cyclogram::sleep_for_pause(uint32_t time_in_microseconds)
