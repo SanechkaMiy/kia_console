@@ -120,7 +120,7 @@ private:
     void count_of_fails(uint16_t parametr = EP_DOALL);
     void send_data_read_chpn();
 
-    std::vector<std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
+    std::map<uint16_t, std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
     std::map<uint16_t, std::function<uint16_t(uint16_t parametr)>> m_map_chpn;
 
 };

@@ -258,7 +258,12 @@ uint16_t BokzM60::mloc(uint16_t parametr)
 
 uint16_t BokzM60::upn(uint16_t type_upn, QStringList value, uint16_t parametr)
 {
-    m_func_upn[type_upn](value, parametr);
+    for(auto const& imap: m_func_upn)
+    {
+        if (type_upn == imap.first)
+            m_func_upn[type_upn](value, parametr);
+    }
+
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
 
@@ -1123,34 +1128,34 @@ void BokzM60::set_type_upn_func()
     {
         return set_texp(value[0].toUInt(), parametr);
     };
-    m_func_upn.push_back(func_texp);
+    m_func_upn[TP_TEXP] = func_texp;
 
     auto func_foc = [this](QStringList value, uint16_t parametr)
     {
         m_kia_data->m_data_mpi->m_focus_data[FOCUS] = value[0].toFloat();
         return set_focus(parametr);
     };
-    m_func_upn.push_back(func_foc);
+    m_func_upn[TP_FOC] = func_foc;
 
     auto func_x = [this](QStringList value, uint16_t parametr)
     {
         m_kia_data->m_data_mpi->m_focus_data[CORD_X] = value[0].toFloat();
         return set_focus(parametr);
     };
-    m_func_upn.push_back(func_x);
+    m_func_upn[TP_X] = func_x;
 
     auto func_y = [this](QStringList value, uint16_t parametr)
     {
         m_kia_data->m_data_mpi->m_focus_data[CORD_Y] = value[0].toFloat();
         return set_focus(parametr);
     };
-    m_func_upn.push_back(func_y);
+    m_func_upn[TP_Y] = func_y;
 
     auto func_eps = [this](QStringList value, uint16_t parametr)
     {
         return set_epsilon(value[0].toFloat(), parametr);
     };
-    m_func_upn.push_back(func_eps);
+    m_func_upn[TP_EPS] = func_eps;
     auto func_qa = [this](QStringList value, uint16_t parametr)
     {
         array<double, constants::size_qa> qa;
@@ -1160,7 +1165,7 @@ void BokzM60::set_type_upn_func()
         memcpy(&m_kia_data->m_data_mpi->m_qa, &qa, sizeof(qa));
         return m_kia_data->m_data_mpi->m_status_exchange;
     };
-    m_func_upn.push_back(func_qa);
+    m_func_upn[TP_QA] = func_qa;
     auto func_w = [this](QStringList value, uint16_t parametr)
     {
         array<uint16_t, constants::size_w> w;
@@ -1170,7 +1175,7 @@ void BokzM60::set_type_upn_func()
         memcpy(&m_kia_data->m_data_mpi->m_w, &w, sizeof(w));
         return m_kia_data->m_data_mpi->m_status_exchange;
     };
-    m_func_upn.push_back(func_w);
+    m_func_upn[TP_W] = func_w;
 }
 
 void BokzM60::set_type_chpn_func()

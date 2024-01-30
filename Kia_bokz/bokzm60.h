@@ -138,7 +138,7 @@ private:
     std::vector<std::function<void(uint16_t type_frame, uint16_t parametr)>> m_func_type_frame_recieve;
     std::vector<uint32_t> m_frame_resulution;
 
-    std::vector<std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
+    std::map<uint16_t, std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
     std::map<uint16_t, std::function<uint16_t(uint16_t parametr)>> m_map_chpn;
 };
 

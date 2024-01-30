@@ -21,7 +21,8 @@ public:
         CIO_UPN_KD = 0,
         CIO_OO = 1,
         CIO_BSHV = 2,
-        CIO_SKOR = 3
+        CIO_SKOR = 3,
+        CIO_CHKD = 4
     };
     enum POWER_CYCLOGRAM_ORDER
     {

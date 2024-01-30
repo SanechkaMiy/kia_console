@@ -727,7 +727,6 @@ void WorkWithMain::create_func_to_read()
     {
         for (uint16_t num_cyclogram = 0; num_cyclogram < data_from_client.size() - 1; ++num_cyclogram)
         {
-            std::cout <<data_from_client[num_cyclogram + 1].toInt() << std::endl;
             m_kia_cyclogram->m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_in_power_cycl[data_from_client[0].toInt()][num_cyclogram] = data_from_client[num_cyclogram + 1].toInt();
         }
     };

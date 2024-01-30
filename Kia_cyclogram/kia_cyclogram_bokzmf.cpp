@@ -78,6 +78,7 @@ uint16_t Kia_cyclogram_bokzmf::cyclogram_oo(uint16_t &num_bokz, uint16_t paramet
     if (m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[SCO_OO][CIO_UPN_KD] == KiaS_SUCCESS
             && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz])
     {
+        sleep_for_pause(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram[SCO_OO][CIO_OO]);
         //std::get<CYCL_FUNC>(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_command_cycl_do[SCO_OO][CIO_UPN_KD])(num_bokz, parametr);
     }
 
@@ -775,7 +776,12 @@ void Kia_cyclogram_bokzmf::create_func_type_do_oo()
     {
         if (helpers::get_status(m_bokz[num_bokz]->m_kia_mko_struct->st_mshior_mf.KC1, 0, "1", "0") == "1")
         {
-            m_bokz[num_bokz]->chkd(parametr);
+            if (m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[SCO_OO][CIO_CHKD] == KiaS_SUCCESS
+                    && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz])
+            {
+                sleep_for_pause(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram[SCO_OO][CIO_CHKD]);
+                std::get<CYCL_FUNC>(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_command_cycl_do[SCO_OO][CIO_CHKD])(num_bokz, parametr);
+            }
             m_bokz[num_bokz]->m_kia_data->m_data_bokz->m_bokz_status_in_cycl = KCS_SUCCES;
         }
         else
@@ -924,6 +930,12 @@ void Kia_cyclogram_bokzmf::create_list_command_for_oo()
     };
     command_cycl.push_back(std::make_tuple(comm_skor, "УСД СКОР", CYCLOGRAM_ZKR));
 
+    auto comm_chkd = [this](uint16_t num_bokz, uint16_t parametr = EP_DOALL)
+    {
+        return m_bokz[num_bokz]->chkd(parametr);
+    };
+    command_cycl.push_back(std::make_tuple(comm_chkd, "ЧКД", CYCLOGRAM_ZKR));
+
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_command_cycl_do.push_back(command_cycl);
     std::vector<uint16_t> do_cyclogram(command_cycl.size());
     std::fill(do_cyclogram.begin(),
@@ -1017,7 +1029,7 @@ void Kia_cyclogram_bokzmf::create_list_chpn()
 
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Матрица ПСК", "mat_psk", IS_TABLE, Bokzmf::TP_MAT));
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Кватернион ориентации", "qo", IS_TABLE, Bokzmf::TP_QA));
-    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Угловая скорость", "w0", IS_TABLE, Bokzmf::TP_W));
+    m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Угловая скорость", "wo", IS_TABLE, Bokzmf::TP_W));
     m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_commands_to_pn.push_back(std::make_tuple("Коэффициенты дисторсии", "kd", IS_TABLE, Bokzmf::TP_KD));
 }
 

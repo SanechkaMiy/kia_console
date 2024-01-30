@@ -10,7 +10,8 @@ Bokzmf::Bokzmf(uint16_t num_bokz, std::array<std::shared_ptr<Kia_db>, constants:
 {
     m_num_bokz = num_bokz;
     set_bokz_settings();
-
+    set_type_upn_func();
+    set_type_chpn_func();
 }
 
 void Bokzmf::set_bokz_settings()
@@ -269,15 +270,17 @@ uint16_t Bokzmf::upn(uint16_t type_upn, QStringList value, uint16_t parametr)
 
 uint16_t Bokzmf::chpn(QStringList type_chpn, uint16_t parametr)
 {
-    command_chpn(parametr);
+    //command_chpn(parametr);
     for (auto el : type_chpn)
     {
+        std::cout << el.toUInt() << std::endl;
         for(auto const& imap: m_map_chpn)
         {
             if (el.toUInt() == imap.first)
                 m_map_chpn[el.toUInt()](parametr);
         }
     }
+
 
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
@@ -305,6 +308,19 @@ uint16_t Bokzmf::chkd(uint16_t parametr)
         m_pio_bokz->decrypt_chkd(m_kia_data->m_data_mpi->m_data_word, num_arr);
     }
     save_to_protocol(str_to_protocol, parametr);
+    QStringList data_status;
+    data_status.push_back(QString::number(m_num_bokz));
+    data_status.push_back(QString::number(IS_TABLE));
+    data_status.push_back(QString::number(TP_KD));
+    for (uint16_t ind_kd = 0; ind_kd < m_kia_mko_struct->st_chkd_mf.chkd_1_mf.KofDX.size(); ++ind_kd)
+    {
+        data_status.push_back(QString::number(m_kia_mko_struct->st_chkd_mf.chkd_1_mf.KofDX[ind_kd]));
+    }
+    for (uint16_t ind_kd = 0; ind_kd < m_kia_mko_struct->st_chkd_mf.chkd_2_mf.KofDY.size(); ++ind_kd)
+    {
+        data_status.push_back(QString::number(m_kia_mko_struct->st_chkd_mf.chkd_2_mf.KofDY[ind_kd]));
+    }
+    emit send_to_client(SEND_COMMAND, data_status);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
     return m_kia_data->m_data_mpi->m_status_exchange;
 }
@@ -1025,7 +1041,7 @@ void Bokzmf::set_type_upn_func()
         command_upn(parametr);
         return m_kia_data->m_data_mpi->m_status_exchange;
     };
-    m_func_upn.push_back(func_kd);
+    m_func_upn[TP_KD] = func_kd;
 
     auto func_qa = [this](QStringList value, uint16_t parametr)
     {
@@ -1036,7 +1052,7 @@ void Bokzmf::set_type_upn_func()
         memcpy(&m_kia_data->m_data_mpi->m_qa, &qa, sizeof(qa));
         return m_kia_data->m_data_mpi->m_status_exchange;
     };
-    m_func_upn.push_back(func_qa);
+    m_func_upn[TP_QA] = func_qa;
 
     auto func_w = [this](QStringList value, uint16_t parametr)
     {
@@ -1047,7 +1063,7 @@ void Bokzmf::set_type_upn_func()
         memcpy(&m_kia_data->m_data_mpi->m_w, &w, sizeof(w));
         return m_kia_data->m_data_mpi->m_status_exchange;
     };
-    m_func_upn.push_back(func_w);
+    m_func_upn[TP_W] = func_w;
 }
 
 void Bokzmf::set_type_chpn_func()
