@@ -78,7 +78,7 @@ uint16_t Kia_cyclogram_bokzmf::cyclogram_oo(uint16_t &num_bokz, uint16_t paramet
     if (m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_do_cyclogram_in_do[SCO_OO][CIO_UPN_KD] == KiaS_SUCCESS
             && m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz])
     {
-        sleep_for_pause(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram[SCO_OO][CIO_OO]);
+        sleep_for_pause(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_sleep_to_command_in_do_cyclogram[SCO_OO][CIO_UPN_KD]);
         //std::get<CYCL_FUNC>(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_command_cycl_do[SCO_OO][CIO_UPN_KD])(num_bokz, parametr);
     }
 
@@ -604,11 +604,11 @@ uint16_t Kia_cyclogram_bokzmf::start_regular_cyclogram(uint16_t &num_bokz, uint1
     {
         if (m_kia_settings->m_flags_for_thread->m_stop_cyclogram[num_bokz])
         {
-            //            if (do_oo(num_bokz, begin_skor_time, parametr) == KiaS_FAIL)
-            //            {
-            //                m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - ОШИБКА!";
-            //                break;
-            //            }
+            if (do_oo(num_bokz, begin_skor_time, parametr) == KiaS_FAIL)
+            {
+                m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - ОШИБКА!";
+                break;
+            }
 
             for (uint16_t num_mpi_command = 0; num_mpi_command < m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_max_mpi_command; ++num_mpi_command)
             {

@@ -80,6 +80,10 @@ uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data)
         kia_data->m_data_mpi->m_wOs = kia_data->m_data_mpi->m_data_word[kia_data->m_data_mpi->m_word_data + 1];
     else
         kia_data->m_data_mpi->m_wOs = kia_data->m_data_mpi->m_data_word[1];
+    if ((kia_data->m_data_mpi->m_wOs & (0x0001 << 15)) == 1)
+    {
+        kia_data->m_data_bokz->m_count_fail[4]++;
+    }
     emit changed_lpi();
     return kia_data->m_data_mpi->m_status_exchange;
 }
