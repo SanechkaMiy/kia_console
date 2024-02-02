@@ -36,6 +36,11 @@ void WorkWithMain::set_kia_settings()
 
     m_kia_mpi.reset(new Kia_mpi());
 
+    connect(m_kia_mpi.get(), &Kia_mpi::end_exchange, this, [this](quint16 num_bokz)
+    {
+        m_bokz[num_bokz]->continue_exchange();
+    });
+
     connect(m_kia_mpi.get(), SIGNAL(changed_lpi()), this, SLOT(send_data_from_mpi_current_lpi_to_table_settings()));
 
     for (uint16_t num_conn = 0; num_conn < constants::max_count_same_connection; ++num_conn)
@@ -107,6 +112,7 @@ void WorkWithMain::set_kia_settings()
         connect(m_bokz[num_bokz].get(), SIGNAL(send_to_save_protocol(Kia_protocol_parametrs)), m_kia_protocol.get(), SLOT(preset_before_save_and_out(Kia_protocol_parametrs)));
         connect(m_bokz[num_bokz].get(), SIGNAL(save_to_frames_protocols(const Kia_frame_parametrs&)), m_kia_protocol.get(), SLOT(save_to_frames_protocols(const Kia_frame_parametrs&)));
 
+        connect(m_bokz[num_bokz].get(), SIGNAL(do_exchange(Kia_data*)), m_kia_mpi.get(), SLOT(do_exchange(Kia_data*)));
     }
     create_func_to_read();
 }
@@ -790,8 +796,9 @@ void WorkWithMain::kia_init()
     m_kia_settings->m_data_to_protocols->m_stop_spam_in_system_info.resize(m_kia_settings->m_count_bokz);
 
     qRegisterMetaType<Kia_protocol_parametrs>();
+    qRegisterMetaType<Kia_frame_parametrs>();
     qRegisterMetaType<Kia_mko_struct>();
-    qRegisterMetaType<uint16_t>();
+    qRegisterMetaType<Kia_data>();
 }
 
 void WorkWithMain::start_kia_gui()

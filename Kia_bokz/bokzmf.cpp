@@ -947,9 +947,12 @@ uint16_t Bokzmf::start_exchage(uint16_t parametr)
 
 void Bokzmf::execute_exchange()
 {
-    m_kia_data->m_data_mpi->m_status_exchange = m_kia_mpi->execute_exchange(m_kia_data);
-    parse_mko_protocols(m_kia_data,
-                        m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_num_bokz);
+    emit do_exchange(m_kia_data.get());
+    wait_for_event();
+    m_kia_settings->m_data_for_db->m_exchange_counter++;
+    auto data = parse_mko_protocols(m_kia_data,
+                                    m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_num_bokz);
+    emit send_to_save_protocol(data);
     send_mpi_data_to_db();
 }
 

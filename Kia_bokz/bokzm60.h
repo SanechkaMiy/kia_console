@@ -88,6 +88,7 @@ public:
 
     void save_to_specific_protocol(QString str_to_protocol, uint16_t num_mpi_command,
                                    uint16_t type_window, uint16_t type_protocol, uint16_t parametr) override;
+
 private:
     uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL);
     uint16_t get_epsilon(uint16_t parametr = EP_DOALL);
@@ -131,6 +132,9 @@ private:
 
     std::map<uint16_t, std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
     std::map<uint16_t, std::function<uint16_t(uint16_t parametr)>> m_map_chpn;
+
+
+
 };
 
 #endif // BOKZM60_H

@@ -23,6 +23,7 @@ public:
         FTDI_USB = 1,
         MATROX_CAM_LINK = 2
     };
+
     virtual void set_bokz_settings() = 0;
 
     virtual uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
@@ -60,7 +61,10 @@ public:
     virtual uint16_t command_oo(uint16_t parametr = EP_DOALL) = 0;
 
     virtual void save_to_specific_protocol(QString str_to_protocol, uint16_t num_mpi_command,
-                                   uint16_t type_window, uint16_t type_protocol, uint16_t parametr) = 0;
+                                           uint16_t type_window, uint16_t type_protocol, uint16_t parametr) = 0;
+
+    void continue_exchange();
+    void wait_for_event();
 
     std::tuple<double, double, double> math_alpha_delta_azimut(double Qo0, double Qo1, double Qo2, double Qo3);
     double atan2m(double y, double x);
@@ -68,7 +72,7 @@ public:
 
 
     Kia_protocol_parametrs parse_mko_protocols(std::shared_ptr<Kia_data> kia_data,
-                             int32_t bshv, uint16_t num_bokz);
+                                               int32_t bshv, uint16_t num_bokz);
 
     QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double>> list_data);
     std::shared_ptr<Kia_data> m_kia_data;
@@ -77,8 +81,9 @@ public:
     uint16_t m_is_used_bokz = CS_IS_OFF;
     uint16_t m_num_bokz;
 
+    std::condition_variable m_cv;
+    uint32_t m_count_exchange = 0;
     virtual ~Bokz(){    cout<<"destructor bokz"<<endl;};
-
 signals:
     void send_to_client(quint16, QStringList);
 
@@ -88,6 +93,11 @@ signals:
     void send_data_to_db_bokz(qint16, quint16, qint32, Kia_mko_struct);
     void send_data_to_db_for_frames(quint16, qint32);
     void send_data_to_db_for_mpi(quint16, qint32);
+
+    void do_exchange(Kia_data*);
+
+private:
+    std::mutex m_mtx;
 };
 
 #endif // BOKZ_H

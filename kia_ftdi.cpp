@@ -39,22 +39,22 @@ Kia_ftdi::~Kia_ftdi()
     std::cout << "destrc ftdi" << std::endl;
 }
 
-void Kia_ftdi::read_frame(uint32_t resulution)
+void Kia_ftdi::read_frame(Kia_frame_parametrs* kia_frame_parametrs)
 {
     FT_STATUS ftStatus;
     uint32_t bytes_received;
     //unsigned char read_buffer[1024 * 1024 * 2 + 2];
     //uint16_t read_buffer[512 * 512 + 1];
-    uint32_t rx_bytes = resulution;
+    uint32_t rx_bytes = kia_frame_parametrs->resulution;
     uint32_t pos = 0;
 
     bytes_received = 0;
-    std::vector<uint8_t> buffer(resulution * 4);
-    m_read_buffer.resize(resulution);
+    std::vector<uint8_t> buffer(kia_frame_parametrs->resulution * 4);
+    m_read_buffer.resize(kia_frame_parametrs->resulution);
     //uint8_t buffer[512 * 512 * 2];// - changed on vector --
     //memset(m_read_buffer, 0xff, sizeof(m_read_buffer));
     std::cout <<"start" << std::endl;
-    while(pos < resulution * 2)
+    while(pos < kia_frame_parametrs->resulution * 2)
     {
 
         ftStatus = FT_GetQueueStatus(m_ftHandle[0], &rx_bytes);
@@ -70,10 +70,11 @@ void Kia_ftdi::read_frame(uint32_t resulution)
         }
 
     }
-    buffer.resize(resulution * 2);
+    buffer.resize(kia_frame_parametrs->resulution * 2);
     //std::cout << "size " << sizeof(buffer) << std::endl;
-    memcpy(m_read_buffer.data(), buffer.data(), resulution * 2);
-    std::cout << "end" << std::endl;
+    memcpy(m_read_buffer.data(), buffer.data(), kia_frame_parametrs->resulution * 2);
+    kia_frame_parametrs->lvp_buf = m_read_buffer.data();
+    kia_frame_parametrs->buf_size = m_read_buffer.size() * 2;
 }
 
 std::vector<uint16_t> Kia_ftdi::get_frame_buf()

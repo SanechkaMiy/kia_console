@@ -4,6 +4,24 @@ Bokz::Bokz()
 
 }
 
+void Bokz::continue_exchange()
+{
+    std::lock_guard lock(m_mtx);
+    m_count_exchange++;
+    m_cv.notify_all();
+}
+
+void Bokz::wait_for_event()
+{
+    std::mutex m;
+    std::unique_lock lk(m);
+    auto count = m_count_exchange;
+    m_cv.wait(lk, [this, &count]
+    {
+        return count != m_count_exchange;
+    });
+}
+
 Kia_protocol_parametrs Bokz::parse_mko_protocols(std::shared_ptr<Kia_data> kia_data, int32_t bshv, uint16_t num_bokz)
 {
     uint16_t shift_for_numbers = -8;

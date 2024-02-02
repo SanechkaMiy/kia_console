@@ -41,6 +41,8 @@ const uint32_t microsecond_in_second = 1000 * 1000;
 #pragma pack(push, 1)
 struct Data_for_mpi
 {
+    uint16_t m_num_bokz = 0;
+
     uint16_t m_code_word = 0;
     uint16_t m_address = 0;
     uint16_t m_word_data = 1;
@@ -245,6 +247,7 @@ struct Kia_frame_parametrs
 {
     uint16_t num_bokz;
     int32_t bshv;
+    uint32_t resulution;
     void* lvp_buf;
     uint32_t buf_size;
 
@@ -292,7 +295,7 @@ struct Kia_data
     std::shared_ptr<Data_for_db> m_data_db;
     std::shared_ptr<Data_for_bi> m_data_bi;
     std::shared_ptr<Data_for_bokz> m_data_bokz;
-};
+}; Q_DECLARE_METATYPE(Kia_data)
 #pragma pack(pop)
 
 #pragma pack(push, 1)

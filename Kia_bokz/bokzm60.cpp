@@ -21,12 +21,9 @@ BokzM60::~BokzM60()
 void BokzM60::set_bokz_settings()
 {
     m_kia_data.reset(new Kia_data());
+    m_kia_data->m_data_mpi->m_num_bokz = m_num_bokz;
     m_kia_mko_struct.reset(new Kia_mko_struct());
     m_pio_bokz.reset(new Pio_bokzm60(m_kia_mko_struct, m_kia_settings));
-
-    //    m_kia_db[TYPE_RAW]->add_device_to_experiment("bokzm60", m_num_bokz,
-    //                                                 m_kia_settings->m_data_for_db->experiment_id,
-    //                                                 m_kia_settings->m_data_for_db->true_host);
     create_count_of_exc_fail();
 }
 
@@ -320,6 +317,13 @@ void BokzM60::save_to_specific_protocol(QString str_to_protocol, uint16_t num_mp
     kia_protocol_parametrs.parametr = parametr;
     emit send_to_save_protocol(kia_protocol_parametrs);
 }
+
+//void BokzM60::continue_exchange()
+//{
+//    std::lock_guard lock(m_mtx);
+//    m_count_exchange++;
+//    m_cv.notify_all();
+//}
 
 template <typename T>
 void BokzM60::calc_frame_param(std::vector<T> frame_buffer)
@@ -1099,22 +1103,29 @@ void BokzM60::set_type_frame_recieve()
 
     auto func_ftdi_usb = [this](uint16_t type_frame, uint16_t parametr = EP_DOALL)
     {
-        m_kia_settings->m_flags_for_thread->m_mtx.lock();
         QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
                 + QString("Снимаем кадр через FTDI_USB!");
         save_to_protocol(str_to_protocol, parametr);
-        m_kia_ftdi->read_frame(m_frame_resulution[type_frame]);
-        m_kia_settings->m_flags_for_thread->m_mtx.unlock();
+
+        m_kia_settings->m_flags_for_thread->m_mtx.lock();
         Kia_frame_parametrs kia_frame_parametrs;
+        kia_frame_parametrs.resulution = m_frame_resulution[type_frame];
+        m_kia_ftdi->read_frame(&kia_frame_parametrs);
+        m_kia_settings->m_flags_for_thread->m_mtx.unlock();
+
         kia_frame_parametrs.num_bokz = m_num_bokz;
         kia_frame_parametrs.bshv = m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi];
-        kia_frame_parametrs.lvp_buf = m_kia_ftdi->get_frame_buf().data();
-        kia_frame_parametrs.buf_size = m_kia_ftdi->get_buf_size();
+
         emit save_to_frames_protocols(kia_frame_parametrs);
-        calc_frame_param(m_kia_ftdi->get_frame_buf());
+
+        std::vector<uint16_t > read_buffer;
+        read_buffer.resize(kia_frame_parametrs.resulution);
+        memcpy(read_buffer.data(), kia_frame_parametrs.lvp_buf, kia_frame_parametrs.buf_size);
+        calc_frame_param(read_buffer);
 
 
     };
+
     m_func_type_frame_recieve.push_back(func_ftdi_usb);
 }
 
@@ -1412,13 +1423,16 @@ uint16_t BokzM60::execute_protected_exchange(std::function<void()> func_mpi_comm
 
 void BokzM60::execute_exchange()
 {
-    m_kia_data->m_data_mpi->m_status_exchange = m_kia_mpi->execute_exchange(m_kia_data);
+    emit do_exchange(m_kia_data.get());
+    wait_for_event();
     m_kia_settings->m_data_for_db->m_exchange_counter++;
     auto data = parse_mko_protocols(m_kia_data,
                                     m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_num_bokz);
     emit send_to_save_protocol(data);
     send_mpi_data_to_db();
 }
+
+
 
 void BokzM60::set_data_to_device_protocol(QString& str_protocol)
 {

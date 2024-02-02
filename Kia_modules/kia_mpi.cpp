@@ -2,26 +2,51 @@
 
 Kia_mpi::Kia_mpi()
 {
-    init();
+    m_mpi_thread = std::async([this]()
+    {
+        init();
+        m_mpi_stop = true;
+        while(m_mpi_stop)
+        {
+            wait_for_event();
+            if (m_data.front().first == "stop_mpi")
+            {
+                close();
+                break;
+            }
+            if (m_data.front().first == "exchange")
+            {
+                execute_exchange(m_data.front().second);
+            }
+            m_data.pop();
+        }
+    });
+
 }
 
 Kia_mpi::~Kia_mpi()
 {
-    close();
+    std::lock_guard lock(m_mtx);
+    Kia_data kia_data;
+    m_data.push(std::make_pair("stop_mpi", &kia_data));
+    m_cv.notify_all();
+    m_mpi_stop = false;
+    m_mpi_thread.get();
+
 }
 
 void Kia_mpi::init()
 {
     printf("tmk is open = %d\n",TmkOpen());
-//    int hTmk = 8;
-//    if (tmkconfig(hTmk) == 0)
-//    {
-//        tmkselect(hTmk);
-//        bcreset();
-//        m_mpi_num[m_count_chip] = hTmk;
-//        printf("Device number -  %d\n", hTmk);
-//        m_count_chip++;
-//    }
+    //    int hTmk = 8;
+    //    if (tmkconfig(hTmk) == 0)
+    //    {
+    //        tmkselect(hTmk);
+    //        bcreset();
+    //        m_mpi_num[m_count_chip] = hTmk;
+    //        printf("Device number -  %d\n", hTmk);
+    //        m_count_chip++;
+    //    }
 
     for (int hTmk = 0; hTmk < constants::max_tmk_dev; ++hTmk)
     {
@@ -44,7 +69,17 @@ void Kia_mpi::close()
     TmkClose();
 }
 
-uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data)
+void Kia_mpi::wait_for_event()
+{
+    std::mutex m;
+    std::unique_lock lk(m);
+    m_cv.wait(lk, [this]
+    {
+        return  !m_data.empty();
+    });
+}
+
+void Kia_mpi::execute_exchange(Kia_data* kia_data)
 {
     reset(kia_data);
     tmkselect(kia_data->m_data_mpi->m_mpi_index);
@@ -83,10 +118,16 @@ uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data)
         kia_data->m_data_bokz->m_count_fail[4]++;
     }
     emit changed_lpi();
-    return kia_data->m_data_mpi->m_status_exchange;
+    emit end_exchange(kia_data->m_data_mpi->m_num_bokz);
 }
 
-void Kia_mpi::reset(std::shared_ptr<Kia_data> kia_data)
+void Kia_mpi::do_exchange(Kia_data* kia_data)
+{
+    std::lock_guard lock(m_mtx);
+    m_data.push(std::make_pair("exchange", kia_data));
+    m_cv.notify_all();
+}
+void Kia_mpi::reset(Kia_data* kia_data)
 {
     array<uint16_t, constants::packetSize> data_to_reset;
     data_to_reset.fill(0x0a00);
