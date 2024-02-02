@@ -3,12 +3,10 @@
 #include <QObject>
 #include <iostream>
 #include "mainStruct.h"
-#include "kia_protocol.h"
 #include "Kia_mko_struct.h"
 #include "Kia_pio/pio_bokz.h"
 #include "Kia_modules/kia_help_functions.h"
 #include "Kia_modules/kia_mpi.h"
-#include "math.h"
 class Bokz : public QObject
 {
     Q_OBJECT
@@ -61,13 +59,15 @@ public:
     virtual uint16_t command_restart(uint16_t parametr = EP_DOALL) = 0;
     virtual uint16_t command_oo(uint16_t parametr = EP_DOALL) = 0;
 
-
+    virtual void save_to_specific_protocol(QString str_to_protocol, uint16_t num_mpi_command,
+                                   uint16_t type_window, uint16_t type_protocol, uint16_t parametr) = 0;
 
     std::tuple<double, double, double> math_alpha_delta_azimut(double Qo0, double Qo1, double Qo2, double Qo3);
     double atan2m(double y, double x);
     double asinm(double x);
 
-    void parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_data> kia_data,
+
+    Kia_protocol_parametrs parse_mko_protocols(std::shared_ptr<Kia_data> kia_data,
                              int32_t bshv, uint16_t num_bokz);
 
     QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double>> list_data);
@@ -76,10 +76,18 @@ public:
     std::shared_ptr<Pio_bokz> m_pio_bokz;
     uint16_t m_is_used_bokz = CS_IS_OFF;
     uint16_t m_num_bokz;
+
     virtual ~Bokz(){    cout<<"destructor bokz"<<endl;};
-protected:
+
 signals:
-    virtual void send_to_client(quint16, QStringList) = 0 ;
+    void send_to_client(quint16, QStringList);
+
+    void send_to_save_protocol(Kia_protocol_parametrs);
+    void save_to_frames_protocols(const Kia_frame_parametrs&);
+
+    void send_data_to_db_bokz(qint16, quint16, qint32, Kia_mko_struct);
+    void send_data_to_db_for_frames(quint16, qint32);
+    void send_data_to_db_for_mpi(quint16, qint32);
 };
 
 #endif // BOKZ_H

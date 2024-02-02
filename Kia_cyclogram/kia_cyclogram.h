@@ -45,6 +45,8 @@ public:
     void sleep_for_pause(uint32_t time_in_microseconds);
 
     void post_exchange(uint16_t check_value, QString &is_success);
+
+    void preset_before_exchange(QString& is_error);
 private:
     virtual uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) = 0;
 

@@ -1,7 +1,6 @@
 #include "kia_mpi.h"
 
-Kia_mpi::Kia_mpi(std::shared_ptr<Kia_settings> kia_settings) :
-    m_kia_settings(kia_settings)
+Kia_mpi::Kia_mpi()
 {
     init();
 }
@@ -64,7 +63,6 @@ uint16_t Kia_mpi::execute_exchange(std::shared_ptr<Kia_data> kia_data)
     kia_data->m_data_mpi->m_nInt = tmkEvD.nInt;
     kia_data->m_data_db->waw1 = tmkEvD.bc.wAW1;
     kia_data->m_data_db->waw1 = tmkEvD.bc.wAW2;
-    m_kia_settings->m_data_for_db->m_exchange_counter++;
     if ((kia_data->m_data_mpi->m_wResult == 0) && (kia_data->m_data_mpi->m_nInt == 1))//Есть ли ошибка обмена
     {
         kia_data->m_data_mpi->m_status_exchange = KiaS_SUCCESS;

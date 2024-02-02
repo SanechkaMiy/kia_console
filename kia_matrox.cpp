@@ -3,8 +3,7 @@
 
 
 
-Kia_matrox::Kia_matrox(std::shared_ptr<Kia_settings> kia_settings) :
-    m_kia_settings(kia_settings)
+Kia_matrox::Kia_matrox()
 {
     //    auto check_result = matrox_init();
     //    if (check_result != 0)

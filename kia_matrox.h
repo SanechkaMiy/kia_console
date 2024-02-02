@@ -40,12 +40,11 @@ class Kia_matrox
 public:
     uint32_t get_buf_size();
     void* get_frame_buf();
-    Kia_matrox(std::shared_ptr<Kia_settings> kia_settings);
+    Kia_matrox();
     ~Kia_matrox();
     void matrox_grab_frame(std::shared_ptr<Kia_data> kia_data);
 private:
     std::shared_ptr <mn::CppLinuxSerial::SerialPort> m_serial_port;
-    std::shared_ptr<Kia_settings> m_kia_settings;
     uint16_t matrox_init();
     void matrox_close();
     void frame_build();

@@ -340,15 +340,15 @@ void Pio_bokzmf::parse_dtmi_loc()
         {
             is_norma[num_nAr] = "норма";
         }
-        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.nAr[num_nAr].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        check_norma.push_back(helpers::format_qstring(is_norma[num_nAr], m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.nAr[num_nAr].first, 16), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi));
+        check_norma.push_back(helpers::format_qstring(is_norma[num_nAr], m_kia_settings->m_format_for_desc.shift_for_dtmi));
     }
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Номер подмассива");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(nAr, m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.nAr, 0x2001, 0x2001));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(check_norma, 0, 0, 0));
 
@@ -375,65 +375,65 @@ void Pio_bokzmf::parse_dtmi_loc()
         {
             is_norma[num_cc] = "норма";
         }
-        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.cs[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        calc_cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.calc_cs[num_cc], 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.cs[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi));
+        calc_cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.calc_cs[num_cc], 16), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi));
+        check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc.shift_for_dtmi));
     }
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Контрольная сумма");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(cs, m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.cs, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(calc_cs, m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.cs, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(check_norma, 0, 0, 0));
 
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время привязки информации");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.T), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.T, 0, 2e31));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время привязки информации");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Tms), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Tms, 0, 1000));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Код состояния 1 (Status1)");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.KC1, 16), 4, '0'), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.KC1, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Код состояния 2 (Status2)");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.KC2, 16), 4, '0'), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.KC2, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Заводской номер");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.SerNum), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.SerNum, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время экспонирования");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Texp), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Texp, 10, 1023));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("9", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("9", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Количество локализованных объектов");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.NumLoc), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.NumLoc, 0, 5000));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("10", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("10", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Количество зафиксированных объектов");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.NumObj), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.NumObj, 0, 200));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Число пикселей на кадре");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.PixCount), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.PixCount, 0, 65535));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("12", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("12", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Среднее сигнала");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Mean), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Mean, 0, 4095));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "СКО сигнала");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Sigma), m_kia_mko_struct->st_mloc_mf.mLoc_1_mf.Sigma, 0, 6553));
 
@@ -664,54 +664,54 @@ void Pio_bokzmf::parse_dtmi_loc()
         }
     }
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers + m_kia_settings->m_format_for_desc->shift_description)
-                                                          + helpers::format_qstring("X", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("Y", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("B", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("S", m_kia_settings->m_format_for_desc->shift_for_dtmi));
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers + m_kia_settings->m_format_for_desc.shift_description)
+                                                          + helpers::format_qstring("X", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("Y", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("B", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("S", m_kia_settings->m_format_for_desc.shift_for_dtmi));
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple("", 0, 0, 0));
 
 
     for (uint16_t num = 0; num < m_kia_mko_struct->st_mloc_mf.loc_x.size(); num++)
     {
-        m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(QString::number(num + 1), m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring(QString::number(num + 1), m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
         m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back
                 (
                     std::make_tuple(
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_x[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_y[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_b[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_c[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi)
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_x[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_y[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_b[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_mloc_mf.loc_c[num]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi)
                         , 0, 0, 0)
                     );
 
-        m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
         m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back
                 (
                     std::make_tuple(
-                        helpers::format_qstring(is_norma_for[0][num], m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                    helpers::format_qstring(is_norma_for[1][num], m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(is_norma_for[2][num], m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(is_norma_for[3][num], m_kia_settings->m_format_for_desc->shift_for_dtmi)
+                        helpers::format_qstring(is_norma_for[0][num], m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                    helpers::format_qstring(is_norma_for[1][num], m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(is_norma_for[2][num], m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(is_norma_for[3][num], m_kia_settings->m_format_for_desc.shift_for_dtmi)
                 , 0, 0, 0)
                 );
     }
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("28", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("28", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Число пикселей для расчета порога");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.nPixNs), m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.nPixNs, 0, 65535));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("29", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("29", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Число пикселей выше порога шума");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.nPixGrNs), m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.nPixGrNs, 0, 65535));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("30", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("30", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Порог");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.Th), m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.Th, 0, 65535));
 
-    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("31", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mloc_mf.mloc_list_name.push_back(helpers::format_qstring("31", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Температура КМОП матрицы");
     m_kia_mko_struct->st_mloc_mf.mloc_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.Tcmv), m_kia_mko_struct->st_mloc_mf.mLoc_9_mf.Tcmv, -75, 150));
 }
@@ -1049,15 +1049,15 @@ void Pio_bokzmf::parse_dtmi(uint16_t type_orient)
         {
             is_norma[num_nAr] = "норма";
         }
-        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.nAr[num_nAr].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        check_norma.push_back(helpers::format_qstring(is_norma[num_nAr], m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        nAr.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.nAr[num_nAr].first, 16), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi));
+        check_norma.push_back(helpers::format_qstring(is_norma[num_nAr], m_kia_settings->m_format_for_desc.shift_for_dtmi));
     }
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Номер подмассива");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(nAr, m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.nAr, 0x2001, 0x2001));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(check_norma,  0, 0, 0));
 
@@ -1087,60 +1087,60 @@ void Pio_bokzmf::parse_dtmi(uint16_t type_orient)
         {
             is_norma[num_cc] = "норма";
         }
-        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.cs[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        calc_cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.calc_cs[num_cc], 16), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi));
-        check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc->shift_for_dtmi));
+        cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.cs[num_cc].first, 16), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi));
+        calc_cs.push_back(helpers::format_qstring(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.calc_cs[num_cc], 16), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi));
+        check_norma.push_back(helpers::format_qstring(is_norma[num_cc], m_kia_settings->m_format_for_desc.shift_for_dtmi));
     }
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Контрольная сумма");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(cs, m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.cs, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(calc_cs, m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.cs, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + " ");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(check_norma, 0, 0, 0));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время привязки информации");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.T), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.T, 0, 1e31));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время привязки информации");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tms), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tms, 0, 1000));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Код состояния 1 (Status1)");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.KC1, 16), 4, '0'), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.KC1, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Код состояния 2 (Status2)");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.KC2, 16), 4, '0'), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.KC2, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Заводской номер");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.SerNum), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.SerNum, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Слово внутреннего теста");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.POST, 16), 4, '0'), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.POST, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("9", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("9", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Температура КМОП-матрицы");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tcmv), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tcmv, -70, 150));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("10", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("10", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Среднее сигнала");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Mean), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Mean, 0, 4095));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "СКО сигнала");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Sigma), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Sigma, 0, 6553));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("12", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("12", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время экспонирования");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Texp), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Texp, 10, 400));
     QString dtmi_1_wd_num_13;
@@ -1156,38 +1156,38 @@ void Pio_bokzmf::parse_dtmi(uint16_t type_orient)
         upper = 200;
     }
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + dtmi_1_wd_num_13);
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.PixCount_NumLoc), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.PixCount_NumLoc, 0, upper));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("14[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("14[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Количество зафиксированных объектов");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumStore), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumStore, 0, 32));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("14[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("14[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Количество распознанных объектов");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumDet), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumDet, 0, 30));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("15[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("15[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Количество прогнозируемых фрагментов");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumProgFrag), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumProgFrag, 0, 150));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("15[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("15[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Количество фрагментов в обработке");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumFrag), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.NumFrag, 0, 30));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("16,17", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("16,17", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время последнего кватерниона");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tlast), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tlast, 0, 2e30));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("18", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("18", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Время последнего кватерниона");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tmslast), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Tmslast, 0, 1000));
 
     for (uint16_t num_q = 0; num_q < m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Qlst.size(); num_q++)
     {
         m_kia_mko_struct->st_dtmi_mf.qlst.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Qlst[num_q], -1, 1));
-        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(num_q + 1), m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(num_q + 1), m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Последний кватернион ориентации, Qo" + QString::number(num_q));
         m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Qlst[num_q],'f',4), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Qlst[num_q], -1, 1));
     }
@@ -1195,176 +1195,176 @@ void Pio_bokzmf::parse_dtmi(uint16_t type_orient)
     for (uint16_t num = 0; num < m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.HistDef.size(); num++)
     {
         m_kia_mko_struct->st_dtmi_mf.HistDef.push_back(std::make_tuple(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.HistDef[num], 0, 131072));
-        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(num + 1), m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(num + 1), m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Гист. ярк. дефектных пикселей " + QString::number(num + 1));
         m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.HistDef[num]), m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.HistDef[num], 0, 131072));
     }
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers + m_kia_settings->m_format_for_desc->shift_description)
-                                                          + helpers::format_qstring("Первый кадр", m_kia_settings->m_format_for_desc->shift_for_dtmi * 4)
-                                                          + helpers::format_qstring("Второй кадр", m_kia_settings->m_format_for_desc->shift_for_dtmi * 4));
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers + m_kia_settings->m_format_for_desc.shift_description)
+                                                          + helpers::format_qstring("Первый кадр", m_kia_settings->m_format_for_desc.shift_for_dtmi * 4)
+                                                          + helpers::format_qstring("Второй кадр", m_kia_settings->m_format_for_desc.shift_for_dtmi * 4));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple("", 0, 0, 0));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers + m_kia_settings->m_format_for_desc->shift_description)
-                                                          + helpers::format_qstring("X", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("Y", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("B", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("S", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("X", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("Y", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("B", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("S", m_kia_settings->m_format_for_desc->shift_for_dtmi));
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers + m_kia_settings->m_format_for_desc.shift_description)
+                                                          + helpers::format_qstring("X", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("Y", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("B", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("S", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("X", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("Y", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("B", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("S", m_kia_settings->m_format_for_desc.shift_for_dtmi));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple("", 0, 0, 0));
     for (uint16_t ind = 0; ind < m_kia_mko_struct->st_dtmi_mf.rsLoc_0_x.size(); ind++)
     {
-        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(ind + 1), m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(ind + 1), m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
         m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
                 (
                     std::make_tuple(
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_x[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_y[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_x[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_y[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi),
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_x[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_y[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_b[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_0_s[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_x[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_y[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_b[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.rsLoc_1_s[ind]), 'f', 4), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi),
                         0, 0, 0
                         ));
 
-        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
         m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
                 (
                     std::make_tuple(
-                        helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[0][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                    helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[1][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[2][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[3][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[4][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[5][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[6][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[7][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi),
+                        helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[0][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                    helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[1][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[2][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[3][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[4][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[5][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[6][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_rsLoc[7][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi),
                 0, 0, 0
                 ));
     }
 
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back("\n");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple("", 0, 0, 0));
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc->shift_for_numbers + m_kia_settings->m_format_for_desc->shift_description)
-                                                          + helpers::format_qstring("Xc", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("Yc", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("MeanFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("SigmaFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("ThFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("ObjFrag", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("MultXY", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("Zip_X", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("Zip_Y", m_kia_settings->m_format_for_desc->shift_for_dtmi)
-                                                          + helpers::format_qstring("HistPix", m_kia_settings->m_format_for_desc->shift_for_dtmi));
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers + m_kia_settings->m_format_for_desc.shift_description)
+                                                          + helpers::format_qstring("Xc", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("Yc", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("MeanFrag", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("SigmaFrag", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("ThFrag", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("ObjFrag", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("MultXY", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("Zip_X", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("Zip_Y", m_kia_settings->m_format_for_desc.shift_for_dtmi)
+                                                          + helpers::format_qstring("HistPix", m_kia_settings->m_format_for_desc.shift_for_dtmi));
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple("", 0, 0, 0));
 
     for (uint16_t ind = 0; ind < m_kia_mko_struct->st_dtmi_mf.XYc_x.size(); ind++)
     {
-        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(ind + 1), m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring(QString::number(ind + 1), m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
         m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
                 (
                     std::make_tuple(
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.XYc_x[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.XYc_y[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.MeanFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.SigmaFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ThFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ObjFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.MultXY[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ZipXY_X[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ZipXY_Y[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.HistPix[ind])), 4, '0'), m_kia_settings->m_format_for_desc->shift_for_dtmi),
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.XYc_x[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.XYc_y[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.MeanFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.SigmaFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ThFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ObjFrag[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.MultXY[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ZipXY_X[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.ZipXY_Y[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                        helpers::format_qstring(QString("%1").arg(QString::number(std::get<0>(m_kia_mko_struct->st_dtmi_mf.HistPix[ind])), 4, '0'), m_kia_settings->m_format_for_desc.shift_for_dtmi),
                         0, 0, 0
                         ));
 
-        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+        m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
         m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back
                 (
                     std::make_tuple(
-                        helpers::format_qstring(QString("%1").arg(is_norma_for_continue[0][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                    helpers::format_qstring(QString("%1").arg(is_norma_for_continue[1][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[2][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[3][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[4][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[5][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[6][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[7][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[8][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi) +
-                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[9][ind]), m_kia_settings->m_format_for_desc->shift_for_dtmi),
+                        helpers::format_qstring(QString("%1").arg(is_norma_for_continue[0][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                    helpers::format_qstring(QString("%1").arg(is_norma_for_continue[1][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[2][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[3][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[4][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[5][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[6][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[7][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[8][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi) +
+                helpers::format_qstring(QString("%1").arg(is_norma_for_continue[9][ind]), m_kia_settings->m_format_for_desc.shift_for_dtmi),
                 0, 0, 0
                 ));
     }
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("2", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("2", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Линейная скорость ось X, Vx");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Vx), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Vx, -8, 8));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("3", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("3", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Линейная скорость ось Y, Vy");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Vy), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Vy, -8, 8));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Линейная скорость ось Z, Vz");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Vz), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Vz, -8, 8));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Угловая скорость ось X, Wx");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Wx), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Wx, -0.17, 0.17));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Угловая скорость ось Y, Wy");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Wy), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Wy, -0.17, 0.17));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Угловая скорость ось Z, Wz");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Wz), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Wz, -0.17, 0.17));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("16, 17", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("16, 17", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Эпоха");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Epoch), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Epoch, 0, 1));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("18[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("18[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Кол-во локализованных объектов на 1-ом кадре в ОО");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.NumL_0), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.NumL_0, 0, 200));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("18[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("18[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Кол-во локализованных объектов на 2-ом кадре в ОО");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.NumL_1), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.NumL_1, 0, 200));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("19", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("19", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Максимум гистограммы смещения объектов");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.maxH), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.maxH, -1, 200));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("20[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("20[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Смещение по оси X максимума гистограммы");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.dxmaxH), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.dxmaxH, -45, 45));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("20[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("20[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Смещение по оси Y максимума гистограммы");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.dymaxH), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.dymaxH, -45, 45));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("21[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("21[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Номер сектора");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.NumSec), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.NumSec, 0, 162));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("21[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("21[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Допуск распознавания");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Epsilon), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.Epsilon, 10, 200));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("22", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("22", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "Интервал времени");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.deltaT), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.deltaT, 125, 5000));
 
-    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_dtmi_mf.dtmi_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                           + "СКО решения системы");
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.m_cur), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.m_cur, 0, 100));
 }
@@ -1402,154 +1402,154 @@ void Pio_bokzmf::decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord)
     SHTMI1raw_MF shmti1_raw;
     memcpy(&shmti1_raw, &dataWord,sizeof(shmti1_raw));
     m_kia_mko_struct->st_shtmi1_mf.nAr = shmti1_raw.nAr;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Номер подмассива");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.nAr, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.nAr, 0x1001, 0x1001));
 
 
     m_kia_mko_struct->st_shtmi1_mf.T = swapHex(shmti1_raw.T);
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.T), m_kia_mko_struct->st_shtmi1_mf.T, 0, 2e31));
 
     m_kia_mko_struct->st_shtmi1_mf.T = shmti1_raw.Tms;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Tms), m_kia_mko_struct->st_shtmi1_mf.Tms, 0, 1000));
 
     m_kia_mko_struct->st_shtmi1_mf.KC1 = shmti1_raw.KC1;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Код состояния 1 (Status1)");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.KC1), m_kia_mko_struct->st_shtmi1_mf.KC1, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi1_mf.KC2 = shmti1_raw.KC2;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Код состояния 2 (Status2)");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.KC2), m_kia_mko_struct->st_shtmi1_mf.KC2, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi1_mf.SerNum = shmti1_raw.SerNum;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Заводской номер");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.SerNum), m_kia_mko_struct->st_shtmi1_mf.SerNum, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi1_mf.POST = shmti1_raw.POST;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Слово внутреннего теста");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.POST, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.POST, -m_max_double_value, m_max_double_value));
 
     uint32_t foc = swapHex(shmti1_raw.Foc);
     memcpy(&m_kia_mko_struct->st_shtmi1_mf.Foc, &foc, sizeof(m_kia_mko_struct->st_shtmi1_mf.Foc));
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("9, 10", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("9, 10", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Фокусное расстояние");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Foc), m_kia_mko_struct->st_shtmi1_mf.Foc, 31, 44));
 
     m_kia_mko_struct->st_shtmi1_mf.Xo = swapHex(shmti1_raw.Xo);
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("11, 12", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("11, 12", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Координата Xo гл. точки ВСК");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Xo), m_kia_mko_struct->st_shtmi1_mf.Xo, -4, 4));
 
     m_kia_mko_struct->st_shtmi1_mf.Yo = swapHex(shmti1_raw.Yo);
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("13, 14", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("13, 14", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Координата Yo гл. точки ВСК");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Xo), m_kia_mko_struct->st_shtmi1_mf.Yo, -4, 4));
 
     m_kia_mko_struct->st_shtmi1_mf.Texp = shmti1_raw.Texp;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("15", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("15", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время экспонирования");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Texp), m_kia_mko_struct->st_shtmi1_mf.Texp, 10, 1023));
 
     m_kia_mko_struct->st_shtmi1_mf.Mean = shmti1_raw.Mean;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("16", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("16", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Среднее значение синала");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Mean), m_kia_mko_struct->st_shtmi1_mf.Mean, 0, 4095));
 
     m_kia_mko_struct->st_shtmi1_mf.Sigma = shmti1_raw.Sigma;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("17", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("17", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "СКО сигнала");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Sigma), m_kia_mko_struct->st_shtmi1_mf.Sigma, 0, 16384));
 
 
     m_kia_mko_struct->st_shtmi1_mf.rezerv1 = shmti1_raw.rezerv1;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("18", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("18", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Резерв");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.rezerv1), m_kia_mko_struct->st_shtmi1_mf.rezerv1, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi1_mf.rezerv2 = shmti1_raw.rezerv2;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("19", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("19", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Резерв");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.rezerv2), m_kia_mko_struct->st_shtmi1_mf.rezerv2, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi1_mf.cntUPN = shmti1_raw.cntUPN;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("20", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("20", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик КС УПН");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.cntUPN), m_kia_mko_struct->st_shtmi1_mf.cntUPN, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.Tcmv = shmti1_raw.Tcmv;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("21", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("21", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Температура КМОП-матрицы");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Tcmv), m_kia_mko_struct->st_shtmi1_mf.Tcmv, -75, 150));
 
     m_kia_mko_struct->st_shtmi1_mf.ConfCS = shmti1_raw.ConfCS;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("22", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("22", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма конфигурации ПЛИС");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.ConfCS), m_kia_mko_struct->st_shtmi1_mf.ConfCS, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.desc = shmti1_raw.desc;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Дескриптор передачи данных");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.desc), m_kia_mko_struct->st_shtmi1_mf.desc, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ogConstCrc = shmti1_raw.ogConstCrc;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("24", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("24", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма констант ЭО ЗД");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ogConstCrc, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ogConstCrc, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.CatCS0 = shmti1_raw.CatCS0;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("25", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("25", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма каталога 0");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.CatCS0, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.CatCS0, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.CatCS1 = shmti1_raw.CatCS1;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("26", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("26", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма каталога 1");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.CatCS1, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.CatCS1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ConstCS0 = shmti1_raw.ConstCS0;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("27", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("27", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма констант 1");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ConstCS0, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ConstCS0, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ConstCS1 = shmti1_raw.ConstCS1;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("28", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("28", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма констант 1");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ConstCS1, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ConstCS1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ProgCS0 = shmti1_raw.ProgCS0;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("29", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("29", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма программы 0");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ProgCS0, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ProgCS0, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.ProgCS1 = shmti1_raw.ProgCS1;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("30", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("30", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма программы 1");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.ProgCS1, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.ProgCS1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.Ver1 = (shmti1_raw.Ver >> 12);
     m_kia_mko_struct->st_shtmi1_mf.Ver2 = ((shmti1_raw.Ver & 0x0fff) >> 8);
     m_kia_mko_struct->st_shtmi1_mf.Ver3 = ((shmti1_raw.Ver & 0x00ff));
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("31", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("31", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Номер версии программы");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi1_mf.Ver1)
                                                                               + "." + QString::number(m_kia_mko_struct->st_shtmi1_mf.Ver2)
                                                                               + "." + QString::number(m_kia_mko_struct->st_shtmi1_mf.Ver3), m_kia_mko_struct->st_shtmi1_mf.Ver1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi1_mf.cs = shmti1_raw.cs;
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi1_mf.cs, 16), 4, '0'), m_kia_mko_struct->st_shtmi1_mf.cs, 0, 65535));
 
     auto calc_cs = calculate_cs(dataWord);
-    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
     m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(calc_cs, 16), 4, '0'), calc_cs, 0, 2e31));
 
@@ -1562,178 +1562,178 @@ void Pio_bokzmf::decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord)
     SHTMI2raw_MF shtmi2_raw;
     memcpy(&shtmi2_raw,&dataWord,sizeof(shtmi2_raw));
     m_kia_mko_struct->st_shtmi2_mf.nAr = shtmi2_raw.nAr;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Служебное слово 1");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi2_mf.nAr, 16), 4, '0'), m_kia_mko_struct->st_shtmi2_mf.nAr, 0x1002, 0x1002));
 
     m_kia_mko_struct->st_shtmi2_mf.T = swapHex(shtmi2_raw.T);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("2,3", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.T), m_kia_mko_struct->st_shtmi2_mf.T, 0, 2e30));
 
     m_kia_mko_struct->st_shtmi2_mf.Tms = (shtmi2_raw.Tms);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Tms), m_kia_mko_struct->st_shtmi2_mf.Tms, 0, 1000));
 
     m_kia_mko_struct->st_shtmi2_mf.KC1 = shtmi2_raw.KC1;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Код состояния 1 (Status1)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi2_mf.KC1, 16), 4, '0'), m_kia_mko_struct->st_shtmi2_mf.KC1, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi2_mf.KC2 = shtmi2_raw.KC2;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("6", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Код состояния 2 (Status2)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi2_mf.KC2, 16), 4, '0'), m_kia_mko_struct->st_shtmi2_mf.KC2, -m_max_double_value, m_max_double_value));
 
 
     m_kia_mko_struct->st_shtmi2_mf.SerNum = shtmi2_raw.SerNum;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("7", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Заводской номер");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.SerNum), m_kia_mko_struct->st_shtmi2_mf.SerNum, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi2_mf.POST = shtmi2_raw.POST;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("8", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Слово внутреннего теста");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_shtmi2_mf.POST, 16), 4, '0'), m_kia_mko_struct->st_shtmi2_mf.POST, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_shtmi2_mf.Texp = shtmi2_raw.Texp;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("9", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("9", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время экспонирования");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Texp), m_kia_mko_struct->st_shtmi2_mf.Texp, 10, 1023));
 
     m_kia_mko_struct->st_shtmi2_mf.Nusd = shtmi2_raw.Nusd;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("10", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("10", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик полученных УСД");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Nusd), m_kia_mko_struct->st_shtmi2_mf.Nusd, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.Nno = shtmi2_raw.Nno;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("11", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик НО");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Nno), m_kia_mko_struct->st_shtmi2_mf.Nno, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.Nnosl = shtmi2_raw.Nnosl;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("12", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("12", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Число переходов от НО к слежению");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Nnosl), m_kia_mko_struct->st_shtmi2_mf.Nnosl, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.Nto = shtmi2_raw.Nto;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("13", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик ТО");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Nto), m_kia_mko_struct->st_shtmi2_mf.Nto, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.Ntosl = shtmi2_raw.Ntosl;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("14", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("14", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Число переходов от ТО к слежению");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Ntosl), m_kia_mko_struct->st_shtmi2_mf.Ntosl, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.Nsl = swapHex(shtmi2_raw.Nsl);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("15,16", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("15,16", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик слежения");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.Nsl), m_kia_mko_struct->st_shtmi2_mf.Nsl, 0, 2e32));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount1 = (shtmi2_raw.eCount1);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("17", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("17", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 01)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount1), m_kia_mko_struct->st_shtmi2_mf.eCount1, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount2 = (shtmi2_raw.eCount2);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("18", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("18", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 02)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount2), m_kia_mko_struct->st_shtmi2_mf.eCount2, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount3 = (shtmi2_raw.eCount3);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("19", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("19", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 03)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount3), m_kia_mko_struct->st_shtmi2_mf.eCount3, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount4 = (shtmi2_raw.eCount4);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("20", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("20", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 04)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount4), m_kia_mko_struct->st_shtmi2_mf.eCount4, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount5 = (shtmi2_raw.eCount5);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("21", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("21", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 05)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount5), m_kia_mko_struct->st_shtmi2_mf.eCount5, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount6 = (shtmi2_raw.eCount6);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("22", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("22", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 06, 07)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount6), m_kia_mko_struct->st_shtmi2_mf.eCount6, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount7 = (shtmi2_raw.eCount7);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 08, 0A)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount7), m_kia_mko_struct->st_shtmi2_mf.eCount7, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount8 = (shtmi2_raw.eCount8);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("24", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("24", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 09, 0B)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount8), m_kia_mko_struct->st_shtmi2_mf.eCount8, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount9 = (shtmi2_raw.eCount9);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("25", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("25", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 0C)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount9), m_kia_mko_struct->st_shtmi2_mf.eCount9, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount10 = (shtmi2_raw.eCount10);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("26", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("26", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 0D)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount10), m_kia_mko_struct->st_shtmi2_mf.eCount10, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount11 = shtmi2_raw.eCount11;
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("27[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("27[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код XE)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount11), m_kia_mko_struct->st_shtmi2_mf.eCount11, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount12 = (shtmi2_raw.eCount12);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("27[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("27[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код XF)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount12), m_kia_mko_struct->st_shtmi2_mf.eCount12, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount13 = (shtmi2_raw.eCount13);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("28[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("28[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 81, 82)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount13), m_kia_mko_struct->st_shtmi2_mf.eCount13, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount14 = (shtmi2_raw.eCount14);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("28[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("28[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик статуса St2 (код 83, 84, 86)");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount14), m_kia_mko_struct->st_shtmi2_mf.eCount14, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount15 = (shtmi2_raw.eCount15);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("29[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("29[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик сбоев внутренней памяти");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount15), m_kia_mko_struct->st_shtmi2_mf.eCount15, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount16 = (shtmi2_raw.eCount16);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("29[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("29[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик сбоев внешней памяти");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount16), m_kia_mko_struct->st_shtmi2_mf.eCount16, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount17 = (shtmi2_raw.eCount17);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("30", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("30", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик ошибок регистров датчика изображений");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount17), m_kia_mko_struct->st_shtmi2_mf.eCount17, 0, 65535));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount18 = (shtmi2_raw.eCount18);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("31[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("31[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик записей протокола событий");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount18), m_kia_mko_struct->st_shtmi2_mf.eCount18, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.eCount19 = (shtmi2_raw.eCount19);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("31[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("31[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Счетчик горячих рестартов");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.eCount19), m_kia_mko_struct->st_shtmi2_mf.eCount19, 0, 255));
 
     m_kia_mko_struct->st_shtmi2_mf.cs = (shtmi2_raw.cs);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Контрольная сумма");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_shtmi2_mf.cs), m_kia_mko_struct->st_shtmi2_mf.cs, 0, 2e31));
 
     auto calc_cs = calculate_cs(dataWord);
-    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + " ");
     m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data.push_back(std::make_tuple(QString::number(calc_cs), calc_cs, 0, 2e31));
 
@@ -1746,148 +1746,148 @@ void Pio_bokzmf::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord,
     MSHIORRaw_MF mshiorRaw;
     memcpy(&mshiorRaw,&dataWord,sizeof(mshiorRaw));
     m_kia_mko_struct->st_mshior_mf.KC1 = mshiorRaw.KC1;
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Код состояния 1 (Status1)");
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior_mf.KC1, 16), 4, '0'), m_kia_mko_struct->st_mshior_mf.KC1, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_mshior_mf.KC2 = mshiorRaw.KC2;
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("2", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("2", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Код состояния 2 (Status2)");
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior_mf.KC2, 16), 4, '0'), m_kia_mko_struct->st_mshior_mf.KC2, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_mshior_mf.T = swapHex(mshiorRaw.T);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.T) + " (" + QString::number((int)(bshv - m_kia_mko_struct->st_mshior_mf.T)) +  ")", m_kia_mko_struct->st_mshior_mf.T, 0, 2e30));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
 
     m_kia_mko_struct->st_mshior_mf.Tms = (mshiorRaw.Tms);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Tms), m_kia_mko_struct->st_mshior_mf.Tms, 0, 1000));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
 
     m_kia_mko_struct->st_mshior_mf.Qo0 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo0));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo0,'f',4), m_kia_mko_struct->st_mshior_mf.Qo0, 0, 1));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("6,7", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("6,7", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo0");
 
     m_kia_mko_struct->st_mshior_mf.Qo1 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo1,'f',4), m_kia_mko_struct->st_mshior_mf.Qo1, -1, 1));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("8,9", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("8,9", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo1");
 
     m_kia_mko_struct->st_mshior_mf.Qo2 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo2));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo2,'f',4), m_kia_mko_struct->st_mshior_mf.Qo2, -1, 1));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("10,11", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("10,11", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo2");
 
     m_kia_mko_struct->st_mshior_mf.Qo3 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo3));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo3,'f',4), m_kia_mko_struct->st_mshior_mf.Qo3, -1, 1));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("12,13", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("12,13", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo3");
 
     m_kia_mko_struct->st_mshior_mf.wox = helpers::uint32_to_float(swapHex(mshiorRaw.wox)) * M_PI * (pow(2, -5));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.wox,'f',4), m_kia_mko_struct->st_mshior_mf.wox, -0.1, 0.1));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("14,15", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("14,15", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Угловая скорость по оптическим измерениям, Wox");
 
     m_kia_mko_struct->st_mshior_mf.woy = helpers::uint32_to_float(swapHex(mshiorRaw.woy)) * M_PI * (pow(2, -5));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("16,17", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("16,17", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Угловая скорость по оптическим измерениям, Woy");
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.woy,'f',4), m_kia_mko_struct->st_mshior_mf.woy, -0.1, 0.1));
 
     m_kia_mko_struct->st_mshior_mf.woz = helpers::uint32_to_float(swapHex(mshiorRaw.woz)) * M_PI * (pow(2, -5));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.woz,'f',4), m_kia_mko_struct->st_mshior_mf.woz, -0.1, 0.1));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("18,19", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("18,19", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Угловая скорость по оптическим измерениям, Woz");
 
     m_kia_mko_struct->st_mshior_mf.Tcmv = (mshiorRaw.Tcmv);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Tcmv), m_kia_mko_struct->st_mshior_mf.Tcmv, -75, 150));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("20", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("20", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Температура КМОП-матрицы");
 
     m_kia_mko_struct->st_mshior_mf.NumFrag = (mshiorRaw.NumFrag);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.NumFrag), m_kia_mko_struct->st_mshior_mf.NumFrag, 0, 30));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("21[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("21[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Число выбранных фрагментов");
 
     m_kia_mko_struct->st_mshior_mf.NumLoc_0 = (mshiorRaw.NumLoc_0);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.NumLoc_0), m_kia_mko_struct->st_mshior_mf.NumLoc_0, 0, 200));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("21[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("21[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Число локализованных объектов");
 
     m_kia_mko_struct->st_mshior_mf.NumDet = (mshiorRaw.NumDet);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.NumDet), m_kia_mko_struct->st_mshior_mf.NumDet, 0, 30));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("22[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("22[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Число распознанных объектов");
 
     m_kia_mko_struct->st_mshior_mf.LightMv5 = (mshiorRaw.LightMv5);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.LightMv5), m_kia_mko_struct->st_mshior_mf.LightMv5, 0, 12750));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("22[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("22[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Средняя яркость 5 звездной величины");
 
     m_kia_mko_struct->st_mshior_mf.Mean = (mshiorRaw.Mean);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Mean), m_kia_mko_struct->st_mshior_mf.Mean, 0, 4095));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("23", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Среднее сигнала");
 
     m_kia_mko_struct->st_mshior_mf.Sigma = (mshiorRaw.Sigma);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Sigma), m_kia_mko_struct->st_mshior_mf.Sigma, 0, 4095));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("24", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("24", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "СКО сигнала");
 
     m_kia_mko_struct->st_mshior_mf.ThMax = (mshiorRaw.ThMax);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.ThMax), m_kia_mko_struct->st_mshior_mf.ThMax, 0, 4095));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("25", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("25", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Максимальный порог на исходных фрагментах");
 
     m_kia_mko_struct->st_mshior_mf.m_cur = (mshiorRaw.m_cur);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.m_cur), m_kia_mko_struct->st_mshior_mf.m_cur, 0, 05));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("26", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("26", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "СКО решения системы");
 
     m_kia_mko_struct->st_mshior_mf.P = (mshiorRaw.P);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.P), m_kia_mko_struct->st_mshior_mf.P, 0, 100));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("27", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("27", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Процент заполнения поля зрения при калибровке");
 
     m_kia_mko_struct->st_mshior_mf.dpf_state = (mshiorRaw.dpf_state);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.dpf_state), m_kia_mko_struct->st_mshior_mf.dpf_state, -m_max_double_value, m_max_double_value));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("28", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("28", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Код состояния дефектных пикселей");
 
     m_kia_mko_struct->st_mshior_mf.dpf_total = (mshiorRaw.dpf_total);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.dpf_total), m_kia_mko_struct->st_mshior_mf.dpf_total, 0, 255));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("29[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("29[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Количество отобранных дефектных пикселей");
 
     m_kia_mko_struct->st_mshior_mf.dpf_hotpixels = (mshiorRaw.dpf_hotpixels);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.dpf_hotpixels), m_kia_mko_struct->st_mshior_mf.dpf_hotpixels, 0, 130560));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("29[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("29[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Количество подтвержденных дефектных пикселей");
 
     m_kia_mko_struct->st_mshior_mf.dpf_updated = (mshiorRaw.dpf_updated);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.dpf_updated), m_kia_mko_struct->st_mshior_mf.dpf_updated, 0, 6400));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("30[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("30[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Количество обновленных пикселей");
 
     m_kia_mko_struct->st_mshior_mf.dpf_rejected = (mshiorRaw.dpf_rejected);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.dpf_rejected), m_kia_mko_struct->st_mshior_mf.dpf_rejected, 0, 1023));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("30[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("30[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Количество отклонных пикселей");
 
     m_kia_mko_struct->st_mshior_mf.dpf_threshold = (mshiorRaw.dpf_threshold);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.dpf_threshold), m_kia_mko_struct->st_mshior_mf.dpf_threshold, 0, 255));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("31[7:0]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("31[7:0]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Порог накопления дефектных пикселей");
 
     m_kia_mko_struct->st_mshior_mf.dpf_applied = (mshiorRaw.dpf_applied);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.dpf_applied), m_kia_mko_struct->st_mshior_mf.dpf_applied, 0, 1023));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("31[15:8]", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("31[15:8]", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Количество скорректированных пикселей");
 
     m_kia_mko_struct->st_mshior_mf.ser_num = (mshiorRaw.ser_num);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.ser_num), m_kia_mko_struct->st_mshior_mf.ser_num, -m_max_double_value, m_max_double_value));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc->shift_for_numbers)
+    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("32", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Заводской номер");
 
     m_kia_settings->m_data_for_db->m_norm_qaor = sqrt(pow(m_kia_mko_struct->st_mshior_mf.Qo0,2) + pow(m_kia_mko_struct->st_mshior_mf.Qo1,2) + pow(m_kia_mko_struct->st_mshior_mf.Qo2, 2)  + pow(m_kia_mko_struct->st_mshior_mf.Qo3,2));

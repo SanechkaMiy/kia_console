@@ -718,6 +718,115 @@ void ParseToDB::send_to_frames(uint16_t &num_bokz, int32_t &bshv)
     m_kia_db[TYPE_DATA]->insert_data(data_into_frames, "prepare_insert_into_frames");
 }
 
+void ParseToDB::send_data_to_db_for_mpi(quint16 num_bokz, qint32 bshv)
+{
+    sendDataIntoMPI(num_bokz, bshv);
+}
+
+void ParseToDB::send_data_to_db_for_bokz(qint16 type_func, quint16 num_bokz, qint32 bshv, Kia_mko_struct kia_mko_struct)
+{
+    switch(m_kia_settings->m_type_bokz)
+    {
+    case TYPE_BOKZ_BOKZM60:
+        m_func_to_send_data_bokzm60[type_func](num_bokz, bshv, kia_mko_struct);
+        break;
+    case TYPE_BOKZ_BOKZMF:
+        m_func_to_send_data_bokzmf[type_func](num_bokz, bshv, kia_mko_struct);
+        break;
+    }
+
+
+}
+
+void ParseToDB::send_data_to_db_for_bi(qint16 type_func, quint16 num_bi)
+{
+    m_func_to_send_bi[type_func](num_bi);
+}
+
+void ParseToDB::send_data_to_db_for_frames(quint16 num_bokz, qint32 bshv)
+{
+    send_to_frames(num_bokz, bshv);
+}
+
+void ParseToDB::create_list_func_to_send_bokz()
+{
+    auto func_shtmi1_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoSHTMI1_M60(num_bokz, bshv, kia_mko_struct.st_shtmi1);
+    };
+    m_func_to_send_data_bokzm60.push_back(func_shtmi1_m60);
+
+    auto func_shtmi2_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoSHTMI2_M60(num_bokz, bshv, kia_mko_struct.st_shtmi2);
+    };
+    m_func_to_send_data_bokzm60.push_back(func_shtmi2_m60);
+
+    auto func_mshior_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoMSHIOR_M60(num_bokz, bshv, kia_mko_struct.st_mshior);
+    };
+    m_func_to_send_data_bokzm60.push_back(func_mshior_m60);
+
+    auto func_dtmi_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoDTMI_M60(num_bokz, bshv, kia_mko_struct.st_dtmi);
+    };
+    m_func_to_send_data_bokzm60.push_back(func_dtmi_m60);
+
+    auto func_dtmi_loc_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoDTMILOC_M60(num_bokz, bshv, kia_mko_struct.st_dtmi_loc);
+    };
+    m_func_to_send_data_bokzm60.push_back(func_dtmi_loc_m60);
+
+//-------------- mf
+    auto func_shtmi1_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoSHTMI1_MF(num_bokz, bshv, kia_mko_struct.st_shtmi1_mf);
+    };
+    m_func_to_send_data_bokzmf.push_back(func_shtmi1_MF);
+
+    auto func_shtmi2_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoSHTMI2_MF(num_bokz, bshv, kia_mko_struct.st_shtmi2_mf);
+    };
+    m_func_to_send_data_bokzmf.push_back(func_shtmi2_MF);
+
+    auto func_mshior_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoMSHIOR_MF(num_bokz, bshv, kia_mko_struct.st_mshior_mf);
+    };
+    m_func_to_send_data_bokzmf.push_back(func_mshior_MF);
+
+    auto func_dtmi_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoDTMI_MF(num_bokz, bshv, kia_mko_struct.st_dtmi_mf);
+    };
+    m_func_to_send_data_bokzmf.push_back(func_dtmi_MF);
+
+    auto func_dtmi_mloc_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
+    {
+        sendDataIntoMLOC_MF(num_bokz, bshv, kia_mko_struct.st_mloc_mf);
+    };
+    m_func_to_send_data_bokzmf.push_back(func_dtmi_mloc_MF);
+}
+
+void ParseToDB::create_list_func_to_send_bi()
+{
+    auto func_shtmi1_m60 = [this](uint16_t num_bi)
+    {
+        send_to_bkpik(num_bi);
+    };
+    m_func_to_send_bi.push_back(func_shtmi1_m60);
+
+    auto func_shtmi2_m60 = [this](uint16_t num_bi)
+    {
+        send_to_bi(num_bi);
+    };
+    m_func_to_send_bi.push_back(func_shtmi2_m60);
+}
+
 
 
 

@@ -3,25 +3,23 @@
 #include <QtCore>
 #include <iostream>
 #include "bokz.h"
-#include "timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "mainStruct.h"
-#include "parsetodb.h"
 #include "kia_matrox.h"
-#include "kia_bkpik.h"
 #include "kia_synch_timer.h"
-#include "kia_biu.h"
 #include "simpletimer.h"
 #include "kia_ftdi.h"
-#include "kia_bi.h"
 #include "Kia_mko_struct.h"
-#include "Kia_modules/kia_db.h"
 #include "Kia_pio/pio_bokzm60.h"
+
+
 class BokzM60 : public Bokz
 {
     Q_OBJECT
 public:
+
+
     enum TYPE_CHPN
     {
         TP_TEXP = 0,
@@ -47,9 +45,7 @@ public:
         CHPRZ = 9,
     };
     //using kia_info_p = shared_ptr <KiaInformationBot>;
-    BokzM60(uint16_t num_bokz,
-            std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db, shared_ptr <Kia_mpi> kia_mpi,
-            shared_ptr<Kia_protocol> kia_protocol,
+    BokzM60(uint16_t num_bokz, shared_ptr <Kia_mpi> kia_mpi,
             std::shared_ptr<Kia_settings> kia_settings, shared_ptr<Kia_ftdi> kia_ftdi);
     ~BokzM60();
     void set_bokz_settings() override;
@@ -90,9 +86,8 @@ public:
     uint16_t unblock_ou( uint16_t parametr = EP_DOALL) override;
     uint16_t do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t parametr = EP_DOALL) override;
 
-signals:
-    void send_to_client(quint16, QStringList) override;
-
+    void save_to_specific_protocol(QString str_to_protocol, uint16_t num_mpi_command,
+                                   uint16_t type_window, uint16_t type_protocol, uint16_t parametr) override;
 private:
     uint16_t set_epsilon(float command, uint16_t parametr = EP_DOALL);
     uint16_t get_epsilon(uint16_t parametr = EP_DOALL);
@@ -115,7 +110,6 @@ private:
     void send_mpi_data_to_db();
     void preset_before_exchange();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
-    void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     template <typename T>
     void calc_frame_param(std::vector<T> frame_buffer);
     void count_of_fails(uint16_t parametr = EP_DOALL);
@@ -124,11 +118,8 @@ private:
     void execute_exchange();
     std::function<void()> m_set_control_word;
     void set_data_to_device_protocol(QString &str_protocol);
-    std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
-    shared_ptr <ParseToDB> m_parser_db;
     std::vector<shared_ptr<Kia_bi>> m_kia_bi;
     std::shared_ptr<Kia_mpi> m_kia_mpi;
-    shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
     shared_ptr<Kia_ftdi> m_kia_ftdi;
     uint16_t m_count_dtmi_dtmi_loc;

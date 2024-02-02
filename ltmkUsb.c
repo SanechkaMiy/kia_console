@@ -27,8 +27,8 @@ int tmkUsbCnt = 0;
 int tmkCnt = 0;
 int tmkCurNumber = -1;
 char tmkUsbNumMap[MAX_TMKUSB_NUMBER+1];
-HANDLE _ahVTMK4VxDusb[MAX_TMKUSB_NUMBER+1];
-HANDLE _hVTMK4VxD = 0;
+HANDLE_TMK _ahVTMK4VxDusb[MAX_TMKUSB_NUMBER+1];
+HANDLE_TMK _hVTMK4VxD = 0;
 
 /*****************Functions***************************/
 

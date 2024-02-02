@@ -2,7 +2,6 @@
 #define KIA_BIU_H
 #include "BiLibNE.h"
 #include "mainStruct.h"
-#include "kia_protocol.h"
 #include "parsetodb.h"
 #include <condition_variable>
 #include <dlfcn.h>
@@ -10,16 +9,12 @@
 #include "Kia_modules/kia_db.h"
 
 
-
-
 void wait_1s();
 class Kia_biu : public Kia_bi
 {
     Q_OBJECT
 public:
-    Kia_biu(uint16_t num_bi,
-            std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
-            shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
+    Kia_biu(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_biu();
 
     uint16_t on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch = 0, uint16_t parametr = EP_DOALL) override;
@@ -43,13 +38,14 @@ public:
     void set_relay_polarity(uint16_t relay_command) override;
     void set_relay_command_pulse_time(uint16_t relay_command) override;
 
-     void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time) override;
-signals:
-    void send_to_client(quint16, QStringList);
+    void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time) override;
+
+    void create_bi_telemetry_list() override;
 private:
 
     //void (Kia_biu::*m_func)();
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL);
+    void save_to_specific_protocol(uint16_t num_bokz, QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr);
     void wait_1s_biu_0();
     void wait_1s_biu_1();
     void wait_1s_biu_2();
@@ -74,9 +70,6 @@ private:
     void set_sec_mark_status(uint16_t &num_ch, uint16_t sec_mark_status);
     void get_master_state();
     void preset_telemetry(uint16_t num_ch, struct DevTelemetry* dev_tel);
-    shared_ptr<ParseToDB> m_parser_db;
-    std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
-    shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
     int16_t m_device_id = 0;
     uint16_t m_count_dev = 0;

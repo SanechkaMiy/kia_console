@@ -1,12 +1,10 @@
 #include "kia_synch_timer.h"
 
 Kia_synch_timer::Kia_synch_timer(uint16_t num_timer, shared_ptr<Timer> timer, shared_ptr<Kia_bi> kia_bi,
-                                 std::shared_ptr<Kia_settings> kia_settings,
-                                 shared_ptr<Kia_protocol> kia_protocol) :
+                                 std::shared_ptr<Kia_settings> kia_settings) :
     m_timer(timer),
     m_kia_bi(kia_bi),
-    m_kia_settings(kia_settings),
-    m_kia_protocol(kia_protocol)
+    m_kia_settings(kia_settings)
 {
     m_num_timer = num_timer;
     start_timer();

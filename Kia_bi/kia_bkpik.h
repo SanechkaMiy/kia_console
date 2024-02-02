@@ -8,23 +8,20 @@
 #include <atomic>
 #include "simpletimer.h"
 #include <condition_variable>
-#include "kia_protocol.h"
 #include "mainStruct.h"
 #include <mutex>
-#include "parsetodb.h"
 #include <array>
 #include <QObject>
 #include "kia_bi.h"
 #include <filesystem>
-#include "Kia_modules/kia_db.h"
+#include "Kia_modules/kia_help_functions.h"
 namespace fs = std::filesystem;
 
 class Kia_bkpik : public Kia_bi
 {
     Q_OBJECT
 public:
-    Kia_bkpik(uint16_t num_bi, std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
-              shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
+    Kia_bkpik(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_bkpik();
     std::condition_variable& getEvent();
     int64_t inSleep();
@@ -54,14 +51,11 @@ public:
 
     void set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time) override;
 
-signals:
-    void send_to_client(quint16, QStringList);
+    void create_bi_telemetry_list() override;
+
 private:
     void set_bkpik_settings();
     std::vector<std::string> m_list_com_port;
-    std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
-    shared_ptr<ParseToDB> m_parser_db;
-    shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::shared_ptr <mn::CppLinuxSerial::SerialPort> m_serial_port;
     std::condition_variable m_cv;

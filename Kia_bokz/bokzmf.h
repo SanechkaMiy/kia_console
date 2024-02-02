@@ -2,13 +2,9 @@
 #define BOKZMF_H
 #include "bokz.h"
 #include "mainStruct.h"
-#include "kia_protocol.h"
 #include "kia_synch_timer.h"
 #include "Kia_modules/kia_mpi.h"
-#include "Kia_modules/kia_db.h"
 #include "Kia_pio/pio_bokzmf.h"
-#include "parsetodb.h"
-#include "timer.h"
 class Bokzmf : public Bokz
 {
     Q_OBJECT
@@ -50,10 +46,7 @@ public:
 
     constexpr static uint16_t kd_size = 14;
 
-    Bokzmf(uint16_t num_bokz,
-           std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
-           shared_ptr <Kia_mpi> kia_mpi,
-           std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
+    Bokzmf(uint16_t num_bokz, shared_ptr <Kia_mpi> kia_mpi, std::shared_ptr<Kia_settings> kia_settings);
     void set_bokz_settings() override;
 
     uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
@@ -91,16 +84,15 @@ public:
     uint16_t block_ou( uint16_t parametr = EP_DOALL) override;
     uint16_t unblock_ou( uint16_t parametr = EP_DOALL) override;
     uint16_t do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t parametr = EP_DOALL) override;
-signals:
-    void send_to_client(quint16, QStringList) override;
+
+    void save_to_specific_protocol(QString str_to_protocol, uint16_t num_mpi_command,
+                                   uint16_t type_window, uint16_t type_protocol, uint16_t parametr) override;
+
 private:
     uint16_t command_upn(uint16_t parametr = EP_DOALL);
     uint16_t command_chpn(uint16_t parametr = EP_DOALL);
-    std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     std::shared_ptr<Kia_mpi> m_kia_mpi;
-    std::shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
-    shared_ptr <ParseToDB> m_parser_db;
     std::function<void()> m_set_control_word;
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
@@ -111,7 +103,6 @@ private:
     void execute_exchange();
     void send_mpi_data_to_db();
     void save_to_protocol(QString str_to_protocol,  uint16_t parametr = EP_DOALL);
-    void save_to_specific_protocol(QString str_to_protocol, uint16_t type_window, uint16_t type_protocol, uint16_t parametr = EP_DOALL);
     void set_data_to_device_protocol(QString &str_protocol);
     void preset_before_exchange();
     void send_status_info();

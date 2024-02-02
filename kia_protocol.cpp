@@ -14,8 +14,8 @@ Kia_protocol::~Kia_protocol()
 
 void Kia_protocol::create_dir_for_protocols()
 {
-    m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol = KiaS_SUCCESS;
-    m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols = helpers::current_hours();
+    m_stop_do_save_protocol = KiaS_SUCCESS;
+    m_start_create_dir_for_protocols = helpers::current_hours();
 
     QString name_dir = "exp_" + QString::fromStdString(helpers::currentDateTime());
     QDir dir("/home/alexander/Project/kia_console/protocols/");
@@ -36,8 +36,8 @@ void Kia_protocol::create_dir_for_protocols()
             else
                 name_protocol = QString::number(count_bokz);
             full_path_and_name = path_to_protocol[type_protocol] + " " + name_protocol + ".txt";
-            m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol].push_back(new QFile(full_path_and_name));
-            m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][count_bokz]->open(QIODevice::Append | QIODevice::Text);
+            m_file_for_protocol[type_protocol].push_back(new QFile(full_path_and_name));
+            m_file_for_protocol[type_protocol][count_bokz]->open(QIODevice::Append | QIODevice::Text);
         }
     }
     //create_dir_for_sql_protocols();
@@ -49,8 +49,8 @@ void Kia_protocol::create_dir_for_sql_protocols()
     m_kia_settings->m_data_to_protocols->m_is_sql_protocol_used = KiaS_SUCCESS;
     QDir dir_sql("/home/alexander/Project/kia_console/sql_protocols/");
     QString full_path_and_name_sql = "/home/alexander/Project/kia_console/sql_protocols/sql_protocol_" + QString::fromStdString(helpers::currentDateTime()) + ".txt";
-    m_kia_settings->m_data_to_protocols->m_file_for_sql_protocol = new QFile(full_path_and_name_sql);
-    m_kia_settings->m_data_to_protocols->m_file_for_sql_protocol->open(QIODevice::Append | QIODevice::Text);
+    m_file_for_sql_protocol = new QFile(full_path_and_name_sql);
+    m_file_for_sql_protocol->open(QIODevice::Append | QIODevice::Text);
 
 }
 
@@ -61,9 +61,8 @@ void Kia_protocol::create_dir_for_frame_protocols()
     QDir dir_frames("/home/alexander/Project/kia_console/frames/");
 
     m_full_path = "/home/alexander/Project/kia_console/frames/" + name_dir;
-        dir_frames.mkdir(m_full_path);
-    //m_kia_settings->m_data_to_protocols->m_file_for_frames_protocol = new QFile(m_full_path);
-    //m_kia_settings->m_data_to_protocols->m_file_for_frames_protocol->open(QIODevice::Append | QIODevice::Text);
+    dir_frames.mkdir(m_full_path);
+
 }
 
 void Kia_protocol::close_dir_for_protocols()
@@ -72,38 +71,38 @@ void Kia_protocol::close_dir_for_protocols()
     {
         for (uint16_t count_bokz = 0; count_bokz < m_kia_settings->m_count_bokz + 1; ++count_bokz)
         {
-            m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][count_bokz]->close();
+            m_file_for_protocol[type_protocol][count_bokz]->close();
         }
-        m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol].clear();
+        m_file_for_protocol[type_protocol].clear();
     }
     //close_dir_for_sql_protocols();
 }
 
 void Kia_protocol::close_dir_for_sql_protocols()
 {
-    m_kia_settings->m_data_to_protocols->m_file_for_sql_protocol->close();
+    m_file_for_sql_protocol->close();
 }
 
 
 void Kia_protocol::save_to_protocols(uint16_t &num_bokz, const QString & data_to_out, const uint16_t &type_protocol)
 {
     uint16_t common_protocol = 0;
-    if (m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol == KiaS_SUCCESS)
+    if (m_stop_do_save_protocol == KiaS_SUCCESS)
     {
         if (m_kia_settings->m_data_to_protocols->m_is_protocol_used[type_protocol] == KiaS_SUCCESS)
         {
             if (!m_kia_settings->m_data_to_protocols->m_save_binary)
             {
-                QTextStream stream(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][num_bokz + 1]);
+                QTextStream stream(m_file_for_protocol[type_protocol][num_bokz + 1]);
                 stream << data_to_out;
-                QTextStream stream_common(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][common_protocol]);
+                QTextStream stream_common(m_file_for_protocol[type_protocol][common_protocol]);
                 stream_common << data_to_out;
             }
             else
             {
-                QDataStream stream(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][num_bokz + 1]);
+                QDataStream stream(m_file_for_protocol[type_protocol][num_bokz + 1]);
                 stream << data_to_out;
-                QDataStream stream_common(m_kia_settings->m_data_to_protocols->m_file_for_protocol[type_protocol][common_protocol]);
+                QDataStream stream_common(m_file_for_protocol[type_protocol][common_protocol]);
                 stream_common << data_to_out;
             }
         }
@@ -112,32 +111,31 @@ void Kia_protocol::save_to_protocols(uint16_t &num_bokz, const QString & data_to
 
 void Kia_protocol::save_to_sql_protocols(const QString &data_to_out)
 {
-    if (m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol == KiaS_SUCCESS)
+    if (m_stop_do_save_protocol == KiaS_SUCCESS)
     {
         if (m_kia_settings->m_data_to_protocols->m_is_sql_protocol_used == KiaS_SUCCESS)
         {
-            QTextStream stream(m_kia_settings->m_data_to_protocols->m_file_for_sql_protocol);
+            QTextStream stream(m_file_for_sql_protocol);
             stream << data_to_out;
         }
     }
 }
 
-void Kia_protocol::save_to_frames_protocols(uint16_t &num_bokz, int32_t& bshv, void* lvp_buf, uint32_t buf_size)
-{    
+void Kia_protocol::save_to_frames_protocols(const Kia_frame_parametrs& kia_frame_parametrs)
+{
     reset_protocol();
-    if (m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol == KiaS_SUCCESS)
+    if (m_stop_do_save_protocol == KiaS_SUCCESS)
     {
         //auto full_path = m_full_path + "/frame_num_bokz_" + QString::number(num_bokz) + "_" + QString::number(bshv) + ".mtx";
         //FILE* file = fopen(full_path.toStdString().c_str(), "wb");
-        std::cout << sizeof(lvp_buf) << " " << buf_size << std::endl;
-        QString full_path_and_name = m_full_path + "/frame_num_bokz_" + QString::number(num_bokz) + "_" + QString::number(bshv) + ".mtx";
+        QString full_path_and_name = m_full_path + "/frame_num_bokz_" + QString::number(kia_frame_parametrs.num_bokz) + "_" + QString::number(kia_frame_parametrs.bshv) + ".mtx";
         if (m_kia_settings->m_data_to_protocols->m_is_frames_protocol_used == KiaS_SUCCESS)
         {
             //fwrite(lvp_buf, buf_size, 1, file);
             auto file_frame_protocol  = new QFile(full_path_and_name);
             file_frame_protocol->open(QIODevice::Append | QIODevice::Text);
             QDataStream stream_common(file_frame_protocol);
-            stream_common.writeBytes(static_cast<char*>(lvp_buf), buf_size);
+            stream_common.writeBytes(static_cast<char*>(kia_frame_parametrs.lvp_buf), kia_frame_parametrs.buf_size);
             file_frame_protocol->close();
             //stream_common << lvp_buf;
         }
@@ -161,9 +159,9 @@ void Kia_protocol::preset_before_save_and_out(uint16_t& num_bokz, QString data_t
 
 void Kia_protocol::reset_protocol()
 {
-    if (m_kia_settings->m_data_to_protocols->m_start_create_dir_for_protocols  != helpers::current_hours())
+    if (m_start_create_dir_for_protocols  != helpers::current_hours())
     {
-        m_kia_settings->m_data_to_protocols->m_stop_do_save_protocol = KiaS_FAIL;
+        m_stop_do_save_protocol = KiaS_FAIL;
         reset_dir_for_protocols();
     }
 }
@@ -175,9 +173,7 @@ void Kia_protocol::save_and_out_to_dev_protocols(uint16_t &num_bokz, const QStri
     list_dev_protocol.push_back(QString::number(num_bokz));
     list_dev_protocol.push_back(data_to_out);
 
-
     emit send_to_client(SET_WINDOW_INFO_DEVICE_PROTOCOL, list_dev_protocol);
-
 
     save_to_protocols(num_bokz, data_to_out, SP_DO_DEV);
 
@@ -197,3 +193,19 @@ void Kia_protocol::reset_dir_for_protocols()
     close_dir_for_protocols();
     create_dir_for_protocols();
 }
+
+void Kia_protocol::preset_before_save_and_out(Kia_protocol_parametrs kia_protocol_parametrs)
+{
+    reset_protocol();
+    if (!kia_protocol_parametrs.data_to_out.isEmpty())
+    {
+        QStringList list_protocol;
+        if (kia_protocol_parametrs.num_mpi_command != -1)
+            list_protocol.push_back(QString::number(kia_protocol_parametrs.num_mpi_command));
+        list_protocol.push_back(QString::number(kia_protocol_parametrs.num_bokz));
+        list_protocol.push_back(kia_protocol_parametrs.data_to_out);
+        emit send_to_client(kia_protocol_parametrs.type_window, list_protocol);
+        save_to_protocols(kia_protocol_parametrs.num_bokz, kia_protocol_parametrs.data_to_out, kia_protocol_parametrs.type_protocol);
+    }
+}
+

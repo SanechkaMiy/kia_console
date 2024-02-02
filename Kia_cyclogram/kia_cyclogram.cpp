@@ -21,3 +21,8 @@ void Kia_cyclogram::post_exchange(uint16_t check_value, QString& is_success)
         is_success = " - ОШИБКА!";
     }
 }
+
+void Kia_cyclogram::preset_before_exchange(QString& is_error)
+{
+    is_error = " - УСПЕХ!";
+}

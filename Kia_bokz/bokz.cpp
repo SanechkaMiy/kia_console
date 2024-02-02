@@ -4,7 +4,7 @@ Bokz::Bokz()
 
 }
 
-void Bokz::parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_data> kia_data, int32_t bshv, uint16_t num_bokz)
+Kia_protocol_parametrs Bokz::parse_mko_protocols(std::shared_ptr<Kia_data> kia_data, int32_t bshv, uint16_t num_bokz)
 {
     uint16_t shift_for_numbers = -8;
     uint16_t shift_description = -50;
@@ -101,7 +101,13 @@ void Bokz::parse_mko_protocols(std::shared_ptr<Kia_protocol> kia_protocol, std::
                                         .arg(QString::number(kia_data->m_data_mpi->m_wResult)), -11)
                                    .arg(error));
     }
-    kia_protocol->save_and_out_to_mko_protocols(num_bokz, str_mpi_protocol);
+
+    Kia_protocol_parametrs kia_protocol_parametrs;
+    kia_protocol_parametrs.num_bokz = num_bokz;
+    kia_protocol_parametrs.data_to_out = str_mpi_protocol;
+    kia_protocol_parametrs.type_window = SET_WINDOW_INFO_MPI;
+    kia_protocol_parametrs.type_protocol = SP_DO_MKO;
+    return kia_protocol_parametrs;
 }
 
 QString Bokz::set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double> > list_data)

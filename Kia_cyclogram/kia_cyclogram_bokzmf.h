@@ -1,8 +1,6 @@
 #ifndef KIA_CYCLOGRAM_BOKZMF_H
 #define KIA_CYCLOGRAM_BOKZMF_H
-#include "Kia_bokz/bokz.h"
 #include "Kia_bokz/bokzmf.h"
-#include "kia_protocol.h"
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
 #include "kia_cyclogram.h"
@@ -51,8 +49,7 @@ public:
         WAIT_AFTER_OFF_POWER = 6,
     };
 
-    Kia_cyclogram_bokzmf(std::shared_ptr<Kia_timers> kia_timers, std::vector<std::shared_ptr<Bokz> > bokz,
-                         shared_ptr<Kia_protocol> kia_protocol, std::shared_ptr<Kia_settings> kia_settings);
+    Kia_cyclogram_bokzmf(std::shared_ptr<Kia_timers> kia_timers, std::vector<std::shared_ptr<Bokz> > bokz, std::shared_ptr<Kia_settings> kia_settings);
 
     uint16_t cyclogram_state_on(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
     uint16_t cyclogram_state_off(uint16_t &num_bokz, uint16_t parametr = EP_DOALL) override;
@@ -86,7 +83,6 @@ private:
     void wait_for_bi_takt(uint16_t& num_bokz) override;
     void wait_some_time_for_one_launch(const uint16_t& wait_s) override;
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
-    void preset_before_exchange(uint16_t num_bokz);
     void create_list_power_cyclograms();
     void create_func_type_do_oo();
     void create_mpi_commands();
@@ -101,7 +97,6 @@ private:
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi);
     std::shared_ptr<Kia_timers> m_kia_timers;
     std::vector<std::shared_ptr<Bokz>> m_bokz;
-    shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::vector<std::function<uint16_t(uint16_t, uint16_t, uint16_t)>> m_type_do_oo;
 };

@@ -15,7 +15,7 @@
 #define TMK_DATA unsigned short
 #define TMK_DATA_RET unsigned short
 #define WORD unsigned short
-#define HANDLE int
+#define HANDLE_TMK int
 #define DWORD unsigned int
 #define ULONG unsigned long
 #define BOOL int

@@ -18,6 +18,8 @@
 #include <QFile>
 #include <functional>
 #include "kia_bi.h"
+#include "kia_biu.h"
+#include "kia_bkpik.h"
 #include "bokz.h"
 #include "bokzm60.h"
 #include "bokzmf.h"
@@ -54,6 +56,7 @@ private:
     void set_kia_settings();
     void close_db_connection();
     bool check_used_bokz(uint16_t type_command, std::function<void(uint16_t, uint16_t)> start_exchange, uint16_t parametr = EP_DOALL);
+    void send_bi_telemetry_list();
     void send_kia_initial_settings();
     void send_cyclogram_power_list();
     void send_mpi_list_command();
@@ -68,8 +71,6 @@ private:
     void send_type_bi_to_table_settings();
     void send_info_about_connection();
     QProcess *m_process;
-    bool m_is_con_to_db;
-    bool m_is_con_to_tg;
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::shared_ptr<Kia_load_initial_settings> m_kia_load_initial_settings;
     std::shared_ptr<Kia_db> m_kia_db;
@@ -79,7 +80,8 @@ private:
     shared_ptr<Kia_matrox> m_kia_matrox;
     shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_timers> m_kia_timers;
-    shared_ptr<ParseToDB> m_parseToDB;
+    std::vector<std::shared_ptr<ParseToDB>> m_parse_db_bi;
+    std::vector<std::shared_ptr<ParseToDB>> m_parse_db_bokz;
     shared_ptr<Kia_ftdi> m_kia_ftdi;
     std::vector<std::shared_ptr<Bokz>> m_bokz;
     std::shared_ptr<Kia_cyclogram> m_kia_cyclogram;

@@ -2,8 +2,6 @@
 #define KIA_MPI_H
 
 #include <QObject>
-#include "mainStruct.h"
-#include "kia_protocol.h"
 #include "Kia_modules/kia_help_functions.h"
 extern "C"
 {
@@ -13,7 +11,7 @@ class Kia_mpi : public QObject
 {
     Q_OBJECT
 public:
-    Kia_mpi(std::shared_ptr<Kia_settings> kia_settings);
+    Kia_mpi();
     ~Kia_mpi();
     void init();
     void close();
@@ -24,7 +22,6 @@ signals:
     void send_to_client(quint16, QStringList);
     void changed_lpi();
 private:
-    std::shared_ptr<Kia_settings> m_kia_settings;
     void reset(std::shared_ptr<Kia_data> kia_data);
     array<uint16_t, constants::max_tmk_dev> m_mpi_num;
     uint16_t m_count_chip = 0;

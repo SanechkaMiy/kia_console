@@ -22,25 +22,32 @@ void WorkWithMain::set_kia_settings()
     m_kia_protocol.reset(new Kia_protocol(m_kia_settings));
     m_kia_protocol->create_dir_for_protocols();
 
-    m_kia_db.reset(new Kia_db(m_kia_settings));
+    m_kia_db.reset(new Kia_db());
+    m_kia_db->set_type_bokz_and_type_bi(m_kia_settings->m_type_bokz, m_kia_settings->m_type_bi);
+    m_kia_db->connect_to_db();
     m_kia_settings->m_data_for_db->true_host = m_kia_db->get_mac_address();
     m_kia_settings->m_data_for_db->m_extype_id = "stand";
     m_kia_settings->m_data_for_db->m_description = "Тестовое испытание";
-    m_kia_db->start_experiment();
+    m_kia_db->start_experiment(m_kia_settings->m_data_for_db->m_extype_id, m_kia_settings->m_data_for_db->m_description,
+                               m_kia_settings->m_data_for_db->experiment_id, m_kia_settings->m_data_for_db->true_host);
 
 
-    m_kia_matrox.reset(new Kia_matrox(m_kia_settings));
+    m_kia_matrox.reset(new Kia_matrox());
 
-    m_kia_mpi.reset(new Kia_mpi(m_kia_settings));
+    m_kia_mpi.reset(new Kia_mpi());
 
     connect(m_kia_mpi.get(), SIGNAL(changed_lpi()), this, SLOT(send_data_from_mpi_current_lpi_to_table_settings()));
 
     for (uint16_t num_conn = 0; num_conn < constants::max_count_same_connection; ++num_conn)
     {
-        m_kia_bi_db[num_conn].reset(new Kia_db(m_kia_settings));
+        m_kia_bi_db[num_conn].reset(new Kia_db());
+        m_kia_bi_db[num_conn]->set_type_bokz_and_type_bi(m_kia_settings->m_type_bokz, m_kia_settings->m_type_bi);
+        m_kia_bi_db[num_conn]->connect_to_db();
         m_kia_bi_db[num_conn]->start_commit();
 
-        m_kia_bokz_db[num_conn].reset(new Kia_db(m_kia_settings, m_kia_settings->m_freq_bokz / 5));
+        m_kia_bokz_db[num_conn].reset(new Kia_db(m_kia_settings->m_freq_bokz / 5));
+        m_kia_bokz_db[num_conn]->set_type_bokz_and_type_bi(m_kia_settings->m_type_bokz, m_kia_settings->m_type_bi);
+        m_kia_bokz_db[num_conn]->connect_to_db();
         m_kia_bokz_db[num_conn]->start_commit();
     }
     for (uint16_t ind_bi = 0; ind_bi < m_kia_settings->m_data_for_bi->m_count_bi; ind_bi++)
@@ -49,41 +56,65 @@ void WorkWithMain::set_kia_settings()
         switch(m_kia_settings->m_type_bi)
         {
         case TYPE_BI_BKPIK:
-            m_kia_timers->m_kia_bi.push_back(std::make_shared<Kia_bkpik>(ind_bi, m_kia_bi_db, m_kia_protocol, m_kia_settings));
+            m_kia_timers->m_kia_bi.push_back(std::make_shared<Kia_bkpik>(ind_bi, m_kia_settings));
             break;
         case TYPE_BI_BIU:
-            m_kia_timers->m_kia_bi.push_back(std::make_shared<Kia_biu>(ind_bi, m_kia_bi_db, m_kia_protocol, m_kia_settings));
+            m_kia_timers->m_kia_bi.push_back(std::make_shared<Kia_biu>(ind_bi, m_kia_settings));
             break;
         }
+
+        m_kia_bi_db[TYPE_RAW]->add_device_to_experiment(m_kia_bi_db[TYPE_RAW]->get_type_bi_string(m_kia_settings->m_type_bi), ind_bi,
+                                                        m_kia_settings->m_data_for_db->experiment_id,
+                                                        m_kia_settings->m_data_for_db->true_host);
+
+        m_parse_db_bi.push_back(std::make_shared<ParseToDB>(m_kia_bi_db, m_kia_timers->m_kia_bi[ind_bi]->m_kia_data, m_kia_settings));
+        m_parse_db_bi[ind_bi]->create_list_func_to_send_bi();
+
+        connect(m_kia_timers->m_kia_bi[ind_bi].get(), SIGNAL(send_data_to_db_bi(qint16, quint16)), m_parse_db_bi[ind_bi].get(), SLOT(send_data_to_db_for_bi(qint16, quint16)));
+        connect(m_kia_timers->m_kia_bi[ind_bi].get(), SIGNAL(send_to_save_protocol(Kia_protocol_parametrs)), m_kia_protocol.get(), SLOT(preset_before_save_and_out(Kia_protocol_parametrs)));
+
         if (m_kia_timers->m_kia_bi.size() != 0 && m_kia_timers->m_kia_bi[ind_bi])
-            m_kia_timers->m_kia_synch_timer.push_back(std::make_shared<Kia_synch_timer>(ind_bi, m_kia_timers->m_timer[ind_bi], m_kia_timers->m_kia_bi[ind_bi], m_kia_settings, m_kia_protocol));
+            m_kia_timers->m_kia_synch_timer.push_back(std::make_shared<Kia_synch_timer>(ind_bi, m_kia_timers->m_timer[ind_bi], m_kia_timers->m_kia_bi[ind_bi], m_kia_settings));
         m_kia_timers->m_timer[ind_bi]->start();
     }
-    m_kia_ftdi.reset(new Kia_ftdi(m_kia_settings));
-    switch(m_kia_settings->m_type_bokz)
-    {
-    case TYPE_BOKZ_BOKZM60:
-        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; ++num_bokz)
-            m_bokz.push_back(std::make_shared<BokzM60>(num_bokz, m_kia_bokz_db, m_kia_mpi,
-                                                       m_kia_protocol, m_kia_settings,
-                                                       m_kia_ftdi));
-        m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_kia_timers, m_bokz, m_kia_protocol, m_kia_settings));
-        break;
-    case TYPE_BOKZ_BOKZMF:
-        for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; ++num_bokz)
-            m_bokz.push_back(std::make_shared<Bokzmf>(num_bokz, m_kia_bokz_db, m_kia_mpi,
-                                                      m_kia_protocol, m_kia_settings));
-        m_kia_cyclogram.reset(new Kia_cyclogram_bokzmf(m_kia_timers, m_bokz, m_kia_protocol, m_kia_settings));
-        break;
-    }
 
+    m_kia_ftdi.reset(new Kia_ftdi(m_kia_settings));
+
+    for (uint16_t num_bokz = 0; num_bokz < m_kia_settings->m_count_bokz; ++num_bokz)
+    {
+        switch(m_kia_settings->m_type_bokz)
+        {
+        case TYPE_BOKZ_BOKZM60:
+            m_bokz.push_back(std::make_shared<BokzM60>(num_bokz, m_kia_mpi, m_kia_settings, m_kia_ftdi));
+            m_kia_cyclogram.reset(new Kia_cyclogram_bokzm60(m_kia_timers, m_bokz, m_kia_settings));
+            break;
+        case TYPE_BOKZ_BOKZMF:
+            m_bokz.push_back(std::make_shared<Bokzmf>(num_bokz, m_kia_mpi, m_kia_settings));
+            m_kia_cyclogram.reset(new Kia_cyclogram_bokzmf(m_kia_timers, m_bokz, m_kia_settings));
+            break;
+        }
+        m_kia_bokz_db[TYPE_RAW]->add_device_to_experiment(m_kia_bokz_db[TYPE_RAW]->get_type_bokz_string(m_kia_settings->m_type_bokz), num_bokz,
+                                                          m_kia_settings->m_data_for_db->experiment_id,
+                                                          m_kia_settings->m_data_for_db->true_host);
+
+        m_parse_db_bokz.push_back(std::make_shared<ParseToDB>(m_kia_bi_db, m_bokz[num_bokz]->m_kia_data, m_kia_settings));
+        m_parse_db_bokz[num_bokz]->create_list_func_to_send_bokz();
+
+        connect(m_bokz[num_bokz].get(), SIGNAL(send_data_to_db_bokz(qint16, quint16, qint32, Kia_mko_struct)), m_parse_db_bokz[num_bokz].get(), SLOT(send_data_to_db_for_bokz(qint16, quint16, qint32, Kia_mko_struct)));
+        connect(m_bokz[num_bokz].get(), SIGNAL(send_data_to_db_for_frames(quint16, qint32)), m_parse_db_bokz[num_bokz].get(), SLOT(send_data_to_db_for_frames(quint16, qint32)));
+        connect(m_bokz[num_bokz].get(), SIGNAL(send_data_to_db_for_mpi(quint16, qint32)), m_parse_db_bokz[num_bokz].get(), SLOT(send_data_to_db_for_mpi(quint16, qint32)));
+
+        connect(m_bokz[num_bokz].get(), SIGNAL(send_to_save_protocol(Kia_protocol_parametrs)), m_kia_protocol.get(), SLOT(preset_before_save_and_out(Kia_protocol_parametrs)));
+        connect(m_bokz[num_bokz].get(), SIGNAL(save_to_frames_protocols(const Kia_frame_parametrs&)), m_kia_protocol.get(), SLOT(save_to_frames_protocols(const Kia_frame_parametrs&)));
+
+    }
     create_func_to_read();
 }
 
 void WorkWithMain::close_db_connection()
 {
 
-    m_kia_db->end_experiment();
+    m_kia_db->end_experiment(m_kia_settings->m_data_for_db->experiment_id, m_kia_settings->m_data_for_db->true_host);
     m_kia_db->close_connect();
     for (uint16_t num_conn = 0; num_conn < constants::max_count_same_connection; ++num_conn)
     {
@@ -191,6 +222,7 @@ void WorkWithMain::new_connection_slot()
         connect(bokz.get(), SIGNAL(send_to_client(quint16, QStringList)), this, SLOT(slot_send_to_client(quint16, QStringList)));
 
     send_kia_initial_settings();
+    m_kia_timers->m_kia_bi[0]->create_bi_telemetry_list();
     send_cyclogram_power_list();
     send_mpi_list_command();
     send_mpi_list_other_command();
@@ -756,6 +788,10 @@ void WorkWithMain::kia_init()
     m_kia_settings->m_flags_for_thread->m_stop_command_thread.resize(m_kia_settings->m_count_bokz);
 
     m_kia_settings->m_data_to_protocols->m_stop_spam_in_system_info.resize(m_kia_settings->m_count_bokz);
+
+    qRegisterMetaType<Kia_protocol_parametrs>();
+    qRegisterMetaType<Kia_mko_struct>();
+    qRegisterMetaType<uint16_t>();
 }
 
 void WorkWithMain::start_kia_gui()
@@ -805,6 +841,10 @@ bool WorkWithMain::check_used_bokz(uint16_t type_command, std::function<void (ui
         }
     }
     return true;
+}
+
+void WorkWithMain::send_bi_telemetry_list()
+{
 }
 
 void WorkWithMain::send_kia_initial_settings()

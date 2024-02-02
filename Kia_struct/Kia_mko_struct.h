@@ -1,6 +1,7 @@
 #ifndef KIA_MKO_STRUCT_H
 #define KIA_MKO_STRUCT_H
 #include <iostream>
+#include <QMetaType>
 #include <QStringList>
 using namespace std;
 #pragma pack(push, 1)
@@ -2061,6 +2062,7 @@ struct CHKD_MF
     CHKD_2_MF chkd_2_mf;
 };
 #pragma pack(pop)
+
 struct Kia_mko_struct
 {
     SHTMI1 st_shtmi1;
@@ -2076,5 +2078,7 @@ struct Kia_mko_struct
     MLoc_MF st_mloc_mf;
     CHPN_MF st_chpn_mf;
     CHKD_MF st_chkd_mf;
-};
+}; Q_DECLARE_METATYPE(Kia_mko_struct)
+
+Q_DECLARE_METATYPE(uint16_t)
 #endif // KIA_MKO_STRUCT_H

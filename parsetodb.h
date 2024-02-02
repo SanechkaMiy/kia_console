@@ -41,10 +41,22 @@ public:
     template<typename arr>
     void parse_data_bi(std::string& str, arr data);
     void send_to_frames(uint16_t& num_bokz, int32_t &bshv);
+public slots:
+    void send_data_to_db_for_mpi(quint16 num_bokz, qint32 bshv);
+    void send_data_to_db_for_bokz(qint16 type_func, quint16 num_bokz,
+                                  qint32 bshv, Kia_mko_struct kia_mko_struct);
+    void send_data_to_db_for_bi(qint16 type_func, quint16 num_bi);
+    void send_data_to_db_for_frames(quint16 num_bokz, qint32 bshv);
+    void create_list_func_to_send_bokz();
+    void create_list_func_to_send_bi();
 private:
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_settings> m_kia_settings;
+    std::vector<std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzm60;
+    std::vector<std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzmf;
+    std::vector<std::function<void(uint16_t)>> m_func_to_send_bi;
+
 };
 
 #endif // PARSETODB_H
