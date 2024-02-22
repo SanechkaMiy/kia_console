@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     QLocale::setDefault(QLocale(QLocale::Russian, QLocale::Russia));
     WorkWithMain wwMain(2529);
+    //qApp->quit();
     std::signal(SIGINT, sigHandler);
     std::signal(SIGTERM, sigHandler);
 

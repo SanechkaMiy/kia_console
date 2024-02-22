@@ -9,8 +9,9 @@ class Kia_synch_timer : public QObject
 public:
     Kia_synch_timer(uint16_t num_timer, shared_ptr<Timer> timer, shared_ptr<Kia_bi> kia_bi,
                     std::shared_ptr<Kia_settings> kia_settings);
-    template <typename T>
-    void wait_for_event(T& ev);
+    //template <typename T>
+    //void wait_for_event(T& ev);
+    void wait_for_event(shared_ptr<Timer> timer);
     void stop_timer();
 signals:
     void send_to_client(quint16, QStringList);

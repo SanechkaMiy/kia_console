@@ -15,9 +15,9 @@ void Kia_synch_timer::stop_timer()
 {
     m_kia_bi->stop_event();
     m_stop_timer = false;
-    m_start_timer.get();
+    //m_start_timer.get();
     m_stop_synch_1s_mark = false;
-    m_start_synch_1s_mark.get();
+    //m_start_synch_1s_mark.get();
 }
 
 void Kia_synch_timer::start_timer()
@@ -80,15 +80,27 @@ void Kia_synch_timer::start_synch_timer()
     });
 }
 
-template<typename T>
-void Kia_synch_timer::wait_for_event(T &ev)
+//template<typename T>
+//void Kia_synch_timer::wait_for_event(T &ev)
+//{
+//    std::mutex m;
+//    std::unique_lock lk(m);
+//    auto& event = ev->getEvent();
+//    auto mw_count = ev->inSleep();
+//    event.wait(lk, [&ev, &mw_count]
+//    {
+//        return mw_count != ev->inSleep();
+//    });
+//}
+
+void Kia_synch_timer::wait_for_event(shared_ptr<Timer> timer)
 {
     std::mutex m;
     std::unique_lock lk(m);
-    auto& event = ev->getEvent();
-    auto mw_count = ev->inSleep();
-    event.wait(lk, [&ev, &mw_count]
+    auto& event = timer->getEvent();
+    auto mw_count = timer->inSleep();
+    event.wait(lk, [&timer, &mw_count]
     {
-        return mw_count != ev->inSleep();
+        return mw_count != timer->inSleep();
     });
 }

@@ -3,6 +3,29 @@
 Kia_ftdi::Kia_ftdi(std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_settings(kia_settings)
 {
+    m_ftdi_thread = std::async([this]()
+    {
+        init();
+        m_ftdi_stop = true;
+        while(m_ftdi_stop)
+        {
+            wait_for_event();
+            if (m_data.front().first == "stop_ftdi")
+            {
+                close();
+                break;
+            }
+            if (m_data.front().first == "read_frame")
+            {
+                read_frame(m_data.front().second);
+            }
+            m_data.pop();
+        }
+    });
+}
+
+void Kia_ftdi::init()
+{
     FT_STATUS ftStatus;
     char * 	buf_dev_list[MAX_DEVICES + 1];
     char 	dev_list[MAX_DEVICES][64];
@@ -30,13 +53,23 @@ Kia_ftdi::Kia_ftdi(std::shared_ptr<Kia_settings> kia_settings) :
     }
 }
 
-Kia_ftdi::~Kia_ftdi()
+void Kia_ftdi::close()
 {
     for(int i = 0; (i < m_num_devs); i++)
     {
         FT_Close(m_ftHandle[i]);
     }
     std::cout << "destrc ftdi" << std::endl;
+}
+
+Kia_ftdi::~Kia_ftdi()
+{
+    std::lock_guard lock(m_mtx);
+    Kia_frame_parametrs kia_data;
+    m_data.push(std::make_pair("stop_ftdi", &kia_data));
+    m_cv.notify_all();
+    m_ftdi_stop = false;
+    m_ftdi_thread.get();
 }
 
 void Kia_ftdi::read_frame(Kia_frame_parametrs* kia_frame_parametrs)
@@ -62,7 +95,6 @@ void Kia_ftdi::read_frame(Kia_frame_parametrs* kia_frame_parametrs)
         {
             bytes_received = 0;
             memset(m_read_buffer.data(), 0xff, m_read_buffer.size());
-            std::cout << pos << std::endl;
             FT_Read(m_ftHandle[0], &buffer[pos], rx_bytes, &bytes_received);
 
             pos = pos + bytes_received;
@@ -75,6 +107,7 @@ void Kia_ftdi::read_frame(Kia_frame_parametrs* kia_frame_parametrs)
     memcpy(m_read_buffer.data(), buffer.data(), kia_frame_parametrs->resulution * 2);
     kia_frame_parametrs->lvp_buf = m_read_buffer.data();
     kia_frame_parametrs->buf_size = m_read_buffer.size() * 2;
+    emit end_read_frame(kia_frame_parametrs->num_bokz);
 }
 
 std::vector<uint16_t> Kia_ftdi::get_frame_buf()
@@ -85,5 +118,22 @@ std::vector<uint16_t> Kia_ftdi::get_frame_buf()
 uint32_t Kia_ftdi::get_buf_size()
 {
     return m_read_buffer.size() * 2;
+}
+
+void Kia_ftdi::do_read_frame(Kia_frame_parametrs *kia_frame_parametrs)
+{
+    std::lock_guard lock(m_mtx);
+    m_data.push(std::make_pair("read_frame", kia_frame_parametrs));
+    m_cv.notify_all();
+}
+
+void Kia_ftdi::wait_for_event()
+{
+    std::mutex m;
+    std::unique_lock lk(m);
+    m_cv.wait(lk, [this]
+    {
+        return  !m_data.empty();
+    });
 }
 

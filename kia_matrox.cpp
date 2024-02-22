@@ -1,34 +1,75 @@
 #include "kia_matrox.h"
 
-
-
-
 Kia_matrox::Kia_matrox()
 {
-    //    auto check_result = matrox_init();
-    //    if (check_result != 0)
-    //    {
-    //        std::cout << "Matrox load" << std::endl;
-    //        m_kia_settings->m_matrox_is_define = CS_IS_ON;
-    //    }
+//    m_matrox_thread = std::async([this]()
+//    {
+//        m_is_load = matrox_init();
+//        if (m_is_load != 0)
+//        {
+//            std::cout << "Matrox load" << std::endl;
+//        }
+//        m_matrox_stop = true;
+//        while(m_matrox_stop)
+//        {
+//            wait_for_event();
+//            if (m_data.front().first == "stop_matrox")
+//            {
+//                if (m_is_load != 0)
+//                    matrox_close();
+//                break;
+//            }
+//            if (m_data.front().first == "read_frame")
+//            {
+//                matrox_grab_frame(m_data.front().second);
+//            }
+//            m_data.pop();
+//        }
+//    });
 }
 
 Kia_matrox::~Kia_matrox()
 {
-    //    if (m_kia_settings->m_matrox_is_define == CS_IS_ON)
-    //        matrox_close();
+//    std::lock_guard lock(m_mtx);
+//    Kia_frame_parametrs kia_data;
+    std::cout << "descr_matrox" << std::endl;
+//    m_data.push(std::make_pair("stop_matrox", &kia_data));
+//    m_cv.notify_all();
+//    m_matrox_stop = false;
+//    m_matrox_thread.get();
 }
 
-void Kia_matrox::matrox_grab_frame(std::shared_ptr<Kia_data> kia_data)
+void Kia_matrox::matrox_grab_frame(Kia_frame_parametrs* kia_frame_parametrs)
 {
-    kia_data->m_data_db->m_datetime = helpers::currentDateTime();
+    //kia_data->m_data_db->m_datetime = helpers::currentDateTime();
     MdigGrab(m_mil.m_dig_id, m_mil.m_buf_id);
     std::vector<uint8_t> m_commandToCom = {CMD_GRAB};
-    m_serial_port->WriteBinary(m_commandToCom);
+    //std::this_thread::sleep_for(2000ms);
+    //m_serial_port->WriteBinary(m_commandToCom);
     MdigGrabWait(m_mil.m_dig_id, M_GRAB_FRAME_END);
     std::cout << "GrabWait  finished" << "\n";
     matrox_get_buffer();
-    calc_frame_param(kia_data);
+    kia_frame_parametrs->lvp_buf = m_lpv_buf;
+    kia_frame_parametrs->buf_size = m_dig.m_buffer_size;
+    std::cout << kia_frame_parametrs->buf_size << std::endl;
+    emit end_read_frame(kia_frame_parametrs->num_bokz);
+}
+
+void Kia_matrox::do_read_frame(Kia_frame_parametrs *kia_frame_parametrs)
+{
+    std::lock_guard lock(m_mtx);
+    m_data.push(std::make_pair("read_frame", kia_frame_parametrs));
+    m_cv.notify_all();
+}
+
+void Kia_matrox::wait_for_event()
+{
+    std::mutex m;
+    std::unique_lock lk(m);
+    m_cv.wait(lk, [this]
+    {
+        return  !m_data.empty();
+    });
 }
 
 void Kia_matrox::matrox_get_buffer()
@@ -85,7 +126,7 @@ uint16_t Kia_matrox::matrox_init()
     if(!result_matrox_init)
         return 0;
 
-    result_matrox_init = MsysAlloc(M_SYSTEM_SOLIOS, num_dev, M_DEFAULT, &m_mil.m_sys_id);
+    result_matrox_init = MsysAlloc(M_SYSTEM_RADIENTEVCL, num_dev, M_DEFAULT, &m_mil.m_sys_id);//M_SYSTEM_RADIENTEVCL
     std::cout << "MsysAlloc result = " << result_matrox_init << "\n";
     if(!result_matrox_init)
         return 0;
@@ -106,10 +147,13 @@ uint16_t Kia_matrox::matrox_init()
 
         std::cout << "size buffer = " << m_dig.m_buffer_size << "\n";
 
-        MsysInquire(m_mil.m_sys_id, M_COM_PORT_NUMBER + M_UART_NB(0), &m_com.m_com_num);
+        std::cout << "M_UART_NB(0) = " << M_UART_FREE << "\n";
+        MsysInquire(m_mil.m_sys_id, M_OWNER_APPLICATION, &m_com.m_com_num);
+        //MsysInquire(m_mil.m_sys_id, M_COM_PORT_NUMBER + M_UART_NB(0), &m_com.m_com_num);
+        //MsysControl(m_mil.m_sys_id, M_UART_FREE + M_UART_NB(0), &m_com.m_com_num);
         MsysControl(m_mil.m_sys_id, M_UART_FREE + M_UART_NB(0), M_DEFAULT);
         std::cout << "COM num = " << m_com.m_com_num << "\n";
-        open_com(m_com.m_com_num);
+        //open_com(m_com.m_com_num);
 
 
         MdigControl(m_mil.m_dig_id, M_GRAB_MODE, M_ASYNCHRONOUS);
@@ -127,7 +171,7 @@ uint16_t Kia_matrox::matrox_init()
                                          M_ON_BOARD,
                                          //                    M_HOST_MEMORY,
                                          &m_mil.m_buf_id);
-        MbufClear(m_mil.m_buf_id, 0x07d0);
+        //MbufClear(m_mil.m_buf_id, 0x07d0);
 
         std::cout << "MbufAlloc2d result = " << result_matrox_init << "\n";
 
@@ -210,7 +254,7 @@ void Kia_matrox::open_com(uint16_t num_port)
 MIL_INT MFTYPE HookFrameEnd(MIL_INT HookType, MIL_ID EventID, void *UserDataPtr)
 {
     MIL_INT line_total = 0;
-    MdigGetHookInfo( EventID, M_GRAB_LINE_COUNT, &line_total);
+    MdigGetHookInfo(EventID, M_GRAB_LINE_COUNT, &line_total);
     std::cout << "Hook grab end, line total = " << line_total << "\n";
     return 0;
 }

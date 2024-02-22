@@ -1,9 +1,6 @@
 #include "bokzm60.h"
-BokzM60::BokzM60(uint16_t num_bokz, shared_ptr <Kia_mpi> kia_mpi,
-                 std::shared_ptr<Kia_settings> kia_settings, shared_ptr<Kia_ftdi> kia_ftdi) :
-    m_kia_mpi(kia_mpi)
-  , m_kia_settings(kia_settings)
-  , m_kia_ftdi(kia_ftdi)
+BokzM60::BokzM60(uint16_t num_bokz, std::shared_ptr<Kia_settings> kia_settings) :
+    m_kia_settings(kia_settings)
 {
     m_num_bokz = num_bokz;
     set_bokz_settings();
@@ -31,7 +28,6 @@ void BokzM60::set_bokz_settings()
 uint16_t BokzM60::shtmi1(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Запрашиваем ШТМИ1!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -44,6 +40,9 @@ uint16_t BokzM60::shtmi1(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
 
     //    for (int i = 0; i <= 3; i++)
@@ -74,7 +73,6 @@ uint16_t BokzM60::debugging_command(uint16_t direction, uint16_t format, uint16_
                                     string struct_id, string struct_id_desc, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Запрашиваем ") + QString::fromStdString(struct_id_desc) + "!";
     preset_before_exchange();
     m_set_control_word = [this, direction, format, sub_address, word_data, struct_id, struct_id_desc]()
     {
@@ -87,6 +85,9 @@ uint16_t BokzM60::debugging_command(uint16_t direction, uint16_t format, uint16_
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
     return m_kia_data->m_data_mpi->m_status_exchange;
@@ -94,7 +95,6 @@ uint16_t BokzM60::debugging_command(uint16_t direction, uint16_t format, uint16_
 uint16_t BokzM60::shtmi2(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Запрашиваем ШТМИ2!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -107,6 +107,9 @@ uint16_t BokzM60::shtmi2(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     for (int i = 0; i <= 3; i++)
     {
@@ -136,8 +139,6 @@ uint16_t BokzM60::shtmi2(uint16_t parametr)
 uint16_t BokzM60::mshior(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Запрашиваем МШИОР!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -150,10 +151,12 @@ uint16_t BokzM60::mshior(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     m_pio_bokz->decrypt_mshior(m_kia_data->m_data_mpi->m_data_word, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
     check_orientation();
-    std::tie(m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth) = math_alpha_delta_azimut(m_kia_mko_struct->st_mshior.Qo0, m_kia_mko_struct->st_mshior.Qo1, m_kia_mko_struct->st_mshior.Qo2, m_kia_mko_struct->st_mshior.Qo3);
     send_status_info();
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
@@ -189,9 +192,10 @@ uint16_t BokzM60::dtmi_or_dtmi_loc(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
-    uint16_t count_dtmi_dtmi_loc = 0;
     QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Запрашиваем ") + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
+    uint16_t count_dtmi_dtmi_loc = 0;
     uint16_t count_to_exchange = 9;
     if ((parametr & EP_NOFULLEXCHANGE) != 0)
         count_to_exchange = 1;
@@ -376,9 +380,9 @@ uint16_t BokzM60::smti(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем ")
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
-
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -407,9 +411,9 @@ uint16_t BokzM60::vmti(uint16_t parametr)
         }
     };
     m_set_control_word();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Получаем ")
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
-
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -419,7 +423,6 @@ uint16_t BokzM60::vmti(uint16_t parametr)
 uint16_t BokzM60::synchro(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД Синхро!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -442,6 +445,9 @@ uint16_t BokzM60::synchro(uint16_t parametr)
         m_kia_data->m_data_mpi->m_data_to_exc[3] = ar_epZvKat[0];
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -451,7 +457,6 @@ uint16_t BokzM60::synchro(uint16_t parametr)
 uint16_t BokzM60::skor(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД СКОР!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -469,6 +474,9 @@ uint16_t BokzM60::skor(uint16_t parametr)
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -489,7 +497,7 @@ uint16_t BokzM60::command_no(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "no";
-        m_kia_data->m_data_db->struct_id_desc = "НО";
+        m_kia_data->m_data_db->struct_id_desc = "УСД НО";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_sub_address; i++)
         {
             m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x0004;
@@ -505,7 +513,6 @@ uint16_t BokzM60::command_no(uint16_t parametr)
 uint16_t BokzM60::command_to(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД ТО!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -516,13 +523,16 @@ uint16_t BokzM60::command_to(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "to";
-        m_kia_data->m_data_db->struct_id_desc = "ТО";
+        m_kia_data->m_data_db->struct_id_desc = "УСД ТО";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_sub_address; i++)
         {
             m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x0008;
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -532,8 +542,6 @@ uint16_t BokzM60::command_to(uint16_t parametr)
 uint16_t BokzM60::command_full_exp(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Передаем УСД Полное Экспонирование!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -544,13 +552,16 @@ uint16_t BokzM60::command_full_exp(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "full_exp";
-        m_kia_data->m_data_db->struct_id_desc = "Экспонирование";
+        m_kia_data->m_data_db->struct_id_desc = "УСД Полное Экспонирование";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_sub_address; i++)
         {
             m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x0400;
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -561,8 +572,6 @@ uint16_t BokzM60::command_full_exp(uint16_t parametr)
 uint16_t BokzM60::command_bin_exp(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Передаем УСД Бинарное Экспонирование!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -573,13 +582,16 @@ uint16_t BokzM60::command_bin_exp(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "bin_exp";
-        m_kia_data->m_data_db->struct_id_desc = "Бинарное Экспонирование";
+        m_kia_data->m_data_db->struct_id_desc = "УСД Бинарное Экспонирование";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_sub_address; i++)
         {
             m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x1000;
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -590,7 +602,6 @@ uint16_t BokzM60::command_bin_exp(uint16_t parametr)
 uint16_t BokzM60::command_loc(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД ЛОК!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -601,7 +612,7 @@ uint16_t BokzM60::command_loc(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "loc";
-        m_kia_data->m_data_db->struct_id_desc = "ЛОК";
+        m_kia_data->m_data_db->struct_id_desc = "УСД ЛОК";
         m_kia_data->m_data_db->struct_id_dop = "loc";
         m_kia_data->m_data_db->struct_id_dop_desc = "ЛОК";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_word_data; i++)
@@ -610,6 +621,9 @@ uint16_t BokzM60::command_loc(uint16_t parametr)
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -619,7 +633,6 @@ uint16_t BokzM60::command_loc(uint16_t parametr)
 uint16_t BokzM60::command_otclp(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД ОТКЛР!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -630,13 +643,16 @@ uint16_t BokzM60::command_otclp(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "otclp";
-        m_kia_data->m_data_db->struct_id_desc = "ОТКЛР";
+        m_kia_data->m_data_db->struct_id_desc = "УСД ОТКЛР";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_word_data; i++)
         {
             m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x0080;
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -646,7 +662,6 @@ uint16_t BokzM60::command_otclp(uint16_t parametr)
 uint16_t BokzM60::command_openkr(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД Открыть крышку!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -657,13 +672,16 @@ uint16_t BokzM60::command_openkr(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "openkr";
-        m_kia_data->m_data_db->struct_id_desc = "ОПЕНКР";
+        m_kia_data->m_data_db->struct_id_desc = "УСД Открыть крышку";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_word_data; i++)
         {
             m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x0001;
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -673,7 +691,6 @@ uint16_t BokzM60::command_openkr(uint16_t parametr)
 uint16_t BokzM60::command_zkr(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД Закрыть крышку!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -684,13 +701,16 @@ uint16_t BokzM60::command_zkr(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "zkr";
-        m_kia_data->m_data_db->struct_id_desc = "ЗКР";
+        m_kia_data->m_data_db->struct_id_desc = "УСД Закрыть крышку";
         for (uint32_t i = 0; i < m_kia_data->m_data_mpi->m_word_data; i++)
         {
             m_kia_data->m_data_mpi->m_data_to_exc[0] = 0x0002;
         }
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -715,7 +735,6 @@ uint16_t BokzM60::command_oo(uint16_t parametr)
 uint16_t BokzM60::kvaor(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД КВАОР!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -730,6 +749,9 @@ uint16_t BokzM60::kvaor(uint16_t parametr)
         m_kia_data->m_data_mpi->m_data_to_exc = m_kia_data->m_data_mpi->m_qa;
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -739,7 +761,6 @@ uint16_t BokzM60::kvaor(uint16_t parametr)
 uint16_t BokzM60::os(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД ОС!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -752,6 +773,9 @@ uint16_t BokzM60::os(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -761,7 +785,6 @@ uint16_t BokzM60::os(uint16_t parametr)
 uint16_t BokzM60::vskou(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД ВСКОУ!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -774,6 +797,9 @@ uint16_t BokzM60::vskou(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -783,7 +809,6 @@ uint16_t BokzM60::vskou(uint16_t parametr)
 uint16_t BokzM60::initial_state(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД Установить в исходное состояние!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -796,6 +821,9 @@ uint16_t BokzM60::initial_state(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -805,7 +833,6 @@ uint16_t BokzM60::initial_state(uint16_t parametr)
 uint16_t BokzM60::block_ou(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД Заблокировать передатчик!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -818,6 +845,9 @@ uint16_t BokzM60::block_ou(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -827,7 +857,6 @@ uint16_t BokzM60::block_ou(uint16_t parametr)
 uint16_t BokzM60::unblock_ou(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Передаем УСД Разблокировать передатчик!");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -840,6 +869,9 @@ uint16_t BokzM60::unblock_ou(uint16_t parametr)
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -848,15 +880,15 @@ uint16_t BokzM60::unblock_ou(uint16_t parametr)
 
 uint16_t BokzM60::do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t parametr)
 {
-    if (type_frame < m_func_type_frames.size())
+    if (type_frame < m_kia_data->m_data_bokz->m_func_type_frames.size())
     {
-        m_func_type_frames[type_frame](parametr);
+        std::get<CYCL_FUNC>(m_kia_data->m_data_bokz->m_func_type_frames[type_frame])(parametr);
 
-        if (type_recieve < m_func_type_frame_recieve.size() && m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
+        //if (type_recieve < m_func_type_frame_recieve.size() && m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
         {
-            m_func_type_frame_recieve[type_recieve](type_frame, parametr);
+            std::get<CYCL_FUNC>(m_kia_data->m_data_bokz->m_func_type_frame_recieve[type_recieve])(type_frame, parametr);
             m_kia_data->m_data_db->frame_name = "frame_num_bokz_" + std::to_string(m_num_bokz) + "_" + std::to_string(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
-            emit send_data_to_db_for_frames(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
+            //emit send_data_to_db_for_frames(m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
         }
     }
     return m_kia_data->m_data_mpi->m_status_exchange;
@@ -865,8 +897,6 @@ uint16_t BokzM60::do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t
 uint16_t BokzM60::set_epsilon(float command, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Устанавливаем допуск распознавания");
     preset_before_exchange();
     m_set_control_word = [this, command]()
     {
@@ -876,13 +906,16 @@ uint16_t BokzM60::set_epsilon(float command, uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 2;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "set_epsilon";
-        m_kia_data->m_data_db->struct_id_desc = "Задать эпсилон";
+        m_kia_data->m_data_db->struct_id_desc = "Установить эпсилон";
         std::array <uint16_t, 2> ar_command = {0x0000, 0x0000};
         memcpy(&ar_command, &command, sizeof(ar_command));
         m_kia_data->m_data_mpi->m_data_to_exc[0] = ar_command[0];
         m_kia_data->m_data_mpi->m_data_to_exc[1] = ar_command[1];
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -892,8 +925,6 @@ uint16_t BokzM60::set_epsilon(float command, uint16_t parametr)
 uint16_t BokzM60::get_epsilon(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Получаем эпсилон");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -907,6 +938,9 @@ uint16_t BokzM60::get_epsilon(uint16_t parametr)
         m_kia_data->m_data_db->struct_id_desc = "Получить эпсилон";
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     std::array <uint16_t, 2> ar_command;
     for (uint16_t ind = 0; ind < ar_command.size(); ++ind)
@@ -923,8 +957,6 @@ uint16_t BokzM60::get_epsilon(uint16_t parametr)
 uint16_t BokzM60::set_focus(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Устанавливаем Фокус и Координаты главной точки");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -940,6 +972,9 @@ uint16_t BokzM60::set_focus(uint16_t parametr)
             memcpy(&m_kia_data->m_data_mpi->m_data_to_exc[2 * ind], &m_kia_data->m_data_mpi->m_focus_data[ind], sizeof(m_kia_data->m_data_mpi->m_focus_data[ind]));
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -949,8 +984,6 @@ uint16_t BokzM60::set_focus(uint16_t parametr)
 uint16_t BokzM60::get_focus(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) +
-            QString("Получаем Фокус и Координаты главной точки");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -964,6 +997,9 @@ uint16_t BokzM60::get_focus(uint16_t parametr)
         m_kia_data->m_data_db->struct_id_desc = "Получить фокус";
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     uint16_t focus_size_arr = 3;
     std::vector<std::array <uint16_t, 2>> ar_command(focus_size_arr);
@@ -986,8 +1022,6 @@ uint16_t BokzM60::get_focus(uint16_t parametr)
 uint16_t BokzM60::set_texp(uint16_t command, uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Устанавливаем Время экспонирования");
     preset_before_exchange();
     m_set_control_word = [this, command]()
     {
@@ -998,10 +1032,13 @@ uint16_t BokzM60::set_texp(uint16_t command, uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "set_texp";
-        m_kia_data->m_data_db->struct_id_desc = "Задать Texp";
+        m_kia_data->m_data_db->struct_id_desc = "Установить Время экспонирование";
         m_kia_data->m_data_mpi->m_data_to_exc[0] = command;
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     save_to_protocol(str_to_protocol, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
@@ -1011,8 +1048,6 @@ uint16_t BokzM60::set_texp(uint16_t command, uint16_t parametr)
 uint16_t BokzM60::get_texp(uint16_t parametr)
 {
     m_kia_settings->m_flags_for_thread->m_mtx.lock();
-    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-            + QString("Получаем Время экспонирования");
     preset_before_exchange();
     m_set_control_word = [this]()
     {
@@ -1023,9 +1058,12 @@ uint16_t BokzM60::get_texp(uint16_t parametr)
         m_kia_data->m_data_mpi->m_word_data = 1;
         m_kia_data->m_data_mpi->m_code_word = ((m_kia_data->m_data_mpi->m_address << 11) | (m_kia_data->m_data_mpi->m_direction << 10) | (m_kia_data->m_data_mpi->m_sub_address << 5) | (m_kia_data->m_data_mpi->m_word_data & 0x1F));
         m_kia_data->m_data_db->struct_id = "get_texp";
-        m_kia_data->m_data_db->struct_id_desc = "Получить Texp";
+        m_kia_data->m_data_db->struct_id_desc = "Получить Время экспонирование";
     };
     m_set_control_word();
+    QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+            + QString("Передаем ")
+            + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     auto data = QString::number(m_kia_data->m_data_mpi->m_data_word[2]);
     send_data_to_command(IS_PARAM, TP_TEXP, data);
@@ -1041,14 +1079,14 @@ void BokzM60::set_type_frame_functions()
         command_full_exp(parametr);
     };
     m_frame_resulution.push_back(512 * 512);
-    m_func_type_frames.push_back(full_frame_func);
+    m_kia_data->m_data_bokz->m_func_type_frames.push_back(std::make_tuple(full_frame_func, "Полный кадр", DO_FULL_FRAME));
 
     auto bin_frame_func = [this](uint16_t parametr = EP_DOALL)
     {
         command_bin_exp(parametr);
     };
     m_frame_resulution.push_back(256 * 256);
-    m_func_type_frames.push_back(bin_frame_func);
+    m_kia_data->m_data_bokz->m_func_type_frames.push_back(std::make_tuple(bin_frame_func, "Бинированный кадр", DO_BIN_FRAME));
 }
 
 void BokzM60::set_type_frame_recieve()
@@ -1056,8 +1094,6 @@ void BokzM60::set_type_frame_recieve()
     auto func_mko = [this](uint16_t type_frame, uint16_t parametr = EP_DOALL)
     {
         do_pause(1000);
-        QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
-                + QString("Снимаем кадр через МКО!");
         m_kia_settings->m_flags_for_thread->m_mtx.lock();
         m_set_control_word = [this]()
         {
@@ -1071,6 +1107,9 @@ void BokzM60::set_type_frame_recieve()
             m_kia_data->m_data_db->struct_id_desc = "Снять кадр";
         };
         m_set_control_word();
+        QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+                + QString("Передаем ")
+                + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
         save_to_protocol(str_to_protocol, parametr);
 
         uint16_t count_pixel_in_one_arr = 64;
@@ -1099,34 +1138,52 @@ void BokzM60::set_type_frame_recieve()
         calc_frame_param(frame_buffer);
 
     };
-    m_func_type_frame_recieve.push_back(func_mko);
+    m_kia_data->m_data_bokz->m_func_type_frame_recieve.push_back(std::make_pair(func_mko, "Прием по МКО"));
 
     auto func_ftdi_usb = [this](uint16_t type_frame, uint16_t parametr = EP_DOALL)
     {
         QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
                 + QString("Снимаем кадр через FTDI_USB!");
         save_to_protocol(str_to_protocol, parametr);
-
-        m_kia_settings->m_flags_for_thread->m_mtx.lock();
         Kia_frame_parametrs kia_frame_parametrs;
-        kia_frame_parametrs.resulution = m_frame_resulution[type_frame];
-        m_kia_ftdi->read_frame(&kia_frame_parametrs);
-        m_kia_settings->m_flags_for_thread->m_mtx.unlock();
-
         kia_frame_parametrs.num_bokz = m_num_bokz;
+        kia_frame_parametrs.resulution = m_frame_resulution[type_frame];
+        emit do_frame(&kia_frame_parametrs);
+        wait_for_event();
+
         kia_frame_parametrs.bshv = m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi];
 
         emit save_to_frames_protocols(kia_frame_parametrs);
-
         std::vector<uint16_t > read_buffer;
-        read_buffer.resize(kia_frame_parametrs.resulution);
+        read_buffer.resize(kia_frame_parametrs.buf_size / 2);
         memcpy(read_buffer.data(), kia_frame_parametrs.lvp_buf, kia_frame_parametrs.buf_size);
         calc_frame_param(read_buffer);
 
 
     };
+    m_kia_data->m_data_bokz->m_func_type_frame_recieve.push_back(std::make_pair(func_ftdi_usb, "Прием по FTDI-(USB)"));
 
-    m_func_type_frame_recieve.push_back(func_ftdi_usb);
+    auto func_matrox = [this](uint16_t type_frame, uint16_t parametr = EP_DOALL)
+    {
+        QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
+                + QString("Снимаем кадр через CAMERA LINK!");
+        save_to_protocol(str_to_protocol, parametr);
+        Kia_frame_parametrs kia_frame_parametrs;
+        kia_frame_parametrs.num_bokz = m_num_bokz;
+        kia_frame_parametrs.resulution = m_frame_resulution[type_frame];
+        emit do_frame(&kia_frame_parametrs);
+        wait_for_event();
+        kia_frame_parametrs.bshv = m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi];
+        emit save_to_frames_protocols(kia_frame_parametrs);
+        std::vector<uint16_t > read_buffer;
+        read_buffer.resize(kia_frame_parametrs.buf_size / 2);
+        memcpy(read_buffer.data(), kia_frame_parametrs.lvp_buf, kia_frame_parametrs.buf_size);
+        //calc_frame_param(read_buffer);
+
+
+    };
+    m_kia_data->m_data_bokz->m_func_type_frame_recieve.push_back(std::make_pair(func_matrox, "Прием по CL(Matrox)"));
+
 }
 
 void BokzM60::create_count_of_exc_fail()
@@ -1240,6 +1297,7 @@ void BokzM60::send_status_info()
     data_status.push_back(QString::number(ST_ST1));
     data_status.push_back(QString::number(m_num_bokz));
     data_status.push_back(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior.KC1, 16), 4, '0') );
+    data_status.push_back(QString::number(m_kia_data->m_data_bokz->m_type_orient));
     emit send_to_client(SEND_STATUS_INFO, data_status);
     data_status.clear();
     data_status.push_back(QString::number(ST_ST2));
@@ -1332,8 +1390,19 @@ void BokzM60::check_orientation()
     const uint16_t norm_qaor = 1;
     const uint16_t max_or_is_not_def = 100;
     m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(m_kia_mko_struct->st_mshior.Qo0,2) + pow(m_kia_mko_struct->st_mshior.Qo1,2) + pow(m_kia_mko_struct->st_mshior.Qo2, 2)  + pow(m_kia_mko_struct->st_mshior.Qo3,2));
-    if ((m_kia_data->m_data_mpi->m_data_word[2] & 0xf000) == 0xe000)//|| (m_kia_data->m_data_mpi->m_data_word[2] & 0xf000) == 0x4000
+    std::tie(m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth) = math_alpha_delta_azimut(m_kia_mko_struct->st_mshior.Qo0, m_kia_mko_struct->st_mshior.Qo1, m_kia_mko_struct->st_mshior.Qo2, m_kia_mko_struct->st_mshior.Qo3);
+    switch(m_kia_data->m_data_mpi->m_data_word[2] & 0xf000)
     {
+    case 0x2000:
+        m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
+        m_kia_data->m_data_bokz->m_type_orient = TO_NO;
+        if (m_kia_data->m_data_bokz->m_count_fail[CHNOR] >= max_or_is_not_def)
+        {
+            m_kia_data->m_data_bokz->m_count_fail[CHNRO]++;
+        }
+        break;
+    case 0xe000:
+        m_kia_data->m_data_bokz->m_type_orient = TO_TO;
         for (uint16_t qa_index = 0; qa_index < constants::packetSize; ++qa_index)
             m_kia_data->m_data_mpi->m_qa[qa_index] = m_kia_data->m_data_mpi->m_data_word[qa_index + 12];
 
@@ -1352,19 +1421,16 @@ void BokzM60::check_orientation()
             m_kia_data->m_data_bokz->m_count_fail[CHZLP]++;
         }
         m_kia_data->m_data_mpi->m_prev_data_word = m_kia_data->m_data_mpi->m_data_word;
-
-    }
-    else
-    {
+        break;
+    case 0x4000:
         m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
+        m_kia_data->m_data_bokz->m_type_orient = TO_WAIT;
+        break;
+    default:
+        m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
+        m_kia_data->m_data_bokz->m_type_orient = TO_NO_ORIENT;
+        break;
     }
-
-    if (m_kia_data->m_data_bokz->m_count_fail[CHNOR] >= max_or_is_not_def && (m_kia_data->m_data_mpi->m_data_word[2] & 0xf000) != 0x4000)
-    {
-        m_kia_data->m_data_bokz->m_count_fail[CHNRO]++;
-    }
-
-
 }
 
 void BokzM60::preset_before_exchange()

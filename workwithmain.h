@@ -20,6 +20,7 @@
 #include "kia_bi.h"
 #include "kia_biu.h"
 #include "kia_bkpik.h"
+#include "kia_ftdi.h"
 #include "bokz.h"
 #include "bokzm60.h"
 #include "bokzmf.h"
@@ -52,6 +53,9 @@ private:
     void start_tcp_server(uint16_t nPort);
     void create_func_to_read();
     void kia_init();
+    void init_db();
+    void init_bi();
+    void init_bokz();
     void start_kia_gui();
     void set_kia_settings();
     void close_db_connection();
@@ -61,12 +65,18 @@ private:
     void send_cyclogram_power_list();
     void send_mpi_list_command();
     void send_mpi_list_other_command();
+
     void send_pn_list_command();
+
     void send_cyclogams_list();
     void send_cyclogams_ai_list();
     void send_cyclogams_ri_list();
     void send_cyclograms_do();
     void send_cyclograms_power_do();
+
+    void send_type_frame();
+    void send_type_frame_recieve();
+
     void kia_profile_load();
     void send_type_bi_to_table_settings();
     void send_info_about_connection();

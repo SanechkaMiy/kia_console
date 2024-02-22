@@ -42,7 +42,6 @@ const uint32_t microsecond_in_second = 1000 * 1000;
 struct Data_for_mpi
 {
     uint16_t m_num_bokz = 0;
-
     uint16_t m_code_word = 0;
     uint16_t m_address = 0;
     uint16_t m_word_data = 1;
@@ -82,6 +81,9 @@ struct Data_for_bokz
     std::vector<uint32_t> m_count_fail;
     std::vector<std::pair<QString, uint32_t>> m_count_fail_descr;
     std::vector<std::tuple<uint16_t, uint16_t, QStringList>> m_chpn_data;
+
+    std::vector<std::tuple<std::function<void(uint16_t parametr)>, QString, uint16_t>> m_func_type_frames;
+    std::vector<std::pair<std::function<void(uint16_t type_frame, uint16_t parametr)>, QString>> m_func_type_frame_recieve;
 
     uint16_t m_bokz_status_in_cycl = KCS_SUCCES;
     uint16_t m_type_orient = 0;

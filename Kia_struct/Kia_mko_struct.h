@@ -2063,8 +2063,24 @@ struct CHKD_MF
 };
 #pragma pack(pop)
 
+const static uint32_t packet_size = 34;
+#pragma pack(push, 1)
+struct RAW_DATA
+{
+    std::array<int16_t, packet_size> data;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct DATA
+{
+    std::vector<std::tuple<QString, double, QString>> data;
+};
+#pragma pack(pop)
 struct Kia_mko_struct
 {
+    RAW_DATA m_raw_data;
+    DATA m_data;
     SHTMI1 st_shtmi1;
     SHTMI2 st_shtmi2;
     MSHIOR st_mshior;

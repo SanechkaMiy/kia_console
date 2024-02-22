@@ -206,6 +206,7 @@ void Kia_protocol::preset_before_save_and_out(Kia_protocol_parametrs kia_protoco
         list_protocol.push_back(kia_protocol_parametrs.data_to_out);
         emit send_to_client(kia_protocol_parametrs.type_window, list_protocol);
         save_to_protocols(kia_protocol_parametrs.num_bokz, kia_protocol_parametrs.data_to_out, kia_protocol_parametrs.type_protocol);
+
     }
 }
 

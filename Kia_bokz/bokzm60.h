@@ -6,13 +6,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mainStruct.h"
-#include "kia_matrox.h"
-#include "kia_synch_timer.h"
 #include "simpletimer.h"
-#include "kia_ftdi.h"
 #include "Kia_mko_struct.h"
 #include "Kia_pio/pio_bokzm60.h"
-
+#include <thread>
 
 class BokzM60 : public Bokz
 {
@@ -44,9 +41,9 @@ public:
         CHNEOR = 8,
         CHPRZ = 9,
     };
+
     //using kia_info_p = shared_ptr <KiaInformationBot>;
-    BokzM60(uint16_t num_bokz, shared_ptr <Kia_mpi> kia_mpi,
-            std::shared_ptr<Kia_settings> kia_settings, shared_ptr<Kia_ftdi> kia_ftdi);
+    BokzM60(uint16_t num_bokz, std::shared_ptr<Kia_settings> kia_settings);
     ~BokzM60();
     void set_bokz_settings() override;
 
@@ -119,15 +116,11 @@ private:
     void execute_exchange();
     std::function<void()> m_set_control_word;
     void set_data_to_device_protocol(QString &str_protocol);
-    std::vector<shared_ptr<Kia_bi>> m_kia_bi;
-    std::shared_ptr<Kia_mpi> m_kia_mpi;
     std::shared_ptr<Kia_settings> m_kia_settings;
-    shared_ptr<Kia_ftdi> m_kia_ftdi;
     uint16_t m_count_dtmi_dtmi_loc;
     std::vector<uint8_t> m_commandR;
 
-    std::vector<std::function<void(uint16_t parametr)>> m_func_type_frames;
-    std::vector<std::function<void(uint16_t type_frame, uint16_t parametr)>> m_func_type_frame_recieve;
+
     std::vector<uint32_t> m_frame_resulution;
 
     std::map<uint16_t, std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;

@@ -304,31 +304,7 @@ QString helpers::get_status_error_mf(uint16_t value, uint16_t shift)
 
 float helpers::uint32_to_float(uint32_t value)
 {
-    uint32_t masca = 0x00000001;
-    uint32_t temp = 0;
-    float result = 0.0;
-    for (int i = 0; i < 32; ++i)
-    {
-        temp = (value>>i) & (masca);
-        if (i < 31)
-        {
-            if (temp == 1)
-            {
-                //printf("%04x\n", temp);
-                result = result + pow(2,(-31 + i));
-                //cout<<" "<<i<<" "<<result<<endl;
-
-            }
-        }
-        if (i == 31)
-        {
-            if (temp == 1)
-            {
-                result = -result;
-            }
-        }
-
-    }
+    auto result = *(float*)(&value);
     return result;
 }
 

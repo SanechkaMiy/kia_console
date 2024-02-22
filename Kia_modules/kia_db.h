@@ -37,7 +37,10 @@ public:
     {
         return m_type_bi_list[type_bi];
     }
-
+    void set_interval_to_send(uint32_t interval)
+    {
+        m_interval_to_send = interval;
+    }
 signals:
     void send_to_client(quint16, QStringList);
 private:

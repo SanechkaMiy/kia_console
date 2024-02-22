@@ -32,7 +32,7 @@ Kia_mpi::~Kia_mpi()
     m_cv.notify_all();
     m_mpi_stop = false;
     m_mpi_thread.get();
-
+    std::cout << "stop mpi" << std::endl;
 }
 
 void Kia_mpi::init()
@@ -108,6 +108,7 @@ void Kia_mpi::execute_exchange(Kia_data* kia_data)
         kia_data->m_data_mpi->m_status_exchange = KiaS_FAIL;
     }
     bcgetblk(0, kia_data->m_data_mpi->m_data_word.data(), constants::packetSize);
+
     kia_data->m_data_db->receive_time = helpers::currentDateTime();
     if (kia_data->m_data_mpi->m_format == DATA_BC_RT)
         kia_data->m_data_mpi->m_wOs = kia_data->m_data_mpi->m_data_word[kia_data->m_data_mpi->m_word_data + 1];

@@ -8,7 +8,8 @@
 #include <memory>
 #include <math.h>
 #include "Kia_modules/kia_help_functions.h"
-#define DCF_DUAL    "KAM_DUALBASE.dcf"
+#include <queue>
+#define DCF_DUAL    "Radient eV-CL2.dcf"//Radient eV-CL2.dcf
 #define CMD_GRAB    0x04 // 0x20
 typedef struct
 {
@@ -35,15 +36,21 @@ typedef struct
 
 MIL_INT MFTYPE HookFrameEnd(MIL_INT HookType, MIL_ID EventID, void *UserDataPtr);
 
-class Kia_matrox
+class Kia_matrox : public QObject
 {
+    Q_OBJECT
 public:
     uint32_t get_buf_size();
     void* get_frame_buf();
     Kia_matrox();
     ~Kia_matrox();
-    void matrox_grab_frame(std::shared_ptr<Kia_data> kia_data);
+    void matrox_grab_frame(Kia_frame_parametrs *kia_frame_parametrs);
+public slots:
+    void do_read_frame(Kia_frame_parametrs *kia_frame_parametrs);
+signals:
+    void end_read_frame(quint16);
 private:
+    void wait_for_event();
     std::shared_ptr <mn::CppLinuxSerial::SerialPort> m_serial_port;
     uint16_t matrox_init();
     void matrox_close();
@@ -55,6 +62,12 @@ private:
     MIL_DIG_STRUCT m_dig = {};
     COM_STRUCT m_com = {};
     void* m_lpv_buf;
+    uint16_t m_is_load;
+    std::future<void> m_matrox_thread;
+    std::atomic_bool m_matrox_stop{false};
+    std::queue<std::pair<std::string, Kia_frame_parametrs*>> m_data;
+    std::condition_variable m_cv;
+    std::mutex m_mtx;
 };
 
 #endif // KIA_MATROX_H

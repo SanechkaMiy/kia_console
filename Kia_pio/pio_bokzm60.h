@@ -27,6 +27,10 @@ private:
     void dtmi_6_7_converter(DTMIRaw_6_7 &dtmiRaw_6_7);
     template < typename T >
     T swapHex(T value);
+    void create_list_to_prepare_data();
+    void create_list_for_mpi_arrays();
+    std::vector<std::function<void(std::vector<int16_t> value, std::pair<double, double>, double scale, uint16_t type_format, bool do_swap_hex)>> m_prepare_data;
+    std::map<uint16_t, std::vector<std::tuple<uint16_t, uint16_t, std::pair<double, double>, double, uint16_t, bool>>> m_data_manage;
 };
 
 #endif // PIO_BOKZM60_H

@@ -2,9 +2,8 @@
 #define BOKZMF_H
 #include "bokz.h"
 #include "mainStruct.h"
-#include "kia_synch_timer.h"
-#include "Kia_modules/kia_mpi.h"
 #include "Kia_pio/pio_bokzmf.h"
+#include <random>
 class Bokzmf : public Bokz
 {
     Q_OBJECT
@@ -38,15 +37,9 @@ public:
         CHRES = 1
     };
 
-    enum TYPE_ORIENTATION
-    {
-        TO_NO = 0,
-        TO_TO = 1
-    };
-
     constexpr static uint16_t kd_size = 14;
 
-    Bokzmf(uint16_t num_bokz, shared_ptr <Kia_mpi> kia_mpi, std::shared_ptr<Kia_settings> kia_settings);
+    Bokzmf(uint16_t num_bokz, std::shared_ptr<Kia_settings> kia_settings);
     void set_bokz_settings() override;
 
     uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
@@ -90,9 +83,10 @@ public:
 
 
 private:
+    void set_type_frame_functions();
+    void set_type_frame_recieve();
     uint16_t command_upn(uint16_t parametr = EP_DOALL);
     uint16_t command_chpn(uint16_t parametr = EP_DOALL);
-    std::shared_ptr<Kia_mpi> m_kia_mpi;
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::function<void()> m_set_control_word;
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
@@ -111,6 +105,10 @@ private:
     void post_status_proc(uint16_t st1, uint16_t st2, QString &str_protocol);
     void count_of_fails(uint16_t parametr = EP_DOALL);
     void send_data_read_chpn();
+
+    std::vector<std::function<void(uint16_t parametr)>> m_func_type_frames;
+    std::vector<std::function<void(uint16_t type_frame, uint16_t parametr)>> m_func_type_frame_recieve;
+    std::vector<uint32_t> m_frame_resulution;
 
     std::map<uint16_t, std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
     std::map<uint16_t, std::function<uint16_t(uint16_t parametr)>> m_map_chpn;

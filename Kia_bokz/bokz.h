@@ -24,6 +24,14 @@ public:
         MATROX_CAM_LINK = 2
     };
 
+    enum TYPE_ORIENTATION
+    {
+        TO_NO = 0,
+        TO_TO = 1,
+        TO_WAIT = 2,
+        TO_NO_ORIENT = 3
+    };
+
     virtual void set_bokz_settings() = 0;
 
     virtual uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
@@ -63,7 +71,7 @@ public:
     virtual void save_to_specific_protocol(QString str_to_protocol, uint16_t num_mpi_command,
                                            uint16_t type_window, uint16_t type_protocol, uint16_t parametr) = 0;
 
-    void continue_exchange();
+    void continue_action();
     void wait_for_event();
 
     std::tuple<double, double, double> math_alpha_delta_azimut(double Qo0, double Qo1, double Qo2, double Qo3);
@@ -83,6 +91,7 @@ public:
 
     std::condition_variable m_cv;
     uint32_t m_count_exchange = 0;
+
     virtual ~Bokz(){    cout<<"destructor bokz"<<endl;};
 signals:
     void send_to_client(quint16, QStringList);
@@ -96,8 +105,10 @@ signals:
 
     void do_exchange(Kia_data*);
 
+    void do_frame(Kia_frame_parametrs*);
 private:
     std::mutex m_mtx;
+    std::mutex m_mtx_wait_end_save_protocol;
 };
 
 #endif // BOKZ_H

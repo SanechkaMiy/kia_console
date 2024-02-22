@@ -3,7 +3,7 @@
 #include "Kia_bokz/bokzm60.h"
 #include "mainStruct.h"
 #include "Kia_mko_struct.h"
-#include "kia_cyclogram.h"
+#include "Kia_cyclogram/kia_cyclogram.h"
 #include <utility>
 class Kia_cyclogram_bokzm60 : public Kia_cyclogram
 {
@@ -61,9 +61,9 @@ private:
     uint16_t start_loc(uint16_t &num_bokz, uint16_t parametr = EP_DOALL, uint16_t count_do_loc = 0);
     uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) override;
 
-    void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) override;
-    void wait_for_bi_takt(uint16_t& num_bokz) override;
-    void wait_some_time_for_one_launch(const uint16_t& wait_s) override;
+    void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s);
+    void wait_for_bi_takt(uint16_t& num_bokz);
+    void wait_some_time_for_one_launch(const uint16_t& wait_s);
     void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) override;
     void check_work_lpi(uint16_t& num_bokz, const uint16_t& lpi);
     void create_list_power_cyclograms();
@@ -77,6 +77,7 @@ private:
     void create_list_command_for_to();
     void create_list_command_for_loc();
     void create_list_chpn();
+
     std::shared_ptr<Kia_timers> m_kia_timers;
     std::vector<std::shared_ptr<Bokz>> m_bokz;
     std::shared_ptr<Kia_settings> m_kia_settings;

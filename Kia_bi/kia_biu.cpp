@@ -308,7 +308,8 @@ void Kia_biu::stop_1s_mark()
 {
     stop_event();
     m_stop_1s_mark = false;
-    m_start_1s_mark.get();
+    //m_start_1s_mark.get();
+    std::cout <<"bi timer" << std::endl;
 }
 
 void Kia_biu::send_telemetry()
@@ -326,7 +327,7 @@ void Kia_biu::preset_telemetry(uint16_t num_ch, struct DevTelemetry* dev_tel)
     QStringList data_for_client;
     data_for_client.push_back(QString::number(m_num_bi));
     data_for_client.push_back(QString::number(num_ch));
-    data_for_client.push_back(QString::number(m_device_id));
+    data_for_client.push_back("Зав №" + QString::number(m_device_id));
     data_for_client.push_back(QString::number(dev_tel->LinkControl));
     data_for_client.push_back(QString::number(dev_tel->Consumption));
     data_for_client.push_back(QString::number(dev_tel->ProtectionModule));

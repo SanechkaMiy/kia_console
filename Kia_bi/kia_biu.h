@@ -6,7 +6,6 @@
 #include <condition_variable>
 #include <dlfcn.h>
 #include "kia_bi.h"
-#include "Kia_modules/kia_db.h"
 
 
 void wait_1s();

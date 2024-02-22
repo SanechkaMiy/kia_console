@@ -4,7 +4,7 @@ Bokz::Bokz()
 
 }
 
-void Bokz::continue_exchange()
+void Bokz::continue_action()
 {
     std::lock_guard lock(m_mtx);
     m_count_exchange++;
@@ -21,6 +21,7 @@ void Bokz::wait_for_event()
         return count != m_count_exchange;
     });
 }
+
 
 Kia_protocol_parametrs Bokz::parse_mko_protocols(std::shared_ptr<Kia_data> kia_data, int32_t bshv, uint16_t num_bokz)
 {

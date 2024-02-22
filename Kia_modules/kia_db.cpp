@@ -79,9 +79,10 @@ void Kia_db::start_commit()
             //m_work->exec(m_data.front());
             //            m_pipeline->retain();
             m_pipeline->insert(m_data.front());
-            //std::cout << m_data.front() << std::endl;
+            m_data.pop();
             if (m_count_to_send == m_interval_to_send)
             {
+
                 m_pipeline->complete();
                 //m_pipeline->retrieve();
                 //m_work->exec_prepared(m_name_prepare, m_data.front());
@@ -90,7 +91,6 @@ void Kia_db::start_commit()
             }
             if(m_interval_to_send != 0)
                 m_count_to_send++;
-            m_data.pop();
         }
     });
 }
@@ -133,6 +133,7 @@ void Kia_db::wait_for_event()
 
 void Kia_db::stop_commit()
 {
+    std::cout << "start_commit " << std::endl;
     if (m_is_con_to_db == CS_IS_ON)
     {
         if (m_stop_commit)
@@ -146,7 +147,7 @@ void Kia_db::stop_commit()
             m_cv.notify_all();
             std::cout << "stop commit!" << std::endl;
             m_stop_commit = false;
-            m_stop_commit_thread.get();
+            //m_stop_commit_thread.get();
             std::cout << "stop_commit" << std::endl;
         }
     }
@@ -209,7 +210,4 @@ void Kia_db::prepare_request(std::shared_ptr<pqxx::connection> conn)
         m_prepare_sql["prepare_insert_into_mloc"] = "CALL " + QString::fromStdString(m_type_bokz_list[m_type_bokz]) + ".insert_into_mloc('%1'::json);\n";
         break;
     }
-
-
-
 }

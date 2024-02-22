@@ -49,17 +49,7 @@ public:
     void preset_before_exchange(QString& is_error);
 private:
     virtual uint16_t start_regular_cyclogram(uint16_t &num_bokz, uint16_t count_do_cyclogram = 0, uint16_t parametr = EP_DOALL) = 0;
-
-    virtual void wait_some_time(uint16_t& num_bokz, const uint16_t& wait_s) = 0;
-    virtual void wait_for_bi_takt(uint16_t& num_bokz) = 0;
-    virtual void wait_some_time_for_one_launch(const uint16_t& wait_s) = 0;
     virtual void save_to_protocol(uint16_t& num_bokz, QString str_to_protocol,  uint16_t parametr = EP_DOALL) = 0;
-    std::vector<shared_ptr<Timer>> m_timer;
-    std::vector<shared_ptr<Kia_synch_timer>> m_kia_synch_timer;
-    std::vector<std::shared_ptr<Bokz>> m_bokz;
-    std::vector<shared_ptr<Kia_bi>> m_kia_bi;
-    shared_ptr<Kia_protocol> m_kia_protocol;
-    std::shared_ptr<Kia_settings> m_kia_settings;
 
 };
 

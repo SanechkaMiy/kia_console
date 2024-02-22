@@ -91,7 +91,6 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_state_off(uint16_t &num_bokz, uint16_t
 
 uint16_t Kia_cyclogram_bokzm60::do_restart(uint16_t num_bokz, uint16_t parametr)
 {
-
 }
 
 uint16_t Kia_cyclogram_bokzm60::cyclogram_oo(uint16_t &num_bokz, uint16_t parametr)
@@ -758,15 +757,15 @@ uint16_t Kia_cyclogram_bokzm60::start_regular_cyclogram(uint16_t &num_bokz, uint
                         break;
                 }
             }
-            if ((m_bokz[num_bokz]->m_kia_mko_struct->st_mshior.KC1 & 0xf000) == 0x4000 || m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange == KiaS_FAIL)
+            if (m_bokz[num_bokz]->m_kia_data->m_data_bokz->m_type_orient == Bokz::TO_WAIT
+                    || m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange == KiaS_FAIL)
             {
                 m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - ОШИБКА!";
-                m_bokz[num_bokz]->m_kia_data->m_data_mpi->m_status_exchange = KiaS_FAIL;
                 break;
             }
             if (count_do_cyclogram != 0)
             {
-                if ((m_bokz[num_bokz]->m_kia_mko_struct->st_mshior.KC1 & 0xf000) == 0xe000)
+                if (m_bokz[num_bokz]->m_kia_data->m_data_bokz->m_type_orient == Bokz::TO_TO)
                     index_do_cyclogram++;
             }
         }

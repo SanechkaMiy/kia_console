@@ -34,6 +34,7 @@ public:
     void start();
     void synchronize();
     void closeTimerThread();
+    void change_interval(int32_t shift);
     std::condition_variable& getEvent();
     int64_t inSleep();
     int64_t getBSHV();
