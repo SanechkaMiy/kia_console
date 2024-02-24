@@ -8,6 +8,7 @@
 #include "simpletimer.h"
 #include <mutex>
 #include <future>
+#include <math.h>
 class Kia_db : public QObject
 {
     Q_OBJECT
@@ -37,7 +38,7 @@ public:
     {
         return m_type_bi_list[type_bi];
     }
-    void set_interval_to_send(uint32_t interval)
+    void set_interval_to_send(uint32_t interval = 0)
     {
         m_interval_to_send = interval;
     }
@@ -72,7 +73,8 @@ private:
     std::string m_name_prepare;
     std::condition_variable m_cv;
     uint16_t m_is_con_to_db;
-
+    int64_t m_curr_time = 0;
+    int64_t m_prev_time = 0;
     std::vector<std::string> m_type_bokz_list = {"bokzm60", "bokzmf"};
     std::vector<std::string> m_type_bi_list = {"bkpik", "biu"};
     uint16_t m_type_bokz;

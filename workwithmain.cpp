@@ -8,7 +8,7 @@ WorkWithMain::WorkWithMain(int nPort) :
     start_tcp_server(nPort);
     set_kia_settings();
 
-    start_kia_gui();
+    //start_kia_gui();
 
 
 }
@@ -873,20 +873,12 @@ void WorkWithMain::start_kia_gui()
 bool WorkWithMain::check_used_bokz(uint16_t type_command, std::function<void (uint16_t, uint16_t)> start_exchange, uint16_t parametr)
 {
     m_kia_settings->m_data_to_protocols->m_is_protocol_used[SP_DO_AI] = KiaS_FAIL;
-    if (type_command == IS_CYCLOGRAM)
+
+    for (auto el : m_kia_bokz_db)
     {
-        for (auto el : m_kia_bokz_db)
-        {
-            el->set_interval_to_send(m_kia_settings->m_freq_bokz);
-        }
+        el->set_interval_to_send();
     }
-    else
-    {
-        for (auto el : m_kia_bokz_db)
-        {
-            el->set_interval_to_send(0);
-        }
-    }
+
     for (uint16_t num_bokz = 0; num_bokz < m_bokz.size(); ++num_bokz)
     {
         if (m_bokz[num_bokz]->m_is_used_bokz == CS_IS_ON)

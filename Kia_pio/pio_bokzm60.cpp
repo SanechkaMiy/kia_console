@@ -1050,9 +1050,9 @@ void Pio_bokzm60::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord
             temp_data.push_back(raw_data.data[ind]);
         }
         m_prepare_data[std::get<DM_TYPE_DATA>(m_data_manage[MSHI_OR][num_el])](temp_data, std::get<RANGE_VALUE>(m_data_manage[MSHI_OR][num_el]),
-                                                                    std::get<COEF_TO_SCALE>(m_data_manage[MSHI_OR][num_el]),
-                                                                    std::get<TYPE_FORMAT>(m_data_manage[MSHI_OR][num_el]),
-                                                                    std::get<DO_SWAP>(m_data_manage[MSHI_OR][num_el]));
+                                                                               std::get<COEF_TO_SCALE>(m_data_manage[MSHI_OR][num_el]),
+                                                                               std::get<TYPE_FORMAT>(m_data_manage[MSHI_OR][num_el]),
+                                                                               std::get<DO_SWAP>(m_data_manage[MSHI_OR][num_el]));
     }
 
     MSHIORRaw mshiorRaw;
@@ -1187,7 +1187,7 @@ void Pio_bokzm60::create_list_to_prepare_data()
             }
             else
             {
-                is_norma = "не норма";
+                is_norma = "(не норма)";
             }
             auto format_str = get_format_str(type_format, el * scale);
             m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, el * scale, is_norma));
@@ -1208,7 +1208,7 @@ void Pio_bokzm60::create_list_to_prepare_data()
         }
         else
         {
-            is_norma = "не норма";
+            is_norma = "(не норма)";
         }
         auto format_str = get_format_str(type_format, temp * scale);
         m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, temp * scale, is_norma));
@@ -1230,7 +1230,7 @@ void Pio_bokzm60::create_list_to_prepare_data()
         }
         else
         {
-            is_norma = "не норма";
+            is_norma = "(не норма)";
         }
         auto format_str = get_format_str(type_format, temp_float * scale);
         m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, temp_float * scale, is_norma));
@@ -1250,7 +1250,7 @@ void Pio_bokzm60::create_list_to_prepare_data()
             }
             else
             {
-                is_norma = "не норма";
+                is_norma = "(не норма)";
             }
             auto format_str = get_format_str(type_format, el * scale);
             m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, el * scale, is_norma));

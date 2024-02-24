@@ -99,13 +99,21 @@ void Kia_db::insert_data(std::string data_to_db, std::string prepare_name)
 {
     if (m_is_con_to_db == CS_IS_ON)
     {
+        m_curr_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+        if (m_prev_time != 0)
+        {
+            auto delta = m_curr_time - m_prev_time;
+            m_interval_to_send = round(delta / 1000.0);
+        }
+        m_prev_time = m_curr_time;
+        m_data.push(m_prepare_sql[prepare_name].arg(QString::fromStdString(data_to_db)).toStdString());
+        m_cv.notify_all();
         //m_prepare_sql[prepare_name].arg(QString::fromStdString(data_to_db)).toStdString()
         //std::lock_guard lock(m_mtx);
         //        m_name_prepare = prepare_name;
         //        m_data.push(data_to_db);
         //        m_cv.notify_all();
-        m_data.push(m_prepare_sql[prepare_name].arg(QString::fromStdString(data_to_db)).toStdString());
-        m_cv.notify_all();
+
         //        if (m_count_to_send == 2)
         //        {
         //            m_data.push(m_buffer_data);

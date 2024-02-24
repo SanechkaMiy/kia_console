@@ -164,6 +164,21 @@ uint16_t BokzM60::mshior(uint16_t parametr)
 
         set_data_to_device_protocol(str_protocol);
         str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_mshior.mshior_list_name, m_kia_mko_struct->st_mshior.mshior_list_data));
+
+        int16_t shift_for_numbers = -8;
+        int16_t shift_description = -50;
+
+        for (uint16_t num_list = 0; num_list < m_kia_mko_struct->st_mshior.mshior_list_name.size(); ++num_list)
+        {
+            uint16_t do_shift_left = 0;
+            if (std::get<0>(m_kia_mko_struct->m_data.data[num_list + 2])[0] == '-')
+                do_shift_left = 1;
+
+            str_protocol.push_back(helpers::format_qstring(m_kia_mko_struct->st_mshior.mshior_list_name[num_list],
+                                                           shift_description + shift_for_numbers + do_shift_left)
+                                   + std::get<0>(m_kia_mko_struct->m_data.data[num_list + 2]) + std::get<1>(m_kia_mko_struct->m_data.data[num_list + 2]) + "\n");
+        }
+
         str_protocol.push_back("\n\n");
 
         post_status_proc(m_kia_mko_struct->st_mshior.KC1, m_kia_mko_struct->st_mshior.KC2, str_protocol);
