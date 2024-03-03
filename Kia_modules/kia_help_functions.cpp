@@ -3,7 +3,7 @@
 QString helpers::angular_transform::get_degreze(double value)
 {
     value = value * 180 / PI;
-    QString ret = QString("%1").arg(QString::number(value, 'f', 3), -8) + "°" + " ";
+    QString ret = QString("%1").arg(QString::number(value), -4) + "°" + " ";
     return ret;
 }
 
@@ -12,7 +12,7 @@ QString helpers::angular_transform::get_minutes(double value)
     value = value * 180 / PI;
     auto minutes = value - (int)value;
     minutes = 60 * minutes;
-    QString ret = QString("%1").arg(QString::number((int)minutes, 'f', 3), -8) + "'" + " ";
+    QString ret = QString("%1").arg(QString::number((int)minutes), -3) + "'" + " ";
     return ret;
 }
 
@@ -302,11 +302,7 @@ QString helpers::get_status_error_mf(uint16_t value, uint16_t shift)
 }
 
 
-float helpers::uint32_to_float(uint32_t value)
-{
-    auto result = *(float*)(&value);
-    return result;
-}
+
 
 string helpers::currentDateTime()
 {
@@ -416,7 +412,7 @@ float helpers::decodeDateTime()
 
 QString helpers::format_qstring(const QString &str, const int16_t &shift, const char &fillchar)
 {
-    return QString("%1").arg(str, shift, fillchar);
+    return QString("%1 %2").arg(str, shift, fillchar);
 }
 
 std::pair<uint32_t, uint16_t> helpers::get_seconds_for_bshv()

@@ -30,6 +30,7 @@ private:
     uint16_t calculate_cs(array<uint16_t, constants::packetSize> dataWord);
     template < typename T >
     T swapHex(T value);
+    float uint32_to_float(uint32_t value);
 };
 
 #endif // PIO_BOKZMF_H

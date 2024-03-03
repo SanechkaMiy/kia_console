@@ -12,6 +12,19 @@ class ParseToDB : public QObject
 {
     Q_OBJECT
 public:
+    enum TYPE_DATA_MANAGE
+    {
+        TDM_TYPE_DATA = 0,
+        TDM_SIZE = 1,
+        TDM_STR = 2
+    };
+
+    enum TYPE_DATA_DB
+    {
+        IS_EL = 0,
+        IS_ARR = 1,
+    };
+
     ParseToDB(std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
               std::shared_ptr<Kia_data> kia_data,
               std::shared_ptr<Kia_settings> kia_settings);
@@ -57,6 +70,9 @@ private:
     std::vector<std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzmf;
     std::vector<std::function<void(uint16_t)>> m_func_to_send_bi;
 
+    void create_parse_list_data();
+    std::map<uint16_t, std::vector<std::tuple<uint16_t, uint16_t, std::string>>> m_data_manage;
+    std::vector<std::function<std::string(std::vector<std::string>)>> m_prepare_data;
 };
 
 #endif // PARSETODB_H

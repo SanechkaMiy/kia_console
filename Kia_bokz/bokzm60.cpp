@@ -156,32 +156,19 @@ uint16_t BokzM60::mshior(uint16_t parametr)
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
     m_pio_bokz->decrypt_mshior(m_kia_data->m_data_mpi->m_data_word, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
-    check_orientation();
-    send_status_info();
+    m_pio_bokz->get_index_mpi_array();
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
+        check_orientation();
+
+        send_status_info();
 
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_mshior.mshior_list_name, m_kia_mko_struct->st_mshior.mshior_list_data));
 
-        int16_t shift_for_numbers = -8;
-        int16_t shift_description = -50;
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_MSHIOR].data_description, m_kia_mko_struct->m_data[M60_MSHIOR].data));
 
-        for (uint16_t num_list = 0; num_list < m_kia_mko_struct->st_mshior.mshior_list_name.size(); ++num_list)
-        {
-            uint16_t do_shift_left = 0;
-            if (std::get<0>(m_kia_mko_struct->m_data.data[num_list + 2])[0] == '-')
-                do_shift_left = 1;
-
-            str_protocol.push_back(helpers::format_qstring(m_kia_mko_struct->st_mshior.mshior_list_name[num_list],
-                                                           shift_description + shift_for_numbers + do_shift_left)
-                                   + std::get<0>(m_kia_mko_struct->m_data.data[num_list + 2]) + std::get<1>(m_kia_mko_struct->m_data.data[num_list + 2]) + "\n");
-        }
-
-        str_protocol.push_back("\n\n");
-
-        post_status_proc(m_kia_mko_struct->st_mshior.KC1, m_kia_mko_struct->st_mshior.KC2, str_protocol);
+        post_status_proc(m_kia_data->m_data_mpi->m_data_word[2], m_kia_data->m_data_mpi->m_data_word[3], str_protocol);
 
     }
     emit send_data_to_db_bokz(M60_MSHIOR, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
@@ -1311,13 +1298,15 @@ void BokzM60::send_status_info()
     QStringList data_status;
     data_status.push_back(QString::number(ST_ST1));
     data_status.push_back(QString::number(m_num_bokz));
-    data_status.push_back(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior.KC1, 16), 4, '0') );
+    auto st1 = static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["st1"]]));
+    data_status.push_back(QString("0x%1").arg(QString::number(st1, 16), 4, '0') );
     data_status.push_back(QString::number(m_kia_data->m_data_bokz->m_type_orient));
     emit send_to_client(SEND_STATUS_INFO, data_status);
     data_status.clear();
     data_status.push_back(QString::number(ST_ST2));
     data_status.push_back(QString::number(m_num_bokz));
-    data_status.push_back(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior.KC2, 16), 4, '0') );
+    auto st2 = static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["st2"]]));
+    data_status.push_back(QString("0x%1").arg(QString::number(st2, 16), 4, '0') );
     emit send_to_client(SEND_STATUS_INFO, data_status);
 }
 
@@ -1328,20 +1317,23 @@ void BokzM60::post_status_proc(uint16_t st1, uint16_t st2, QString& str_protocol
         str_norma = " Не норма!";
     else
         str_norma = " Норма!";
+    auto alpha = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["alpha"]]);
+    auto delta = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["delta"]]);
+    auto azimuth = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["azimuth"]]);
 
     str_protocol.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers) + helpers::format_qstring("Норма кватерниона", m_kia_settings->m_format_for_desc.shift_description) + QString::number(m_kia_settings->m_data_for_db->m_norm_qaor, 'f', 4) + str_norma + "\n");
     str_protocol.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers)
                            + helpers::format_qstring("Углы ориентации", m_kia_settings->m_format_for_desc.shift_description) + "\n");
     str_protocol.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers) + helpers::format_qstring("Альфа", m_kia_settings->m_format_for_desc.shift_description)
-                           + helpers::get_degreze(m_kia_data->m_data_db->m_alpha) + helpers::get_minutes(m_kia_data->m_data_db->m_alpha) + helpers::get_seconds(m_kia_data->m_data_db->m_alpha)
-                           +  "(" + QString::number(m_kia_data->m_data_db->m_alpha, 'f', 4) + ")" + "\n");
+                           + helpers::get_degreze(alpha) + helpers::get_minutes(alpha) + helpers::get_seconds(alpha)
+                           +  "(" + QString::number(alpha, 'f', 4) + ")" + "\n");
     str_protocol.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers)
                            + helpers::format_qstring("Дельта", m_kia_settings->m_format_for_desc.shift_description)
-                           + helpers::get_degreze(m_kia_data->m_data_db->m_delta) + helpers::get_minutes(m_kia_data->m_data_db->m_delta) + helpers::get_seconds(m_kia_data->m_data_db->m_delta)
-                           + "(" + QString::number(m_kia_data->m_data_db->m_delta, 'f', 4) + ")"+ "\n");
+                           + helpers::get_degreze(delta) + helpers::get_minutes(delta) + helpers::get_seconds(delta)
+                           + "(" + QString::number(delta, 'f', 4) + ")"+ "\n");
     str_protocol.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers) + helpers::format_qstring("Азимут", m_kia_settings->m_format_for_desc.shift_description)
-                           + helpers::get_degreze(m_kia_data->m_data_db->m_azimuth) + helpers::get_minutes(m_kia_data->m_data_db->m_azimuth) + helpers::get_seconds(m_kia_data->m_data_db->m_azimuth)
-                           + "(" + QString::number(m_kia_data->m_data_db->m_azimuth, 'f', 4) + ")" + "\n\n");
+                           + helpers::get_degreze(azimuth) + helpers::get_minutes(azimuth) + helpers::get_seconds(azimuth)
+                           + "(" + QString::number(azimuth, 'f', 4) + ")" + "\n\n");
 
     str_protocol.push_back(helpers::format_qstring(" ", m_kia_settings->m_format_for_desc.shift_for_numbers)
                            + helpers::format_qstring("Расшифровка Код состояния 1:", m_kia_settings->m_format_for_desc.shift_description) + "\n");
@@ -1374,7 +1366,7 @@ void BokzM60::post_status_proc(uint16_t st1, uint16_t st2, QString& str_protocol
     str_protocol.push_back(helpers::format_qstring("1-4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                            + helpers::format_qstring("Код последнего полученного УСД", m_kia_settings->m_format_for_desc.shift_description)
                            + helpers::get_last_usd(st2, 0, {{1, "ОКР"}, {2, "ЗКР"}, {3, "НО"},
-                                                            {4, "ТО"}, {5, "ЛОК"}, {6, "ОТКЛР"}}) + "\n\n");
+                                                            {4, "ТО"}, {5, "ЛОК"}, {6, "ОТКЛР"}}) + "\n");
     str_protocol.push_back(helpers::format_qstring("9-21", m_kia_settings->m_format_for_desc.shift_for_numbers)
                            + helpers::format_qstring("Код ошибки", m_kia_settings->m_format_for_desc.shift_description)
                            + helpers::get_status_error_m60(st2, 8) + "\n\n");
@@ -1404,47 +1396,61 @@ void BokzM60::check_orientation()
 {
     const uint16_t norm_qaor = 1;
     const uint16_t max_or_is_not_def = 100;
-    m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(m_kia_mko_struct->st_mshior.Qo0,2) + pow(m_kia_mko_struct->st_mshior.Qo1,2) + pow(m_kia_mko_struct->st_mshior.Qo2, 2)  + pow(m_kia_mko_struct->st_mshior.Qo3,2));
-    std::tie(m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth) = math_alpha_delta_azimut(m_kia_mko_struct->st_mshior.Qo0, m_kia_mko_struct->st_mshior.Qo1, m_kia_mko_struct->st_mshior.Qo2, m_kia_mko_struct->st_mshior.Qo3);
-    switch(m_kia_data->m_data_mpi->m_data_word[2] & 0xf000)
+    //m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(m_kia_mko_struct->st_mshior.Qo0, 2) + pow(m_kia_mko_struct->st_mshior.Qo1,2) + pow(m_kia_mko_struct->st_mshior.Qo2, 2)  + pow(m_kia_mko_struct->st_mshior.Qo3,2));
+    m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo0"]]), 2)
+                                              + pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo1"]]), 2)
+                                              + pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo2"]]), 2)
+                                              + pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo3"]]),2));
+    //std::tie(m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth) = math_alpha_delta_azimut(m_kia_mko_struct->st_mshior.Qo0, m_kia_mko_struct->st_mshior.Qo1, m_kia_mko_struct->st_mshior.Qo2, m_kia_mko_struct->st_mshior.Qo3);
+
+    auto [alpha, delta, azimuth] = math_alpha_delta_azimut(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo0"]]),
+            std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo1"]]),
+            std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo2"]]),
+            std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo3"]]));
+
+            m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(alpha, 'f', 4), alpha, ""));
+            m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(delta, 'f', 4), delta, ""));
+            m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(azimuth, 'f', 4), azimuth, ""));
+
+            switch(m_kia_data->m_data_mpi->m_data_word[2] & 0xf000)
     {
-    case 0x2000:
-        m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
-        m_kia_data->m_data_bokz->m_type_orient = TO_NO;
-        if (m_kia_data->m_data_bokz->m_count_fail[CHNOR] >= max_or_is_not_def)
-        {
-            m_kia_data->m_data_bokz->m_count_fail[CHNRO]++;
-        }
-        break;
-    case 0xe000:
-        m_kia_data->m_data_bokz->m_type_orient = TO_TO;
-        for (uint16_t qa_index = 0; qa_index < constants::packetSize; ++qa_index)
-            m_kia_data->m_data_mpi->m_qa[qa_index] = m_kia_data->m_data_mpi->m_data_word[qa_index + 12];
+        case 0x2000:
+            m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
+            m_kia_data->m_data_bokz->m_type_orient = TO_NO;
+            if (m_kia_data->m_data_bokz->m_count_fail[CHNOR] >= max_or_is_not_def)
+            {
+                m_kia_data->m_data_bokz->m_count_fail[CHNRO]++;
+            }
+            break;
+        case 0xe000:
+            m_kia_data->m_data_bokz->m_type_orient = TO_TO;
+            for (uint16_t qa_index = 0; qa_index < constants::packetSize; ++qa_index)
+                m_kia_data->m_data_mpi->m_qa[qa_index] = m_kia_data->m_data_mpi->m_data_word[qa_index + 12];
 
-        if ((m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] - m_kia_mko_struct->st_mshior.T) != 1)
-        {
-            m_kia_data->m_data_bokz->m_count_fail[SVREM]++;
-        }
+            if ((m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] - m_kia_mko_struct->st_mshior.T) != 1)
+            {
+                m_kia_data->m_data_bokz->m_count_fail[SVREM]++;
+            }
 
-        if (round(m_kia_data->m_data_db->m_norm_qaor) != norm_qaor)
-        {
-            m_kia_data->m_data_bokz->m_count_fail[CHNKV]++;
-        }
+            if (round(m_kia_data->m_data_db->m_norm_qaor) != norm_qaor)
+            {
+                m_kia_data->m_data_bokz->m_count_fail[CHNKV]++;
+            }
 
-        if (m_kia_data->m_data_mpi->m_data_word == m_kia_data->m_data_mpi->m_prev_data_word)
-        {
-            m_kia_data->m_data_bokz->m_count_fail[CHZLP]++;
-        }
-        m_kia_data->m_data_mpi->m_prev_data_word = m_kia_data->m_data_mpi->m_data_word;
-        break;
-    case 0x4000:
-        m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
-        m_kia_data->m_data_bokz->m_type_orient = TO_WAIT;
-        break;
-    default:
-        m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
-        m_kia_data->m_data_bokz->m_type_orient = TO_NO_ORIENT;
-        break;
+            if (m_kia_data->m_data_mpi->m_data_word == m_kia_data->m_data_mpi->m_prev_data_word)
+            {
+                m_kia_data->m_data_bokz->m_count_fail[CHZLP]++;
+            }
+            m_kia_data->m_data_mpi->m_prev_data_word = m_kia_data->m_data_mpi->m_data_word;
+            break;
+        case 0x4000:
+            m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
+            m_kia_data->m_data_bokz->m_type_orient = TO_WAIT;
+            break;
+        default:
+            m_kia_data->m_data_bokz->m_count_fail[CHNOR]++;
+            m_kia_data->m_data_bokz->m_type_orient = TO_NO_ORIENT;
+            break;
     }
 }
 

@@ -4,7 +4,10 @@ Pio_bokzm60::Pio_bokzm60(std::shared_ptr<Kia_mko_struct> kia_mko_struct, std::sh
     m_kia_mko_struct(kia_mko_struct),
     m_kia_settings(kia_settings)
 {
+    load_array_param_from_json();
     create_list_to_prepare_data();
+    create_list_for_mpi_arrays();
+
 }
 
 void Pio_bokzm60::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWord, uint16_t count)
@@ -1035,28 +1038,39 @@ void Pio_bokzm60::decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord
 
 void Pio_bokzm60::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord, int32_t &bshv)
 {
+    uint16_t key_arr = M60_MSHIOR;
     m_kia_mko_struct->st_mshior.mshior_list_name.clear();
     m_kia_mko_struct->st_mshior.mshior_list_data.clear();
-
+    m_kia_mko_struct->m_data[key_arr].data.clear();
     RAW_DATA raw_data;
     memcpy(&raw_data, &dataWord, sizeof(raw_data));
 
     std::vector<int16_t> temp_data;
-    for (uint16_t num_el = 0; num_el < raw_data.data.size(); num_el++)
+    uint16_t ind_data_manage = 0;
+    uint16_t num_el = 0;
+    while(num_el < raw_data.data.size())
     {
         temp_data.clear();
-        for (uint16_t ind = num_el; ind < num_el + std::get<COUNT_EL_IN_ARR>(m_data_manage[MSHI_OR][num_el]); ind++)
+        for (uint16_t ind = num_el; ind < num_el + std::get<COUNT_EL_IN_ARR>(m_data_manage[key_arr][ind_data_manage]); ind++)
         {
             temp_data.push_back(raw_data.data[ind]);
         }
-        m_prepare_data[std::get<DM_TYPE_DATA>(m_data_manage[MSHI_OR][num_el])](temp_data, std::get<RANGE_VALUE>(m_data_manage[MSHI_OR][num_el]),
-                                                                               std::get<COEF_TO_SCALE>(m_data_manage[MSHI_OR][num_el]),
-                                                                               std::get<TYPE_FORMAT>(m_data_manage[MSHI_OR][num_el]),
-                                                                               std::get<DO_SWAP>(m_data_manage[MSHI_OR][num_el]));
+        m_prepare_data[std::get<DM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](key_arr, temp_data, std::get<RANGE_VALUE>(m_data_manage[key_arr][ind_data_manage]),
+                                                                                        std::get<COEF_TO_SCALE>(m_data_manage[key_arr][ind_data_manage]),
+                                                                                        std::get<TYPE_FORMAT>(m_data_manage[key_arr][ind_data_manage]),
+                                                                                        std::get<DO_SWAP>(m_data_manage[key_arr][ind_data_manage]));
+        num_el = num_el + std::get<COUNT_EL_IN_ARR>(m_data_manage[key_arr][ind_data_manage]);
+        ind_data_manage++;
     }
+    m_kia_mko_struct->m_data[key_arr].data.erase(m_kia_mko_struct->m_data[key_arr].data.begin(), m_kia_mko_struct->m_data[key_arr].data.begin() + 2);
+    std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[key_arr].data[m_index_mpi_array[key_arr]["t"]]) = std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[key_arr].data[m_index_mpi_array[key_arr]["bshv"]])
+            + " (" + QString::number((int)(bshv - std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[key_arr].data[m_index_mpi_array[key_arr]["bshv"]]))) +  ")";
+
 
     MSHIORRaw mshiorRaw;
     memcpy(&mshiorRaw,&dataWord,sizeof(mshiorRaw));
+
+
     m_kia_mko_struct->st_mshior.KC1 = mshiorRaw.KC1;
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("1", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Код состояния 1 (Status1)");
@@ -1073,52 +1087,52 @@ void Pio_bokzm60::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Время привязки информации");
 
-    m_kia_mko_struct->st_mshior.OZx = helpers::uint32_to_float(swapHex(mshiorRaw.OZx));
+    m_kia_mko_struct->st_mshior.OZx = uint32_to_float(swapHex(mshiorRaw.OZx));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.OZx,'f',4), m_kia_mko_struct->st_mshior.OZx, -m_max_double_value, m_max_double_value));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("5,6", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Координаты оси OZx ПСК в ИСК");
 
-    m_kia_mko_struct->st_mshior.OZy = helpers::uint32_to_float(swapHex(mshiorRaw.OZy));
+    m_kia_mko_struct->st_mshior.OZy = uint32_to_float(swapHex(mshiorRaw.OZy));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.OZy,'f',4), m_kia_mko_struct->st_mshior.OZy, -m_max_double_value, m_max_double_value));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("7,8", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Координаты оси OZy ПСК в ИСК");
 
-    m_kia_mko_struct->st_mshior.OZz = helpers::uint32_to_float(swapHex(mshiorRaw.OZz));
+    m_kia_mko_struct->st_mshior.OZz = uint32_to_float(swapHex(mshiorRaw.OZz));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.OZz,'f',4), m_kia_mko_struct->st_mshior.OZz, -m_max_double_value, m_max_double_value));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("9,10", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Координаты оси OZz ПСК в ИСК");
 
-    m_kia_mko_struct->st_mshior.Qo0 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo0));
+    m_kia_mko_struct->st_mshior.Qo0 = uint32_to_float(swapHex(mshiorRaw.Qo0));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.Qo0,'f',4), m_kia_mko_struct->st_mshior.Qo0, -m_max_double_value, m_max_double_value));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("11,12", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Кватернион ориентации, Qo0");
 
-    m_kia_mko_struct->st_mshior.Qo1 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo1));
+    m_kia_mko_struct->st_mshior.Qo1 = uint32_to_float(swapHex(mshiorRaw.Qo1));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.Qo1,'f',4), m_kia_mko_struct->st_mshior.Qo1, -m_max_double_value, m_max_double_value));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("13,14", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Кватернион ориентации, Qo1");
 
-    m_kia_mko_struct->st_mshior.Qo2 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo2));
+    m_kia_mko_struct->st_mshior.Qo2 = uint32_to_float(swapHex(mshiorRaw.Qo2));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.Qo2,'f',4), m_kia_mko_struct->st_mshior.Qo2, -m_max_double_value, m_max_double_value));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("15,16", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Кватернион ориентации, Qo2");
 
-    m_kia_mko_struct->st_mshior.Qo3 = helpers::uint32_to_float(swapHex(mshiorRaw.Qo3));
+    m_kia_mko_struct->st_mshior.Qo3 = uint32_to_float(swapHex(mshiorRaw.Qo3));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.Qo3,'f',4), m_kia_mko_struct->st_mshior.Qo3, -m_max_double_value, m_max_double_value));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("17,18", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Кватернион ориентации, Qo3");
 
-    m_kia_mko_struct->st_mshior.wox = helpers::uint32_to_float(swapHex(mshiorRaw.wox)) * M_PI * (pow(2, -5));
+    m_kia_mko_struct->st_mshior.wox = uint32_to_float(swapHex(mshiorRaw.wox)) * M_PI * (pow(2, -5));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.wox,'f',4), m_kia_mko_struct->st_mshior.wox, -0.1, 0.1));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("19,20", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Угловая скорость по оптическим измерениям, Wox");
 
-    m_kia_mko_struct->st_mshior.woy = helpers::uint32_to_float(swapHex(mshiorRaw.woy)) * M_PI * (pow(2, -5));
+    m_kia_mko_struct->st_mshior.woy = uint32_to_float(swapHex(mshiorRaw.woy)) * M_PI * (pow(2, -5));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("21,22", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Угловая скорость по оптическим измерениям, Woy");
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.woy,'f',4), m_kia_mko_struct->st_mshior.woy, -0.1, 0.1));
 
-    m_kia_mko_struct->st_mshior.woz = helpers::uint32_to_float(swapHex(mshiorRaw.woz)) * M_PI * (pow(2, -5));
+    m_kia_mko_struct->st_mshior.woz = uint32_to_float(swapHex(mshiorRaw.woz)) * M_PI * (pow(2, -5));
     m_kia_mko_struct->st_mshior.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior.woz,'f',4), m_kia_mko_struct->st_mshior.woz, -0.1, 0.1));
     m_kia_mko_struct->st_mshior.mshior_list_name.push_back(helpers::format_qstring("23,24", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                            + "Угловая скорость по оптическим измерениям, Woz");
@@ -1134,6 +1148,11 @@ void Pio_bokzm60::decrypt_chpn(array<uint16_t, constants::packetSize> dataWord, 
 void Pio_bokzm60::decrypt_chkd(array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr)
 {
 
+}
+
+std::map<uint16_t, std::map<string, uint16_t> > Pio_bokzm60::get_index_mpi_array()
+{
+    return m_index_mpi_array;
 }
 
 Pio_bokzm60::~Pio_bokzm60()
@@ -1171,12 +1190,52 @@ void Pio_bokzm60::dtmi_6_7_converter(DTMIRaw_6_7 &dtmiRaw_6_7)
     }
 }
 
+float Pio_bokzm60::uint32_to_float(uint32_t value)
+{
+    uint32_t masca = 0x00000001;
+    uint32_t temp = 0;
+    float result = 0.0;
+    for (int i = 0; i < 32; ++i)
+    {
+        temp = (value>>i) & (masca);
+        if (i < 31)
+        {
+            if (temp == 1)
+            {
+                //printf("%04x\n", temp);
+                result = result + pow(2,(-31 + i));
+                //cout<<" "<<i<<" "<<result<<endl;
+
+            }
+        }
+        if (i == 31)
+        {
+            if (temp == 1)
+            {
+                result = -result;
+            }
+        }
+
+    }
+    return result;
+}
+
+void Pio_bokzm60::load_array_param_from_json()
+{
+    std::ifstream f("data_m60_mshior.json", std::ifstream::in);
+    json j;
+    f >> j;
+    for (uint16_t ind = 0; ind < j.size(); ind++)
+    {
+        add_to_list_description(M60_MSHIOR, QString::fromStdString(j[std::to_string(ind)]["  № СД"]), QString::fromStdString(j[std::to_string(ind)]["  Наименование параметра"]));
+    }
+}
+
 
 
 void Pio_bokzm60::create_list_to_prepare_data()
 {
-
-    auto add_to_int16_t = [this](std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, bool do_swap_hex)
+    auto add_to_int16_t = [this](uint16_t key_arr, std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
     {
         for (auto el : value)
         {
@@ -1189,18 +1248,22 @@ void Pio_bokzm60::create_list_to_prepare_data()
             {
                 is_norma = "(не норма)";
             }
-            auto format_str = get_format_str(type_format, el * scale);
-            m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, el * scale, is_norma));
+
+            auto format_str = get_format_str(type_format, static_cast<int16_t>(el * scale));
+
+            m_kia_mko_struct->m_data[key_arr].data.push_back(std::make_tuple(format_str, el * scale, is_norma));
         }
     };
     m_prepare_data.push_back(add_to_int16_t);
 
-    auto add_to_int32_t = [this](std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, bool do_swap_hex)
+    auto add_to_int32_t = [this](uint16_t key_arr, std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
     {
-        int32_t temp = 0;
-        memcpy(&temp, &value, sizeof(temp));
-        if (do_swap_hex)
+        int32_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+
+        if (do_proc.first)
             temp = swapHex(temp);
+
         QString is_norma;
         if (temp * scale >= range.first && temp * scale <= range.second)
         {
@@ -1210,19 +1273,21 @@ void Pio_bokzm60::create_list_to_prepare_data()
         {
             is_norma = "(не норма)";
         }
-        auto format_str = get_format_str(type_format, temp * scale);
-        m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, temp * scale, is_norma));
+
+        auto format_str = QString::number(static_cast<int32_t>(temp * scale));
+        m_kia_mko_struct->m_data[key_arr].data.push_back(std::make_tuple(format_str, temp * scale, is_norma));
     };
     m_prepare_data.push_back(add_to_int32_t);
 
-    auto add_to_float = [this](std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, bool do_swap_hex)
+    auto add_to_float = [this](uint16_t key_arr, std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
     {
         int32_t temp = 0;
-        memcpy(&temp, &value, sizeof(temp));
-        if (do_swap_hex)
+        memcpy(&temp, &value[0], sizeof(temp));
+        if (do_proc.first)
             temp = swapHex(temp);
-        float temp_float = 0;
-        memcpy(&temp_float, &value, sizeof(temp));
+        float temp_float;
+        if (do_proc.second)
+            temp_float = uint32_to_float(temp);
         QString is_norma;
         if (temp_float * scale >= range.first && temp_float * scale <= range.second)
         {
@@ -1232,12 +1297,13 @@ void Pio_bokzm60::create_list_to_prepare_data()
         {
             is_norma = "(не норма)";
         }
-        auto format_str = get_format_str(type_format, temp_float * scale);
-        m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, temp_float * scale, is_norma));
+        auto format_str = QString::number(static_cast<float>(temp_float * scale), 'f',4);
+
+        m_kia_mko_struct->m_data[key_arr].data.push_back(std::make_tuple(format_str, temp_float * scale, is_norma));
     };
     m_prepare_data.push_back(add_to_float);
 
-    auto add_to_int8_t = [this](std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, bool do_swap_hex)
+    auto add_to_int8_t = [this](uint16_t key_arr, std::vector<int16_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
     {
         std::array<int8_t, 2> temp;
         memcpy(&temp, &value, sizeof(temp));
@@ -1252,8 +1318,8 @@ void Pio_bokzm60::create_list_to_prepare_data()
             {
                 is_norma = "(не норма)";
             }
-            auto format_str = get_format_str(type_format, el * scale);
-            m_kia_mko_struct->m_data.data.push_back(std::make_tuple(format_str, el * scale, is_norma));
+            auto format_str = get_format_str(type_format, static_cast<int8_t>(el * scale));
+            m_kia_mko_struct->m_data[key_arr].data.push_back(std::make_tuple(format_str, el * scale, is_norma));
         }
     };
     m_prepare_data.push_back(add_to_int8_t);
@@ -1261,27 +1327,67 @@ void Pio_bokzm60::create_list_to_prepare_data()
 
 void Pio_bokzm60::create_list_for_mpi_arrays()
 {
+    m_index_mpi_array[M60_MSHIOR]["st1"] = 0;
+    m_index_mpi_array[M60_MSHIOR]["st2"] = 1;
+    m_index_mpi_array[M60_MSHIOR]["t"] = 2;
+    m_index_mpi_array[M60_MSHIOR]["qo0"] = 6;
+    m_index_mpi_array[M60_MSHIOR]["qo1"] = 7;
+    m_index_mpi_array[M60_MSHIOR]["qo2"] = 8;
+    m_index_mpi_array[M60_MSHIOR]["qo3"] = 9;
+    m_index_mpi_array[M60_MSHIOR]["alpha"] = 13;
+    m_index_mpi_array[M60_MSHIOR]["delta"] = 14;
+    m_index_mpi_array[M60_MSHIOR]["azimuth"] = 15;
 
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_HEX, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_HEX, true));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_HEX, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_HEX, std::make_pair(true, true)));
 
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_HEX, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_HEX, true));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_HEX, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_HEX, std::make_pair(true, true)));
 
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(INT32, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_INT, true));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(INT32, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_INT, std::make_pair(true, true)));
 
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_FLOAT, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_FLOAT, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_FLOAT, true));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_FLOAT, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_FLOAT, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_FLOAT, std::make_pair(true, true)));
 
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_FLOAT, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_FLOAT, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_FLOAT, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), 1, TDF_FLOAT, true));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_FLOAT, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_FLOAT, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_FLOAT, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_FLOAT, std::make_pair(true, true)));
 
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), PI * pow(2, -5), TDF_FLOAT, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), PI * pow(2, -5), TDF_FLOAT, true));
-    m_data_manage[MSHI_OR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value), PI * pow(2, -5), TDF_FLOAT, true));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        PI * pow(2, -5), TDF_FLOAT, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        PI * pow(2, -5), TDF_FLOAT, std::make_pair(true, true)));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(FLOAT, 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        PI * pow(2, -5), TDF_FLOAT, std::make_pair(true, true)));
+
+    uint16_t count_of_rezerv = 8;
+    for (uint16_t count = 0; count < count_of_rezerv; count++)
+    {
+        m_data_manage[M60_MSHIOR].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                            1, TDF_HEX, std::make_pair(true, true)));
+    }
+
+
+}
+
+void Pio_bokzm60::add_to_list_description(uint16_t key_arr, const QString &num_value, const QString &description)
+{
+    m_kia_mko_struct->m_data[key_arr].data_description.push_back(helpers::format_qstring(num_value, m_kia_settings->m_format_for_desc.shift_for_numbers)
+                                                                 + description);
 }
 
 template<typename T>

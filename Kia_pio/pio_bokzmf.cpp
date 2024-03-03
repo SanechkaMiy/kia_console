@@ -11,6 +11,7 @@ Pio_bokzmf::Pio_bokzmf(std::shared_ptr<Kia_mko_struct> kia_mko_struct,
 
 }
 
+
 void Pio_bokzmf::decrypt_dtmi_loc(array<uint16_t, constants::packetSize> dataWord, uint16_t count)
 {
 
@@ -236,7 +237,7 @@ void Pio_bokzmf::decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, u
         memcpy(&m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf, &dtmiRaw_1, sizeof(m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf));
         for (uint16_t num_q = 0; num_q < m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Qlst.size(); num_q++)
         {
-            m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Qlst[num_q] = helpers::uint32_to_float(swapHex(dtmiRaw_1.Qlst[num_q]));
+            m_kia_mko_struct->st_dtmi_mf.dtmi_1_mf.Qlst[num_q] = uint32_to_float(swapHex(dtmiRaw_1.Qlst[num_q]));
         }
         break;
     case 1:
@@ -1764,38 +1765,38 @@ void Pio_bokzmf::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord,
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Tms), m_kia_mko_struct->st_mshior_mf.Tms, 0, 1000));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("5", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
-    m_kia_mko_struct->st_mshior_mf.Qo0 = helpers::uint32_to_float(mshiorRaw.Qo0);
+    m_kia_mko_struct->st_mshior_mf.Qo0 = uint32_to_float(mshiorRaw.Qo0);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo0,'f',8), m_kia_mko_struct->st_mshior_mf.Qo0, 0, 1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("6,7", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo0");
 
 
-    m_kia_mko_struct->st_mshior_mf.Qo1 = helpers::uint32_to_float((mshiorRaw.Qo1));
+    m_kia_mko_struct->st_mshior_mf.Qo1 = uint32_to_float((mshiorRaw.Qo1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo1,'f',8), m_kia_mko_struct->st_mshior_mf.Qo1, -1, 1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("8,9", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo1");
 
-    m_kia_mko_struct->st_mshior_mf.Qo2 = helpers::uint32_to_float((mshiorRaw.Qo2));
+    m_kia_mko_struct->st_mshior_mf.Qo2 = uint32_to_float((mshiorRaw.Qo2));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo2,'f',8), m_kia_mko_struct->st_mshior_mf.Qo2, -1, 1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("10,11", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo2");
 
-    m_kia_mko_struct->st_mshior_mf.Qo3 = helpers::uint32_to_float((mshiorRaw.Qo3));
+    m_kia_mko_struct->st_mshior_mf.Qo3 = uint32_to_float((mshiorRaw.Qo3));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Qo3,'f',8), m_kia_mko_struct->st_mshior_mf.Qo3, -1, 1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("12,13", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Кватернион ориентации, Qo3");
 
-    m_kia_mko_struct->st_mshior_mf.wox = helpers::uint32_to_float((mshiorRaw.wox));
+    m_kia_mko_struct->st_mshior_mf.wox = uint32_to_float((mshiorRaw.wox));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.wox,'f',8), m_kia_mko_struct->st_mshior_mf.wox, -0.1, 0.1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("14,15", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Угловая скорость по оптическим измерениям, Wox");
 
-    m_kia_mko_struct->st_mshior_mf.woy = helpers::uint32_to_float((mshiorRaw.woy));
+    m_kia_mko_struct->st_mshior_mf.woy = uint32_to_float((mshiorRaw.woy));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("16,17", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Угловая скорость по оптическим измерениям, Woy");
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.woy,'f', 8), m_kia_mko_struct->st_mshior_mf.woy, -0.1, 0.1));
 
-    m_kia_mko_struct->st_mshior_mf.woz = helpers::uint32_to_float((mshiorRaw.woz));
+    m_kia_mko_struct->st_mshior_mf.woz = uint32_to_float((mshiorRaw.woz));
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.woz,'f', 8), m_kia_mko_struct->st_mshior_mf.woz, -0.1, 0.1));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("18,19", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Угловая скорость по оптическим измерениям, Woz");
@@ -1944,12 +1945,23 @@ void Pio_bokzmf::decrypt_chkd(array<uint16_t, constants::packetSize> dataWord, u
     }
 }
 
+std::map<uint16_t, std::map<string, uint16_t> > Pio_bokzmf::get_index_mpi_array()
+{
+
+}
+
 
 template<typename T>
 T Pio_bokzmf::swapHex(T value)
 {
     value = ((value & 0x0000ffff) << 16) | ((value & 0xffff) >> 16);
     return value;
+}
+
+float Pio_bokzmf::uint32_to_float(uint32_t value)
+{
+    auto result = *(float*)(&value);
+    return result;
 }
 
 Pio_bokzmf::~Pio_bokzmf()

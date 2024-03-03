@@ -28,7 +28,6 @@ QString get_status_error_m60(uint16_t value, uint16_t shift);
 QString get_status(uint16_t value, uint16_t shift, QString is_true, QString is_false);
 QString get_status_error_mf(uint16_t value, uint16_t shift);
 QString get_status_dev(uint16_t value, uint16_t shift);
-float uint32_to_float(uint32_t value);
 std::string currentDateTime();
 uint32_t current_hours();
 float decodeDateTime();

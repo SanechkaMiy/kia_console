@@ -120,7 +120,6 @@ Kia_protocol_parametrs Bokz::parse_mko_protocols(std::shared_ptr<Kia_data> kia_d
                                         .arg(QString::number(kia_data->m_data_mpi->m_wResult)), -11)
                                    .arg(error));
     }
-
     Kia_protocol_parametrs kia_protocol_parametrs;
     kia_protocol_parametrs.num_bokz = num_bokz;
     kia_protocol_parametrs.data_to_out = str_mpi_protocol;
@@ -150,6 +149,26 @@ QString Bokz::set_data_from_mko_struct(QStringList list_name, std::vector<std::t
                                                        + shift_for_numbers + do_shift_left)
                                + std::get<PAD_NAME>(list_data[num_list]) + is_norma + "\n");
     }
+    return str_protocol;
+}
+
+QString Bokz::set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, QString> > list_data)
+{
+    QString str_protocol;
+    int16_t shift_for_numbers = -8;
+    int16_t shift_description = -50;
+    for (uint16_t num_list = 0; num_list < list_name.size(); ++num_list)
+    {
+        uint16_t do_shift_left = 0;
+        if (std::get<Pio_bokz::STRING_SHOW>(list_data[num_list])[0] == '-')
+            do_shift_left = 1;
+
+        str_protocol.push_back(helpers::format_qstring(list_name[num_list],
+                                                       shift_description + shift_for_numbers + do_shift_left)
+                               + std::get<Pio_bokz::STRING_SHOW>(list_data[num_list])
+                + std::get<Pio_bokz::STATUS>(list_data[num_list]) + "\n");
+    }
+    str_protocol.push_back("\n\n");
     return str_protocol;
 }
 

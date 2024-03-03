@@ -9,6 +9,7 @@
 #include <mutex>
 #include <future>
 #include <math.h>
+#include <QVariant>
 class Kia_db : public QObject
 {
     Q_OBJECT

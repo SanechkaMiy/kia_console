@@ -2074,13 +2074,13 @@ struct RAW_DATA
 #pragma pack(push, 1)
 struct DATA
 {
+    QStringList data_description;
     std::vector<std::tuple<QString, double, QString>> data;
 };
 #pragma pack(pop)
 struct Kia_mko_struct
 {
-    RAW_DATA m_raw_data;
-    DATA m_data;
+    std::map<uint16_t, DATA> m_data;
     SHTMI1 st_shtmi1;
     SHTMI2 st_shtmi2;
     MSHIOR st_mshior;

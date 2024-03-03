@@ -1,4 +1,4 @@
-#include "parsetodb.h"
+﻿#include "parsetodb.h"
 
 ParseToDB::ParseToDB(std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
                      std::shared_ptr<Kia_data> kia_data,
@@ -17,6 +17,41 @@ ParseToDB::~ParseToDB()
 
 void ParseToDB::sendDataIntoMSHIOR_M60(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st_mshior)
 {
+    DATA data_mshior;
+    uint16_t key_arr = M60_MSHIOR;
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st2"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "t"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozx"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozy"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozz"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_ARR, 4, "qo"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "wox"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "woy"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "woz"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "alpha"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "delta"));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "azimuth"));
+    std::vector<std::string> temp;
+    uint16_t ind = 0;
+    uint16_t ind_data_manage = 0;
+    std::string data = "{";
+    while (ind < m_data_manage[M60_MSHIOR].size())
+    {
+        temp.clear();
+        for (uint16_t num_el = ind; num_el < ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]); num_el++)
+        {
+            temp.push_back(std::get<Pio_bokz::STRING_SHOW>(data_mshior.data[num_el]).toStdString());
+        }
+        auto str_value = m_prepare_data[std::get<TDM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](temp);
+        data = data + "\"" + std::get<TDM_STR>(m_data_manage[key_arr][ind_data_manage]) + "\":" + str_value + ",";
+        ind = ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]);
+        ind_data_manage++;
+    }
+    data.pop_back();
+    data = data + "}";
+
+
     char data_into_mshior[1024];
     sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
                              "\"serial_num\":%i,"
@@ -780,7 +815,7 @@ void ParseToDB::create_list_func_to_send_bokz()
     };
     m_func_to_send_data_bokzm60.push_back(func_dtmi_loc_m60);
 
-//-------------- mf
+    //-------------- mf
     auto func_shtmi1_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoSHTMI1_MF(num_bokz, bshv, kia_mko_struct.st_shtmi1_mf);
@@ -825,6 +860,30 @@ void ParseToDB::create_list_func_to_send_bi()
         send_to_bi(num_bi);
     };
     m_func_to_send_bi.push_back(func_shtmi2_m60);
+}
+
+void ParseToDB::create_parse_list_data()
+{
+    auto func_is_el = [this](std::vector<std::string> data)
+    {
+        std::string ret;
+        ret = data[0];
+        return ret;
+    };
+    m_prepare_data.push_back(func_is_el);
+    auto func_is_arr = [this](std::vector<std::string> data)
+    {
+        std::string ret;
+        ret = "{";
+        for (uint16_t ind = 0; ind < data.size(); ind++)
+        {
+            ret = ret + data[ind] + ",";
+        }
+        ret.pop_back();
+        ret.push_back('}');
+        return ret;
+    };
+    m_prepare_data.push_back(func_is_arr);
 }
 
 

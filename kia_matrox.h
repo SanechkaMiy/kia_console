@@ -9,7 +9,7 @@
 #include <math.h>
 #include "Kia_modules/kia_help_functions.h"
 #include <queue>
-#define DCF_DUAL    "Radient eV-CL2.dcf"//Radient eV-CL2.dcf
+#define DCF_DUAL    "Radient eV-CL Dual-Base.dcf"//Radient eV-CL2.dcf
 #define CMD_GRAB    0x04 // 0x20
 typedef struct
 {
@@ -18,6 +18,7 @@ typedef struct
     MIL_ID  m_dig_id;
     MIL_ID  m_buf_id;
     MIL_INT m_num_com;
+    MIL_INT m_board_type;
 
 } MIL_SYS_STRUCT;
 

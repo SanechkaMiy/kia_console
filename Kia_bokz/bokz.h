@@ -32,6 +32,8 @@ public:
         TO_NO_ORIENT = 3
     };
 
+
+
     virtual void set_bokz_settings() = 0;
 
     virtual uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,
@@ -83,6 +85,7 @@ public:
                                                int32_t bshv, uint16_t num_bokz);
 
     QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double>> list_data);
+    QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, QString>> list_data);
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;
     std::shared_ptr<Pio_bokz> m_pio_bokz;
