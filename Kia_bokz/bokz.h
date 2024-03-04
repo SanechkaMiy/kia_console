@@ -102,6 +102,7 @@ signals:
     void send_to_save_protocol(Kia_protocol_parametrs);
     void save_to_frames_protocols(const Kia_frame_parametrs&);
 
+    void send_data_to_db(qint16, QString, quint16, qint32, DATA);
     void send_data_to_db_bokz(qint16, quint16, qint32, Kia_mko_struct);
     void send_data_to_db_for_frames(quint16, qint32);
     void send_data_to_db_for_mpi(quint16, qint32);

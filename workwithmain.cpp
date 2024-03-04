@@ -83,7 +83,7 @@ void WorkWithMain::close_db_connection()
 
 WorkWithMain::~WorkWithMain()
 {
-    m_process->terminate();
+    //m_process->terminate();
     cout <<"Destructor WorkWithMain"<<endl;
     delete_all_threads();
     std::cout << "delete all_threads" << std::endl;
@@ -770,6 +770,7 @@ void WorkWithMain::kia_init()
     qRegisterMetaType<Kia_frame_parametrs>();
     qRegisterMetaType<Kia_mko_struct>();
     qRegisterMetaType<Kia_data>();
+    qRegisterMetaType<DATA>();
 }
 
 void WorkWithMain::init_db()
@@ -842,6 +843,8 @@ void WorkWithMain::init_bokz()
 
         m_parse_db_bokz.push_back(std::make_shared<ParseToDB>(m_kia_bokz_db, m_bokz[num_bokz]->m_kia_data, m_kia_settings));
         m_parse_db_bokz[num_bokz]->create_list_func_to_send_bokz();
+
+        connect(m_bokz[num_bokz].get(), SIGNAL(send_data_to_db(qint16, QString, quint16, qint32, DATA)), m_parse_db_bokz[num_bokz].get(), SLOT(send_data_to_db_slot(qint16, QString, quint16, qint32, DATA)));
 
         connect(m_bokz[num_bokz].get(), SIGNAL(send_data_to_db_bokz(qint16, quint16, qint32, Kia_mko_struct)), m_parse_db_bokz[num_bokz].get(), SLOT(send_data_to_db_for_bokz(qint16, quint16, qint32, Kia_mko_struct)));
         connect(m_bokz[num_bokz].get(), SIGNAL(send_data_to_db_for_frames(quint16, qint32)), m_parse_db_bokz[num_bokz].get(), SLOT(send_data_to_db_for_frames(quint16, qint32)));

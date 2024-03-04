@@ -13,6 +13,7 @@ public:
     void decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, uint16_t count) override;
     void parse_dtmi_loc() override;
     void parse_dtmi(uint16_t type_orient) override;
+    void decrypt(uint16_t key_arr, array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr = 0) override;
     void decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_mshior(array<uint16_t, constants::packetSize> dataWord, int32_t& bshv) override;
@@ -20,7 +21,7 @@ public:
     void decrypt_chpn(array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr) override;
     void decrypt_chkd(array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr) override;
 
-    virtual std::map<uint16_t, std::map<std::string, uint16_t>> get_index_mpi_array() = 0;
+    std::map<uint16_t, std::map<std::string, uint16_t>> get_index_mpi_array() override;
     ~Pio_bokzm60();
 private:
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;
@@ -35,9 +36,8 @@ private:
     void create_list_to_prepare_data();
     void create_list_for_mpi_arrays();
     void add_to_list_description(uint16_t key_arr, const QString& num_value, const QString& description);
-    std::vector<std::function<void(uint16_t key_arr, std::vector<int16_t> value, std::pair<double, double>, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)>> m_prepare_data;
-    std::map<uint16_t, std::vector<std::tuple<uint16_t, uint16_t, std::pair<double, double>, double, uint16_t, std::pair<bool, bool>>>> m_data_manage;
-    std::map<uint16_t, std::map<std::string, uint16_t>> m_index_mpi_array;
+    std::vector<std::function<void(uint16_t key_arr, std::vector<uint16_t> value, std::pair<double, double>, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)>> m_prepare_data;
+    std::map<uint16_t, std::vector<std::tuple<int16_t, uint16_t, std::pair<double, double>, double, uint16_t, std::pair<bool, bool>>>> m_data_manage;
 };
 
 #endif // PIO_BOKZM60_H

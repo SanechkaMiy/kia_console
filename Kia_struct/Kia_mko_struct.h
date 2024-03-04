@@ -2067,7 +2067,7 @@ const static uint32_t packet_size = 34;
 #pragma pack(push, 1)
 struct RAW_DATA
 {
-    std::array<int16_t, packet_size> data;
+    std::array<uint16_t, packet_size> data;
 };
 #pragma pack(pop)
 
@@ -2076,7 +2076,7 @@ struct DATA
 {
     QStringList data_description;
     std::vector<std::tuple<QString, double, QString>> data;
-};
+}; Q_DECLARE_METATYPE(DATA)
 #pragma pack(pop)
 struct Kia_mko_struct
 {

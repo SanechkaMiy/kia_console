@@ -8,7 +8,8 @@ ParseToDB::ParseToDB(std::array<std::shared_ptr<Kia_db>, constants::max_count_sa
   , m_kia_settings(kia_settings)
 
 {
-
+    create_parse_list_data();
+    create_list_for_mpi_arrays();
 }
 ParseToDB::~ParseToDB()
 {
@@ -17,65 +18,34 @@ ParseToDB::~ParseToDB()
 
 void ParseToDB::sendDataIntoMSHIOR_M60(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st_mshior)
 {
-    DATA data_mshior;
-    uint16_t key_arr = M60_MSHIOR;
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st2"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "t"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozx"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozy"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozz"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_ARR, 4, "qo"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "wox"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "woy"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "woz"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "alpha"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "delta"));
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "azimuth"));
-    std::vector<std::string> temp;
-    uint16_t ind = 0;
-    uint16_t ind_data_manage = 0;
-    std::string data = "{";
-    while (ind < m_data_manage[M60_MSHIOR].size())
-    {
-        temp.clear();
-        for (uint16_t num_el = ind; num_el < ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]); num_el++)
-        {
-            temp.push_back(std::get<Pio_bokz::STRING_SHOW>(data_mshior.data[num_el]).toStdString());
-        }
-        auto str_value = m_prepare_data[std::get<TDM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](temp);
-        data = data + "\"" + std::get<TDM_STR>(m_data_manage[key_arr][ind_data_manage]) + "\":" + str_value + ",";
-        ind = ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]);
-        ind_data_manage++;
-    }
-    data.pop_back();
-    data = data + "}";
 
 
-    char data_into_mshior[1024];
-    sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
-                             "\"serial_num\":%i,"
-                             "\"datetime\":\"%s\","
-                             "\"host_id\":\"%s\","
-                             "\"unit_id\":\"%s\","
-                             "\"bshv\":%d,"
-                             "\"st1\":%i,"
-                             "\"st2\":%i,"
-                             "\"t\":%i,"
-                             "\"ozx\":%f,"
-                             "\"ozy\":%f,"
-                             "\"ozz\":%f,"
-                             "\"qo\":\"{%f,%f,%f,%f}\","
-                             "\"wox\":%f,"
-                             "\"woy\":%f,"
-                             "\"woz\":%f,"
-                             "\"alpha\":%f,"
-                             "\"delta\":%f,"
-                             "\"azimuth\":%f}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz, m_kia_data->m_data_db->m_datetime.c_str(), m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(),
-            bshv, st_mshior.KC1 , st_mshior.KC2 , st_mshior.T, st_mshior.OZx,
-            st_mshior.OZy, st_mshior.OZz, st_mshior.Qo0, st_mshior.Qo1, st_mshior.Qo2, st_mshior.Qo3, st_mshior.wox,
-            st_mshior.woy, st_mshior.woz, m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth);
-    m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
+//    char data_into_mshior[1024];
+//    sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
+//                             "\"serial_num\":%i,"
+//                             "\"datetime\":\"%s\","
+//                             "\"host_id\":\"%s\","
+//                             "\"unit_id\":\"%s\","
+//                             "\"bshv\":%d,"
+//                             "\"st1\":%i,"
+//                             "\"st2\":%i,"
+//                             "\"t\":%i,"
+//                             "\"ozx\":%f,"
+//                             "\"ozy\":%f,"
+//                             "\"ozz\":%f,"
+//                             "\"qo\":\"{%f,%f,%f,%f}\","
+//                             "\"wox\":%f,"
+//                             "\"woy\":%f,"
+//                             "\"woz\":%f,"
+//                             "\"alpha\":%f,"
+//                             "\"delta\":%f,"
+//                             "\"azimuth\":%f}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
+//            m_kia_data->m_data_db->m_datetime.c_str(),
+//            m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(),
+//            bshv, st_mshior.KC1 , st_mshior.KC2 , st_mshior.T, st_mshior.OZx,
+//            st_mshior.OZy, st_mshior.OZz, st_mshior.Qo0, st_mshior.Qo1, st_mshior.Qo2, st_mshior.Qo3, st_mshior.wox,
+//            st_mshior.woy, st_mshior.woz, m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth);
+//    m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
 }
 
 void ParseToDB::sendDataIntoSHTMI1_M60(uint16_t &num_bokz, int32_t& bshv, SHTMI1& st_shtmi1)
@@ -196,6 +166,34 @@ void ParseToDB::sendDataIntoMPI(uint16_t &num_bokz, int32_t &bshv)
             m_kia_data->m_data_mpi->m_word_data, m_kia_data->m_data_mpi->m_format, m_kia_data->m_data_db->receive_time.c_str(), m_kia_data->m_data_mpi->m_mpi_result,
             m_kia_data->m_data_mpi->m_nInt, m_kia_data->m_data_mpi->m_wResult, m_kia_data->m_data_mpi->m_wOs, m_kia_data->m_data_db->waw1, m_kia_data->m_data_db->waw2, m_kia_data->m_data_db->data.toStdString().c_str());
     m_kia_db[TYPE_RAW]->insert_data(m_data_to_mpi, "prepare_insert_into_mpi");
+}
+
+void ParseToDB::send_data_to_db(uint16_t key_arr, std::string prepare_query, uint16_t num_bokz, int32_t bshv, DATA data_struct)
+{
+
+    std::vector<std::string> temp;
+    uint16_t ind = 0;
+    uint16_t ind_data_manage = 0;
+    std::string data = "{";
+
+    set_default_head_files(num_bokz, data, bshv);
+    while (ind < data_struct.data.size())
+    {
+        temp.clear();
+        for (uint16_t num_el = ind; num_el < ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]); num_el++)
+        {
+            temp.push_back(cast_to(std::get<Pio_bokz::DOUBLE_VALUE>(data_struct.data[num_el]),
+                                                  std::get<TDM_TYPE_CAST>(m_data_manage[key_arr][ind_data_manage])));
+        }
+        auto str_value = m_prepare_data[std::get<TDM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](temp);
+        data = data + "\"" + std::get<TDM_STR>(m_data_manage[key_arr][ind_data_manage]) + "\":" + str_value + ",";
+
+        ind = ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]);
+        ind_data_manage++;
+    }
+    data.pop_back();
+    data = data + "}";
+    m_kia_db[TYPE_DATA]->insert_data(data, prepare_query);
 }
 
 void ParseToDB::sendDataIntoDTMILOC_M60(uint16_t &num_bokz, int32_t& bshv, DTMILoc &dtmiLoc)
@@ -789,62 +787,62 @@ void ParseToDB::create_list_func_to_send_bokz()
     {
         sendDataIntoSHTMI1_M60(num_bokz, bshv, kia_mko_struct.st_shtmi1);
     };
-    m_func_to_send_data_bokzm60.push_back(func_shtmi1_m60);
+    m_func_to_send_data_bokzm60[M60_SHTMI1]  = func_shtmi1_m60;
 
     auto func_shtmi2_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoSHTMI2_M60(num_bokz, bshv, kia_mko_struct.st_shtmi2);
     };
-    m_func_to_send_data_bokzm60.push_back(func_shtmi2_m60);
+    m_func_to_send_data_bokzm60[M60_SHTMI2] = func_shtmi2_m60;
 
     auto func_mshior_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoMSHIOR_M60(num_bokz, bshv, kia_mko_struct.st_mshior);
     };
-    m_func_to_send_data_bokzm60.push_back(func_mshior_m60);
+    m_func_to_send_data_bokzm60[M60_MSHIOR] = func_mshior_m60;
 
     auto func_dtmi_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoDTMI_M60(num_bokz, bshv, kia_mko_struct.st_dtmi);
     };
-    m_func_to_send_data_bokzm60.push_back(func_dtmi_m60);
+    m_func_to_send_data_bokzm60[M60_DTMI] = func_dtmi_m60;
 
     auto func_dtmi_loc_m60 = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoDTMILOC_M60(num_bokz, bshv, kia_mko_struct.st_dtmi_loc);
     };
-    m_func_to_send_data_bokzm60.push_back(func_dtmi_loc_m60);
+    m_func_to_send_data_bokzm60[M60_DTMI_LOC] = func_dtmi_loc_m60;
 
     //-------------- mf
     auto func_shtmi1_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoSHTMI1_MF(num_bokz, bshv, kia_mko_struct.st_shtmi1_mf);
     };
-    m_func_to_send_data_bokzmf.push_back(func_shtmi1_MF);
+    m_func_to_send_data_bokzmf[MF_SHTMI1] = func_shtmi1_MF;
 
     auto func_shtmi2_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoSHTMI2_MF(num_bokz, bshv, kia_mko_struct.st_shtmi2_mf);
     };
-    m_func_to_send_data_bokzmf.push_back(func_shtmi2_MF);
+    m_func_to_send_data_bokzmf[MF_SHTMI2] = func_shtmi2_MF;
 
     auto func_mshior_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoMSHIOR_MF(num_bokz, bshv, kia_mko_struct.st_mshior_mf);
     };
-    m_func_to_send_data_bokzmf.push_back(func_mshior_MF);
+    m_func_to_send_data_bokzmf[MF_MSHIOR] = func_mshior_MF;
 
     auto func_dtmi_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoDTMI_MF(num_bokz, bshv, kia_mko_struct.st_dtmi_mf);
     };
-    m_func_to_send_data_bokzmf.push_back(func_dtmi_MF);
+    m_func_to_send_data_bokzmf[MF_DTMI] = func_dtmi_MF;
 
     auto func_dtmi_mloc_MF = [this](uint16_t num_bokz, int32_t bshv, Kia_mko_struct kia_mko_struct)
     {
         sendDataIntoMLOC_MF(num_bokz, bshv, kia_mko_struct.st_mloc_mf);
     };
-    m_func_to_send_data_bokzmf.push_back(func_dtmi_mloc_MF);
+    m_func_to_send_data_bokzmf[MF_MLOC] = func_dtmi_mloc_MF;
 }
 
 void ParseToDB::create_list_func_to_send_bi()
@@ -862,6 +860,22 @@ void ParseToDB::create_list_func_to_send_bi()
     m_func_to_send_bi.push_back(func_shtmi2_m60);
 }
 
+void ParseToDB::send_data_to_db_slot(qint16 type_func, QString prepare_query, quint16 num_bokz, qint32 bshv, DATA data_struct)
+{
+    send_data_to_db(type_func, prepare_query.toStdString(), num_bokz, bshv, data_struct);
+}
+
+
+void ParseToDB::set_default_head_files(uint16_t num_bokz, string &data, int32_t bshv)
+{
+    data = data + "\"" + "experiment_id" + "\":\"" + m_kia_settings->m_data_for_db->experiment_id.c_str() + "\",";
+    data = data + "\"" + "serial_num" + "\":" + std::to_string(num_bokz) + ",";
+    data = data + "\"" + "datetime" + "\":\"" + m_kia_data->m_data_db->m_datetime.c_str() + "\",";
+    data = data + "\"" + "host_id" + "\":\"" + m_kia_settings->m_data_for_db->true_host.c_str() + "\",";
+    data = data + "\"" + "unit_id" + "\":\"" + m_kia_settings->m_data_for_db->experiment_id.c_str() + "\",";
+    data = data + "\"" + "bshv" + "\":" + std::to_string(bshv) + ",";
+}
+
 void ParseToDB::create_parse_list_data()
 {
     auto func_is_el = [this](std::vector<std::string> data)
@@ -874,16 +888,34 @@ void ParseToDB::create_parse_list_data()
     auto func_is_arr = [this](std::vector<std::string> data)
     {
         std::string ret;
-        ret = "{";
+        ret = "\"{";
         for (uint16_t ind = 0; ind < data.size(); ind++)
         {
             ret = ret + data[ind] + ",";
         }
         ret.pop_back();
-        ret.push_back('}');
+        ret = ret + "}\"";
         return ret;
     };
     m_prepare_data.push_back(func_is_arr);
+
+}
+
+void ParseToDB::create_list_for_mpi_arrays()
+{
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st2", TC_INT));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "t", TC_INT));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozx", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozy", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "ozz", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_ARR, 4, "qo", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "wox", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "woy", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "woz", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "alpha", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "delta", TC_DOUBLE));
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "azimuth", TC_DOUBLE));
 }
 
 

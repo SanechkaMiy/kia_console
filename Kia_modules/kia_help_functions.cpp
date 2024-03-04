@@ -412,7 +412,7 @@ float helpers::decodeDateTime()
 
 QString helpers::format_qstring(const QString &str, const int16_t &shift, const char &fillchar)
 {
-    return QString("%1 %2").arg(str, shift, fillchar);
+    return QString("%1").arg(str, shift, fillchar);
 }
 
 std::pair<uint32_t, uint16_t> helpers::get_seconds_for_bshv()

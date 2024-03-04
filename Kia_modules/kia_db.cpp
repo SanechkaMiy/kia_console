@@ -79,7 +79,6 @@ void Kia_db::start_commit()
             //m_work->exec(m_data.front());
             //            m_pipeline->retain();
             m_pipeline->insert(m_data.front());
-            m_data.pop();
             if (m_count_to_send == m_interval_to_send)
             {
 
@@ -91,6 +90,7 @@ void Kia_db::start_commit()
             }
             if(m_interval_to_send != 0)
                 m_count_to_send++;
+            m_data.pop();
         }
     });
 }

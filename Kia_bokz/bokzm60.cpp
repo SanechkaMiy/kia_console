@@ -21,6 +21,7 @@ void BokzM60::set_bokz_settings()
     m_kia_data->m_data_mpi->m_num_bokz = m_num_bokz;
     m_kia_mko_struct.reset(new Kia_mko_struct());
     m_pio_bokz.reset(new Pio_bokzm60(m_kia_mko_struct, m_kia_settings));
+    m_index_mpi_array = m_pio_bokz->get_index_mpi_array();
     create_count_of_exc_fail();
 }
 
@@ -154,9 +155,15 @@ uint16_t BokzM60::mshior(uint16_t parametr)
     QString str_to_protocol = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
             + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
+
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
-    m_pio_bokz->decrypt_mshior(m_kia_data->m_data_mpi->m_data_word, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
-    m_pio_bokz->get_index_mpi_array();
+
+    m_pio_bokz->decrypt(M60_MSHIOR, m_kia_data->m_data_mpi->m_data_word);
+
+    std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]) = std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]])
+            + " (" + QString::number((int)(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]
+                                     - std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]))) +  ")";
+
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
@@ -171,7 +178,8 @@ uint16_t BokzM60::mshior(uint16_t parametr)
         post_status_proc(m_kia_data->m_data_mpi->m_data_word[2], m_kia_data->m_data_mpi->m_data_word[3], str_protocol);
 
     }
-    emit send_data_to_db_bokz(M60_MSHIOR, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
+    //emit send_data_to_db_bokz(M60_MSHIOR, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db(M60_MSHIOR, "prepare_insert_into_mshior", m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_mko_struct->m_data[M60_MSHIOR]);
     save_to_specific_protocol(str_protocol, M60_MSHIOR, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, M60_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -1396,17 +1404,16 @@ void BokzM60::check_orientation()
 {
     const uint16_t norm_qaor = 1;
     const uint16_t max_or_is_not_def = 100;
-    //m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(m_kia_mko_struct->st_mshior.Qo0, 2) + pow(m_kia_mko_struct->st_mshior.Qo1,2) + pow(m_kia_mko_struct->st_mshior.Qo2, 2)  + pow(m_kia_mko_struct->st_mshior.Qo3,2));
-    m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo0"]]), 2)
-                                              + pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo1"]]), 2)
-                                              + pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo2"]]), 2)
-                                              + pow(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo3"]]),2));
-    //std::tie(m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth) = math_alpha_delta_azimut(m_kia_mko_struct->st_mshior.Qo0, m_kia_mko_struct->st_mshior.Qo1, m_kia_mko_struct->st_mshior.Qo2, m_kia_mko_struct->st_mshior.Qo3);
+    auto qo0 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo0"]]);
+    auto qo1 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo1"]]);
+    auto qo2 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo2"]]);
+    auto qo3 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo3"]]);
+    m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(qo0, 2)
+                                              + pow(qo1, 2)
+                                              + pow(qo2, 2)
+                                              + pow(qo3,2));
 
-    auto [alpha, delta, azimuth] = math_alpha_delta_azimut(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo0"]]),
-            std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo1"]]),
-            std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo2"]]),
-            std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo3"]]));
+    auto [alpha, delta, azimuth] = math_alpha_delta_azimut(qo0, qo1, qo2, qo3);
 
             m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(alpha, 'f', 4), alpha, ""));
             m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(delta, 'f', 4), delta, ""));

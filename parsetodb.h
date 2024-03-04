@@ -16,7 +16,14 @@ public:
     {
         TDM_TYPE_DATA = 0,
         TDM_SIZE = 1,
-        TDM_STR = 2
+        TDM_STR = 2,
+        TDM_TYPE_CAST = 3
+    };
+
+    enum TYPE_CAST
+    {
+        TC_DOUBLE = 0,
+        TC_INT = 1
     };
 
     enum TYPE_DATA_DB
@@ -30,6 +37,8 @@ public:
               std::shared_ptr<Kia_settings> kia_settings);
     ~ParseToDB();
     void sendDataIntoMPI(uint16_t& num_bokz, int32_t &bshv);
+
+    void send_data_to_db(uint16_t key_arr, string prepare_query, uint16_t num_bokz, int32_t bshv, DATA data_struct);
 
     void sendDataIntoMSHIOR_M60(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st_mshior);
     void sendDataIntoSHTMI1_M60(uint16_t& num_bokz, int32_t& bshv, SHTMI1 &st_shtmi1);
@@ -62,17 +71,42 @@ public slots:
     void send_data_to_db_for_frames(quint16 num_bokz, qint32 bshv);
     void create_list_func_to_send_bokz();
     void create_list_func_to_send_bi();
+
+    void send_data_to_db_slot(qint16 type_func, QString prepare_query, quint16 num_bokz,
+                              qint32 bshv, DATA data_struct);
 private:
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_settings> m_kia_settings;
-    std::vector<std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzm60;
-    std::vector<std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzmf;
+
+    std::map<uint16_t, std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzm60;
+    std::map<uint16_t, std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzmf;
+
     std::vector<std::function<void(uint16_t)>> m_func_to_send_bi;
 
+    void set_default_head_files(uint16_t num_bokz, std::string& data, int32_t bshv);
     void create_parse_list_data();
-    std::map<uint16_t, std::vector<std::tuple<uint16_t, uint16_t, std::string>>> m_data_manage;
+    void create_list_for_mpi_arrays();
+    std::map<uint16_t, std::vector<std::tuple<uint16_t, uint16_t, std::string, uint16_t>>> m_data_manage;
     std::vector<std::function<std::string(std::vector<std::string>)>> m_prepare_data;
+    std::string cast_to(double value, uint16_t type_to_cast)
+    {
+        double double_val;
+        int int_val;
+        std::string ret;
+        switch(type_to_cast)
+        {
+        case 0:
+            double_val = static_cast<double>(value);
+            ret = std::to_string(double_val);
+            break;
+        case 1:
+            int_val = static_cast<double>(value);
+            ret = std::to_string(int_val);
+            break;
+        }
+        return ret;
+    }
 };
 
 #endif // PARSETODB_H

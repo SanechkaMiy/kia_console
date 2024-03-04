@@ -2,41 +2,41 @@
 
 Kia_matrox::Kia_matrox()
 {
-    m_matrox_thread = std::async([this]()
-    {
-        m_is_load = matrox_init();
-        if (m_is_load != 0)
-        {
-            std::cout << "Matrox load" << std::endl;
-        }
-        m_matrox_stop = true;
-        while(m_matrox_stop)
-        {
-            wait_for_event();
-            if (m_data.front().first == "stop_matrox")
-            {
-                if (m_is_load != 0)
-                    matrox_close();
-                break;
-            }
-            if (m_data.front().first == "read_frame")
-            {
-                matrox_grab_frame(m_data.front().second);
-            }
-            m_data.pop();
-        }
-    });
+//    m_matrox_thread = std::async([this]()
+//    {
+//        m_is_load = matrox_init();
+//        if (m_is_load != 0)
+//        {
+//            std::cout << "Matrox load" << std::endl;
+//        }
+//        m_matrox_stop = true;
+//        while(m_matrox_stop)
+//        {
+//            wait_for_event();
+//            if (m_data.front().first == "stop_matrox")
+//            {
+//                if (m_is_load != 0)
+//                    matrox_close();
+//                break;
+//            }
+//            if (m_data.front().first == "read_frame")
+//            {
+//                matrox_grab_frame(m_data.front().second);
+//            }
+//            m_data.pop();
+//        }
+//    });
 }
 
 Kia_matrox::~Kia_matrox()
 {
-    std::lock_guard lock(m_mtx);
-    Kia_frame_parametrs kia_data;
-    std::cout << "descr_matrox" << std::endl;
-    m_data.push(std::make_pair("stop_matrox", &kia_data));
-    m_cv.notify_all();
-    m_matrox_stop = false;
-    m_matrox_thread.get();
+//    std::lock_guard lock(m_mtx);
+//    Kia_frame_parametrs kia_data;
+//    std::cout << "descr_matrox" << std::endl;
+//    m_data.push(std::make_pair("stop_matrox", &kia_data));
+//    m_cv.notify_all();
+//    m_matrox_stop = false;
+//    m_matrox_thread.get();
 }
 
 void Kia_matrox::matrox_grab_frame(Kia_frame_parametrs* kia_frame_parametrs)
