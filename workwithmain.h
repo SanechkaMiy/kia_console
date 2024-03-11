@@ -9,7 +9,7 @@
 #include "parsetodb.h"
 #include "kia_bkpik.h"
 #include "kia_protocol.h"
-#include "kia_matrox.h"
+//#include "kia_matrox.h"
 #include "mainStruct.h"
 #include <QObject>
 #include <QTcpServer>
@@ -87,7 +87,7 @@ private:
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_bi_db;
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_bokz_db;
     std::shared_ptr<Kia_mpi> m_kia_mpi;
-    shared_ptr<Kia_matrox> m_kia_matrox;
+    //shared_ptr<Kia_matrox> m_kia_matrox;
     shared_ptr<Kia_protocol> m_kia_protocol;
     std::shared_ptr<Kia_timers> m_kia_timers;
     std::vector<std::shared_ptr<ParseToDB>> m_parse_db_bi;

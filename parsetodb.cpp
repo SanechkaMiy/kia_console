@@ -20,32 +20,32 @@ void ParseToDB::sendDataIntoMSHIOR_M60(uint16_t& num_bokz, int32_t& bshv, MSHIOR
 {
 
 
-//    char data_into_mshior[1024];
-//    sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
-//                             "\"serial_num\":%i,"
-//                             "\"datetime\":\"%s\","
-//                             "\"host_id\":\"%s\","
-//                             "\"unit_id\":\"%s\","
-//                             "\"bshv\":%d,"
-//                             "\"st1\":%i,"
-//                             "\"st2\":%i,"
-//                             "\"t\":%i,"
-//                             "\"ozx\":%f,"
-//                             "\"ozy\":%f,"
-//                             "\"ozz\":%f,"
-//                             "\"qo\":\"{%f,%f,%f,%f}\","
-//                             "\"wox\":%f,"
-//                             "\"woy\":%f,"
-//                             "\"woz\":%f,"
-//                             "\"alpha\":%f,"
-//                             "\"delta\":%f,"
-//                             "\"azimuth\":%f}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
-//            m_kia_data->m_data_db->m_datetime.c_str(),
-//            m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(),
-//            bshv, st_mshior.KC1 , st_mshior.KC2 , st_mshior.T, st_mshior.OZx,
-//            st_mshior.OZy, st_mshior.OZz, st_mshior.Qo0, st_mshior.Qo1, st_mshior.Qo2, st_mshior.Qo3, st_mshior.wox,
-//            st_mshior.woy, st_mshior.woz, m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth);
-//    m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
+    //    char data_into_mshior[1024];
+    //    sprintf(data_into_mshior,"{\"experiment_id\":\"%s\","
+    //                             "\"serial_num\":%i,"
+    //                             "\"datetime\":\"%s\","
+    //                             "\"host_id\":\"%s\","
+    //                             "\"unit_id\":\"%s\","
+    //                             "\"bshv\":%d,"
+    //                             "\"st1\":%i,"
+    //                             "\"st2\":%i,"
+    //                             "\"t\":%i,"
+    //                             "\"ozx\":%f,"
+    //                             "\"ozy\":%f,"
+    //                             "\"ozz\":%f,"
+    //                             "\"qo\":\"{%f,%f,%f,%f}\","
+    //                             "\"wox\":%f,"
+    //                             "\"woy\":%f,"
+    //                             "\"woz\":%f,"
+    //                             "\"alpha\":%f,"
+    //                             "\"delta\":%f,"
+    //                             "\"azimuth\":%f}", m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
+    //            m_kia_data->m_data_db->m_datetime.c_str(),
+    //            m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(),
+    //            bshv, st_mshior.KC1 , st_mshior.KC2 , st_mshior.T, st_mshior.OZx,
+    //            st_mshior.OZy, st_mshior.OZz, st_mshior.Qo0, st_mshior.Qo1, st_mshior.Qo2, st_mshior.Qo3, st_mshior.wox,
+    //            st_mshior.woy, st_mshior.woz, m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth);
+    //    m_kia_db[TYPE_DATA]->insert_data(data_into_mshior, "prepare_insert_into_mshior");
 }
 
 void ParseToDB::sendDataIntoSHTMI1_M60(uint16_t &num_bokz, int32_t& bshv, SHTMI1& st_shtmi1)
@@ -183,7 +183,7 @@ void ParseToDB::send_data_to_db(uint16_t key_arr, std::string prepare_query, uin
         for (uint16_t num_el = ind; num_el < ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]); num_el++)
         {
             temp.push_back(cast_to(std::get<Pio_bokz::DOUBLE_VALUE>(data_struct.data[num_el]),
-                                                  std::get<TDM_TYPE_CAST>(m_data_manage[key_arr][ind_data_manage])));
+                                   std::get<TDM_TYPE_CAST>(m_data_manage[key_arr][ind_data_manage])));
         }
         auto str_value = m_prepare_data[std::get<TDM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](temp);
         data = data + "\"" + std::get<TDM_STR>(m_data_manage[key_arr][ind_data_manage]) + "\":" + str_value + ",";
@@ -903,6 +903,9 @@ void ParseToDB::create_parse_list_data()
 
 void ParseToDB::create_list_for_mpi_arrays()
 {
+//    /m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+
+    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st2", TC_INT));
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "t", TC_INT));

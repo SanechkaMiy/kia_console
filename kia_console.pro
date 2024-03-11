@@ -35,7 +35,7 @@ SOURCES += \
         Kia_pio/pio_bokzmf.cpp \
         kia_ftdi.cpp \
         kia_load_initial_settings.cpp \
-        kia_matrox.cpp \
+#        kia_matrox.cpp \
         kia_protocol.cpp \
         kia_synch_timer.cpp \
         kiainformationbot.cpp \
@@ -75,7 +75,7 @@ HEADERS += \
     Kia_bi/kia_bkpik.h \
     kia_ftdi.h \
     kia_load_initial_settings.h \
-    kia_matrox.h \
+#    kia_matrox.h \
     kia_protocol.h \
     kia_synch_timer.h \
     kiainformationbot.h \
@@ -127,10 +127,10 @@ unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lftd2xx
 INCLUDEPATH += $$PWD/../../../../../usr/local/include
 DEPENDPATH += $$PWD/../../../../../usr/local/include
 
-unix:!macx: LIBS += -L$$PWD/../../../../../opt/matrox_imaging/mil/lib/ -lmil
+#unix:!macx: LIBS += -L$$PWD/../../../../../opt/matrox_imaging/mil/lib/ -lmil
 
-INCLUDEPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
-DEPENDPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
+#INCLUDEPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
+#DEPENDPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
 
 
 unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lpqxx

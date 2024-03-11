@@ -45,21 +45,14 @@ uint16_t BokzM60::shtmi1(uint16_t parametr)
             + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
-
-    //    for (int i = 0; i <= 3; i++)
-    //    {
-    //        for (int j = 0; j<=7; j++)
-    //        {
-    //            printf("%04x  ", m_kia_data->m_data_mpi->m_data_word[i * 8 + j]);
-    //        }
-    //        printf("\n");
-    //    }
     m_pio_bokz->decrypt_shtmi1(m_kia_data->m_data_mpi->m_data_word);
+    m_pio_bokz->decrypt(M60_SHTMI1, m_kia_data->m_data_mpi->m_data_word);
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1.shtmi1_list_name, m_kia_mko_struct->st_shtmi1.shtmi1_list_data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_SHTMI1].data_description, m_kia_mko_struct->m_data[M60_SHTMI1].data));
+        //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1.shtmi1_list_name, m_kia_mko_struct->st_shtmi1.shtmi1_list_data));
         str_protocol.push_back("\n\n");
     }
     emit send_data_to_db_bokz(M60_SHTMI1, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
@@ -159,7 +152,6 @@ uint16_t BokzM60::mshior(uint16_t parametr)
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
 
     m_pio_bokz->decrypt(M60_MSHIOR, m_kia_data->m_data_mpi->m_data_word);
-
     std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]) = std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]])
             + " (" + QString::number((int)(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]
                                      - std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]))) +  ")";
@@ -172,13 +164,11 @@ uint16_t BokzM60::mshior(uint16_t parametr)
         send_status_info();
 
         set_data_to_device_protocol(str_protocol);
-
         str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_MSHIOR].data_description, m_kia_mko_struct->m_data[M60_MSHIOR].data));
 
         post_status_proc(m_kia_data->m_data_mpi->m_data_word[2], m_kia_data->m_data_mpi->m_data_word[3], str_protocol);
 
     }
-    //emit send_data_to_db_bokz(M60_MSHIOR, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
     emit send_data_to_db(M60_MSHIOR, "prepare_insert_into_mshior", m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_mko_struct->m_data[M60_MSHIOR]);
     save_to_specific_protocol(str_protocol, M60_MSHIOR, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
@@ -1415,9 +1405,9 @@ void BokzM60::check_orientation()
 
     auto [alpha, delta, azimuth] = math_alpha_delta_azimut(qo0, qo1, qo2, qo3);
 
-            m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(alpha, 'f', 4), alpha, ""));
-            m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(delta, 'f', 4), delta, ""));
-            m_kia_mko_struct->m_data[M60_MSHIOR].data.push_back(std::make_tuple(QString::number(azimuth, 'f', 4), azimuth, ""));
+            m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["alpha"]] = std::make_tuple(QString::number(alpha, 'f', 4), alpha, "");
+            m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["delta"]] = std::make_tuple(QString::number(delta, 'f', 4), delta, "");
+            m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["azimuth"]] = std::make_tuple(QString::number(azimuth, 'f', 4), azimuth, "");
 
             switch(m_kia_data->m_data_mpi->m_data_word[2] & 0xf000)
     {

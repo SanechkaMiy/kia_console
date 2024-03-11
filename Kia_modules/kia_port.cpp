@@ -81,10 +81,13 @@ void Kia_port::check_used_bi_usb_ports()
     int16_t (*setSerialPrefix)(char*);
     int16_t (*init)(void);
     m_handle = dlopen ("/usr/local/lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
+
     if (!m_handle) {
         printf("have problem!");
     }
+
     setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
+
     printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
     init = (int16_t(*)(void))dlsym(m_handle, "Init");
     m_kia_settings->m_data_for_bi->m_count_bi = (*init)();

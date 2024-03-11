@@ -107,6 +107,7 @@ void Kia_mpi::execute_exchange(Kia_data* kia_data)
         kia_data->m_data_bokz->m_count_fail[0]++;
         kia_data->m_data_mpi->m_status_exchange = KiaS_FAIL;
     }
+    kia_data->m_data_mpi->m_status_exchange = KiaS_SUCCESS;//-убрать..
     bcgetblk(0, kia_data->m_data_mpi->m_data_word.data(), constants::packetSize);
 
     kia_data->m_data_db->receive_time = helpers::currentDateTime();

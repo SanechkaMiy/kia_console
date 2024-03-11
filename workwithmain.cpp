@@ -33,7 +33,7 @@ void WorkWithMain::set_kia_settings()
                                m_kia_settings->m_data_for_db->experiment_id, m_kia_settings->m_data_for_db->true_host);
 
 
-    m_kia_matrox.reset(new Kia_matrox());
+    //m_kia_matrox.reset(new Kia_matrox());
 
     m_kia_mpi.reset(new Kia_mpi());
 
@@ -55,10 +55,10 @@ void WorkWithMain::set_kia_settings()
         m_bokz[num_bokz]->continue_action();
     });
 
-    connect(m_kia_matrox.get(), &Kia_matrox::end_read_frame, this, [this](quint16 num_bokz)
-    {
-        m_bokz[num_bokz]->continue_action();
-    });
+//    connect(m_kia_matrox.get(), &Kia_matrox::end_read_frame, this, [this](quint16 num_bokz)
+//    {
+//        m_bokz[num_bokz]->continue_action();
+//    });
 
     init_bokz();
 
@@ -857,8 +857,8 @@ void WorkWithMain::init_bokz()
 
         connect(m_bokz[num_bokz].get(), &Bokz::do_frame, this, [this](Kia_frame_parametrs* kia_frame_parametrs)
         {
-            //m_kia_ftdi->do_read_frame(kia_frame_parametrs);
-            m_kia_matrox->do_read_frame(kia_frame_parametrs);
+            m_kia_ftdi->do_read_frame(kia_frame_parametrs);
+            //m_kia_matrox->do_read_frame(kia_frame_parametrs);
         });
 
 

@@ -36,7 +36,7 @@ private:
     void create_list_to_prepare_data();
     void create_list_for_mpi_arrays();
     void add_to_list_description(uint16_t key_arr, const QString& num_value, const QString& description);
-    std::vector<std::function<void(uint16_t key_arr, std::vector<uint16_t> value, std::pair<double, double>, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)>> m_prepare_data;
+    std::vector<std::function<void(uint16_t key_arr, uint16_t num_data, std::vector<uint16_t> value, std::pair<double, double>, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)>> m_prepare_data;
     std::map<uint16_t, std::vector<std::tuple<int16_t, uint16_t, std::pair<double, double>, double, uint16_t, std::pair<bool, bool>>>> m_data_manage;
 };
 
