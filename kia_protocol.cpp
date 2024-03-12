@@ -16,16 +16,15 @@ void Kia_protocol::create_dir_for_protocols()
 {
     m_stop_do_save_protocol = KiaS_SUCCESS;
     m_start_create_dir_for_protocols = helpers::current_hours();
-
     QString name_dir = "exp_" + QString::fromStdString(helpers::currentDateTime());
-    QDir dir("/home/alexander/Project/kia_console/protocols/");
+    QDir dir("../protocols/");
     dir.mkdir(name_dir);
     QString full_path_and_name;
-    QStringList path_to_protocol = {"/home/alexander/Project/kia_console/protocols/" + name_dir + "/protocol_MKO_",
-                                    "/home/alexander/Project/kia_console/protocols/" + name_dir + "/protocol_Device_",
-                                    "/home/alexander/Project/kia_console/protocols/" + name_dir + "/protocol_System_",
-                                    "/home/alexander/Project/kia_console/protocols/" + name_dir + "/protocol_AI_",
-                                    "/home/alexander/Project/kia_console/protocols/" + name_dir + "/protocol_Error_"};
+    QStringList path_to_protocol = {"../protocols/" + name_dir + "/protocol_MKO_",
+                                    "../protocols/" + name_dir + "/protocol_Device_",
+                                    "../protocols/" + name_dir + "/protocol_System_",
+                                    "../protocols/" + name_dir + "/protocol_AI_",
+                                    "../protocols/" + name_dir + "/protocol_Error_"};
     QString name_protocol;
     for (uint16_t type_protocol = 0; type_protocol < constants::protocol_count; ++type_protocol)
     {
@@ -58,9 +57,9 @@ void Kia_protocol::create_dir_for_frame_protocols()
 {
     m_kia_settings->m_data_to_protocols->m_is_frames_protocol_used = KiaS_SUCCESS;
     QString name_dir = "exp_" + QString::fromStdString(helpers::currentDateTime());
-    QDir dir_frames("/home/alexander/Project/kia_console/frames/");
+    QDir dir_frames("../frames/");
 
-    m_full_path = "/home/alexander/Project/kia_console/frames/" + name_dir;
+    m_full_path = "../frames/" + name_dir;
     dir_frames.mkdir(m_full_path);
 
 }

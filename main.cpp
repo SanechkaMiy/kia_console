@@ -9,8 +9,9 @@ void sigHandler(int s)
 
 int main(int argc, char *argv[])
 {
+    setlocale(LC_NUMERIC, "French_Canada.1252");
     QCoreApplication a(argc, argv);
-    QLocale::setDefault(QLocale(QLocale::Russian, QLocale::Russia));
+    //QLocale::setDefault(QLocale(QLocale::Russian, QLocale::Russia));
     WorkWithMain wwMain(2529);
     //qApp->quit();
     std::signal(SIGINT, sigHandler);

@@ -193,7 +193,6 @@ void ParseToDB::send_data_to_db(uint16_t key_arr, std::string prepare_query, uin
     }
     data.pop_back();
     data = data + "}";
-    std::cout << data << std::endl;
     m_kia_db[TYPE_DATA]->insert_data(data, prepare_query);
 }
 
