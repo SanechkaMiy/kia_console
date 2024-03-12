@@ -6,7 +6,7 @@ WorkWithMain::WorkWithMain(int nPort) :
 {
     QThread::currentThread()->setPriority(QThread::HighPriority);
     m_run_mko = new QProcess();
-    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source /home/alexander/Project/kia/fix-backlight.sh\"\"");
+    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source autostarttmk.sh\"\"");
     m_run_mko->waitForStarted();
     start_tcp_server(nPort);
     set_kia_settings();

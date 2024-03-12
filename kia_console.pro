@@ -6,12 +6,12 @@ CONFIG += c++17 console
 CONFIG -= app_bundle
 QMAKE_CXXFLAGS += -std=c++0x -pthread
 LIBS += -pthread
-LIBS += -L/usr/lib -lssl -lcrypto -lrt
+LIBS += -L/usr/lib -lrt
 LIBS += -ldl
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
+DEFINES += kipc
 INCLUDEPATH += $$PWD/../../kia_gui/source
 DEPENDPATH += $$PWD/../../kia_gui/source
 SOURCES += \
@@ -110,13 +110,6 @@ DEPENDPATH += $$PWD/../../../../../usr/local/include
 
 unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libCppLinuxSerial.a
 
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib64/ -lTgBot
-
-INCLUDEPATH += $$PWD/../../../../../usr/local/include
-DEPENDPATH += $$PWD/../../../../../usr/local/include
-
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib64/libTgBot.a
-
 unix:!macx: LIBS += -L$$PWD/../../../../../usr/lib64/ -lftdi1
 
 INCLUDEPATH += $$PWD/../../../../../usr/include
@@ -131,14 +124,22 @@ DEPENDPATH += $$PWD/../../../../../usr/local/include
 
 #INCLUDEPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
 #DEPENDPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
-
-
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lpqxx
+CONFIG += kipc
+kipc {
+unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib64/ -lpqxx
 
 INCLUDEPATH += $$PWD/../../../../../usr/local/include
 DEPENDPATH += $$PWD/../../../../../usr/local/include
 
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libpqxx.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib64/libpqxx.a
+} else {
+    unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lpqxx
+
+    INCLUDEPATH += $$PWD/../../../../../usr/local/include
+    DEPENDPATH += $$PWD/../../../../../usr/local/include
+
+    unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libpqxx.a
+}
 
 
 unix:!macx: LIBS += -L$$PWD/../../../../../usr/pgsql-13/lib/ -lpq
