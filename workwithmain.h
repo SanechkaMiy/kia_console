@@ -81,6 +81,7 @@ private:
     void send_type_bi_to_table_settings();
     void send_info_about_connection();
     QProcess *m_process;
+    QProcess *m_run_mko;
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::shared_ptr<Kia_load_initial_settings> m_kia_load_initial_settings;
     std::shared_ptr<Kia_db> m_kia_db;

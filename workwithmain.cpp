@@ -5,9 +5,11 @@ WorkWithMain::WorkWithMain(int nPort) :
     m_kia_timers(new Kia_timers())
 {
     QThread::currentThread()->setPriority(QThread::HighPriority);
+    m_run_mko = new QProcess();
+    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source /home/alexander/Project/kia/fix-backlight.sh\"\"");
+    m_run_mko->waitForStarted();
     start_tcp_server(nPort);
     set_kia_settings();
-
     //start_kia_gui();
 
 
@@ -83,6 +85,7 @@ void WorkWithMain::close_db_connection()
 
 WorkWithMain::~WorkWithMain()
 {
+
     //m_process->terminate();
     cout <<"Destructor WorkWithMain"<<endl;
     delete_all_threads();
@@ -91,7 +94,7 @@ WorkWithMain::~WorkWithMain()
     std::cout << "close db connection" << std::endl;
     m_kia_protocol->close_dir_for_protocols();
     std::cout << "close dir for protocols" << std::endl;
-
+    m_run_mko->terminate();
 }
 
 
