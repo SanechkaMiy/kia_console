@@ -193,6 +193,7 @@ void ParseToDB::send_data_to_db(uint16_t key_arr, std::string prepare_query, uin
     }
     data.pop_back();
     data = data + "}";
+    std::cout << data << std::endl;
     m_kia_db[TYPE_DATA]->insert_data(data, prepare_query);
 }
 
@@ -903,9 +904,44 @@ void ParseToDB::create_parse_list_data()
 
 void ParseToDB::create_list_for_mpi_arrays()
 {
-//    /m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "ss1", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "ss2", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "t", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "st2", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "sernum", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "post", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "foc", TC_FLOAT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "xo", TC_FLOAT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "yo", TC_FLOAT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "texp", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "meant", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "sigmat", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "ndef", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "xcf", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "datempi", TC_INT));
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(IS_EL, 1, "ver", TC_INT));
 
-    m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "ss1", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "ss2", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "t", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "st2", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "sernum", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "post", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "texp", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "nusd", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "nno", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "nnosl", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "nto", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "ntosl", TC_INT));
+    m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "nsl", TC_INT));
+
+    for (uint16_t num_counter = 0; num_counter < 16; num_counter++)
+    {
+        m_data_manage[M60_SHTMI2].push_back(std::make_tuple(IS_EL, 1, "ec" + std::to_string(num_counter + 1), TC_INT));
+    }
+
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "st2", TC_INT));
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "t", TC_INT));

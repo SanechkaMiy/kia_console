@@ -23,7 +23,8 @@ public:
     enum TYPE_CAST
     {
         TC_DOUBLE = 0,
-        TC_INT = 1
+        TC_INT = 1,
+        TC_FLOAT = 2
     };
 
     enum TYPE_DATA_DB
@@ -92,6 +93,7 @@ private:
     std::string cast_to(double value, uint16_t type_to_cast)
     {
         double double_val;
+        float float_val;
         int int_val;
         std::string ret;
         switch(type_to_cast)
@@ -101,8 +103,12 @@ private:
             ret = std::to_string(double_val);
             break;
         case 1:
-            int_val = static_cast<double>(value);
+            int_val = static_cast<int>(value);
             ret = std::to_string(int_val);
+            break;
+        case 2:
+            float_val = static_cast<float>(value);
+            ret = std::to_string(float_val);
             break;
         }
         return ret;

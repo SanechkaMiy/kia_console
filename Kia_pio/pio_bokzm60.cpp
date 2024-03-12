@@ -863,7 +863,6 @@ void Pio_bokzm60::decrypt(uint16_t key_arr, array<uint16_t, constants::packetSiz
 
         if (std::get<DM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage]) != ITS_REZERV)
         {
-            std::cout << num_data << std::endl;
             m_prepare_data[std::get<DM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](key_arr, num_data, temp_data,
                                                                                             std::get<RANGE_VALUE>(m_data_manage[key_arr][ind_data_manage]),
                                                                                             std::get<COEF_TO_SCALE>(m_data_manage[key_arr][ind_data_manage]),
@@ -1361,6 +1360,22 @@ void Pio_bokzm60::create_list_for_mpi_arrays()
     m_data_manage[M60_SHTMI1].push_back(std::make_tuple(INT16, 1, std::make_pair(0, 16384),
                                                         1, TDF_INT, std::make_pair(true, true)));
 
+    count_of_rezerv = 11;
+
+    for (uint16_t count = 0; count < count_of_rezerv; count++)
+    {
+        m_data_manage[M60_SHTMI1].push_back(std::make_tuple(ITS_REZERV, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                            1, TDF_HEX, std::make_pair(true, true)));
+    }
+
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_HEX, std::make_pair(true, true)));
+
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_INT, std::make_pair(true, true)));
+
+    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                        1, TDF_INT, std::make_pair(true, true)));
 
     m_data_manage[M60_SHTMI2].push_back(std::make_tuple(ITS_REZERV, 1, std::make_pair(-m_max_double_value, m_max_double_value),
                                                         1, TDF_HEX, std::make_pair(true, true)));
@@ -1389,7 +1404,7 @@ void Pio_bokzm60::create_list_for_mpi_arrays()
     m_data_manage[M60_SHTMI2].push_back(std::make_tuple(INT16, 1, std::make_pair(10, 1023),
                                                         1, TDF_INT, std::make_pair(true, true)));
 
-    for (uint16_t num_counter = 0; num_counter < 4; num_counter++)
+    for (uint16_t num_counter = 0; num_counter < 5; num_counter++)
     {
         m_data_manage[M60_SHTMI2].push_back(std::make_tuple(INT16, 1, std::make_pair(0, 65535),
                                                             1, TDF_INT, std::make_pair(true, true)));
@@ -1403,22 +1418,7 @@ void Pio_bokzm60::create_list_for_mpi_arrays()
         m_data_manage[M60_SHTMI2].push_back(std::make_tuple(INT16, 1, std::make_pair(0, 65535),
                                                             1, TDF_INT, std::make_pair(true, true)));
     }
-    count_of_rezerv = 11;
 
-    for (uint16_t count = 0; count < count_of_rezerv; count++)
-    {
-        m_data_manage[M60_SHTMI1].push_back(std::make_tuple(ITS_REZERV, 1, std::make_pair(-m_max_double_value, m_max_double_value),
-                                                            1, TDF_HEX, std::make_pair(true, true)));
-    }
-
-    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
-                                                        1, TDF_HEX, std::make_pair(true, true)));
-
-    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
-                                                        1, TDF_INT, std::make_pair(true, true)));
-
-    m_data_manage[M60_SHTMI1].push_back(std::make_tuple(INT16, 1, std::make_pair(-m_max_double_value, m_max_double_value),
-                                                        1, TDF_INT, std::make_pair(true, true)));
     m_index_mpi_array[M60_MSHIOR]["st1"] = 0;
     m_index_mpi_array[M60_MSHIOR]["st2"] = 1;
     m_index_mpi_array[M60_MSHIOR]["t"] = 2;

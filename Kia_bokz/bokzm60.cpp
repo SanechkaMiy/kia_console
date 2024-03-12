@@ -45,7 +45,7 @@ uint16_t BokzM60::shtmi1(uint16_t parametr)
             + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
-    m_pio_bokz->decrypt_shtmi1(m_kia_data->m_data_mpi->m_data_word);
+    //m_pio_bokz->decrypt_shtmi1(m_kia_data->m_data_mpi->m_data_word);
     m_pio_bokz->decrypt(M60_SHTMI1, m_kia_data->m_data_mpi->m_data_word);
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
@@ -55,7 +55,8 @@ uint16_t BokzM60::shtmi1(uint16_t parametr)
         //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1.shtmi1_list_name, m_kia_mko_struct->st_shtmi1.shtmi1_list_data));
         str_protocol.push_back("\n\n");
     }
-    emit send_data_to_db_bokz(M60_SHTMI1, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db(M60_SHTMI1, "prepare_insert_into_shtmi1", m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_mko_struct->m_data[M60_SHTMI1]);
+    //emit send_data_to_db_bokz(M60_SHTMI1, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, M60_SHTMI1, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, M60_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -114,15 +115,19 @@ uint16_t BokzM60::shtmi2(uint16_t parametr)
         printf("\n");
     }
     m_pio_bokz->decrypt_shtmi2(m_kia_data->m_data_mpi->m_data_word);
+    m_pio_bokz->decrypt(M60_SHTMI2, m_kia_data->m_data_mpi->m_data_word);
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi2.shtmi2_list_name, m_kia_mko_struct->st_shtmi2.shtmi2_list_data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_SHTMI2].data_description, m_kia_mko_struct->m_data[M60_SHTMI2].data));
+
+        //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi2.shtmi2_list_name, m_kia_mko_struct->st_shtmi2.shtmi2_list_data));
 
         str_protocol.push_back("\n\n");
     }
-    emit send_data_to_db_bokz(M60_SHTMI2, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db(M60_SHTMI2, "prepare_insert_into_shtmi2", m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_mko_struct->m_data[M60_SHTMI2]);
+    //emit send_data_to_db_bokz(M60_SHTMI2, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, M60_SHTMI2, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, M60_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
