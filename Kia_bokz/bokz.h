@@ -85,7 +85,13 @@ public:
                                                int32_t bshv, uint16_t num_bokz);
 
     QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double>> list_data);
-    QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, QString>> list_data);
+    QString set_data_from_mko_struct(std::vector<std::tuple<QString, QString, QString>> data_description,
+                                     std::vector<std::tuple<QString, double, QString>> list_data,
+                                     std::map<string, std::vector<std::tuple<QString, double, QString> > > data_array = std::map<string, std::vector<std::tuple<QString, double, QString> > >());
+
+    QString set_post_data_from_mko_struct(std::vector<std::pair<QString, std::string>> keys,
+                                          std::map<std::string, std::vector<std::tuple<QString, double, QString>>> data_array);
+
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;
     std::shared_ptr<Pio_bokz> m_pio_bokz;

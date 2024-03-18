@@ -177,19 +177,37 @@ void ParseToDB::send_data_to_db(uint16_t key_arr, std::string prepare_query, uin
     std::string data = "{";
 
     set_default_head_files(num_bokz, data, bshv);
-    while (ind < data_struct.data.size())
+    if (m_data_manage[key_arr].size() != 0)
+    {
+        while (ind < data_struct.data.size())
+        {
+            temp.clear();
+            for (uint16_t num_el = ind; num_el < ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]); num_el++)
+            {
+                temp.push_back(cast_to(std::get<Pio_bokz::DOUBLE_VALUE>(data_struct.data[num_el]),
+                                       std::get<TDM_TYPE_CAST>(m_data_manage[key_arr][ind_data_manage])));
+            }
+            auto str_value = m_prepare_data[std::get<TDM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](temp);
+            data = data + "\"" + std::get<TDM_STR>(m_data_manage[key_arr][ind_data_manage]) + "\":" + str_value + ",";
+
+            ind = ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]);
+            ind_data_manage++;
+        }
+    }
+    for (const auto& data_manage_key_array : m_data_manage_key_array[key_arr])
     {
         temp.clear();
-        for (uint16_t num_el = ind; num_el < ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]); num_el++)
+        if (data_struct.data_array.find(data_manage_key_array.first) == data_struct.data_array.end())
         {
-            temp.push_back(cast_to(std::get<Pio_bokz::DOUBLE_VALUE>(data_struct.data[num_el]),
-                                   std::get<TDM_TYPE_CAST>(m_data_manage[key_arr][ind_data_manage])));
+            continue;
         }
-        auto str_value = m_prepare_data[std::get<TDM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage])](temp);
-        data = data + "\"" + std::get<TDM_STR>(m_data_manage[key_arr][ind_data_manage]) + "\":" + str_value + ",";
-
-        ind = ind + std::get<TDM_SIZE>(m_data_manage[key_arr][ind_data_manage]);
-        ind_data_manage++;
+        for (uint16_t num_el = 0; num_el < data_struct.data_array[data_manage_key_array.first].size(); num_el++)
+        {
+            temp.push_back(cast_to(std::get<Pio_bokz::DOUBLE_VALUE>(data_struct.data_array[data_manage_key_array.first][num_el]),
+                           data_manage_key_array.second));
+        }
+        auto str_value = m_prepare_data[IS_ARR](temp);
+        data = data + "\"" + data_manage_key_array.first + "\":" + str_value + ",";
     }
     data.pop_back();
     data = data + "}";
@@ -954,6 +972,57 @@ void ParseToDB::create_list_for_mpi_arrays()
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "alpha", TC_DOUBLE));
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "delta", TC_DOUBLE));
     m_data_manage[M60_MSHIOR].push_back(std::make_tuple(IS_EL, 1, "azimuth", TC_DOUBLE));
+
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "t", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "st2", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "sernum", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "texp", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "numloc", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "numobj", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "numfrag", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "epsilon", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "deltat", TC_DOUBLE));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "wx", TC_DOUBLE));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "wy", TC_DOUBLE));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "wz", TC_DOUBLE));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "tolg", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_ARR, 4, "qolg", TC_DOUBLE));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "epoch", TC_DOUBLE));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "numl0", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "numl1", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "maxh", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "dxmaxh", TC_INT));
+    m_data_manage[M60_DTMI].push_back(std::make_tuple(IS_EL, 1, "dymaxh", TC_INT));
+
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("cc1", TC_INT));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("cc2", TC_INT));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("locx", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("locy", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("locb", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("locs", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("xc", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("yc", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("thfrag", TC_INT));
+    m_data_manage_key_array[M60_DTMI].push_back(std::make_pair("objfrag", TC_INT));
+
+
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "t", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "st1", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "st2", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "sernum", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "texp", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "numloc", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "numobj", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "mean", TC_INT));
+    m_data_manage[M60_DTMI_LOC].push_back(std::make_tuple(IS_EL, 1, "sigma", TC_INT));
+
+    m_data_manage_key_array[M60_DTMI_LOC].push_back(std::make_pair("cc1", TC_INT));
+    m_data_manage_key_array[M60_DTMI_LOC].push_back(std::make_pair("cc2", TC_INT));
+    m_data_manage_key_array[M60_DTMI_LOC].push_back(std::make_pair("locx", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI_LOC].push_back(std::make_pair("locy", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI_LOC].push_back(std::make_pair("locb", TC_DOUBLE));
+    m_data_manage_key_array[M60_DTMI_LOC].push_back(std::make_pair("locs", TC_DOUBLE));
 }
 
 

@@ -89,6 +89,7 @@ private:
     void create_parse_list_data();
     void create_list_for_mpi_arrays();
     std::map<uint16_t, std::vector<std::tuple<uint16_t, uint16_t, std::string, uint16_t>>> m_data_manage;
+    std::map<uint16_t, std::vector<std::pair<std::string, uint16_t>>> m_data_manage_key_array;
     std::vector<std::function<std::string(std::vector<std::string>)>> m_prepare_data;
     std::string cast_to(double value, uint16_t type_to_cast)
     {

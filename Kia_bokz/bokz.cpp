@@ -152,23 +152,99 @@ QString Bokz::set_data_from_mko_struct(QStringList list_name, std::vector<std::t
     return str_protocol;
 }
 
-QString Bokz::set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, QString> > list_data)
+QString Bokz::set_data_from_mko_struct(std::vector<std::tuple<QString, QString, QString>> data_description,
+                                       std::vector<std::tuple<QString, double, QString> > list_data,
+                                       std::map<std::string, std::vector<std::tuple<QString, double, QString>>> data_array)
 {
     QString str_protocol;
     int16_t shift_for_numbers = -8;
     int16_t shift_description = -50;
-    for (uint16_t num_list = 0; num_list < list_name.size(); ++num_list)
+    //    for (uint16_t num_list = 0; num_list < data_description.size(); ++num_list)
+    //    {
+    //        uint16_t do_shift_left = 0;
+    //        if (std::get<Pio_bokz::STRING_SHOW>(list_data[num_list])[0] == '-')
+    //            do_shift_left = 1;
+    //        QString string_show = std::get<Pio_bokz::STRING_SHOW>(list_data[num_list]) + std::get<Pio_bokz::STATUS>(list_data[num_list]);
+    //        if (std::get<1>(data_description[num_list]) == "is_arr")
+    //        {
+    //            string_show.clear();
+    //            for (auto el : data_array[std::get<2>(data_description[num_list]).toStdString()])
+    //            {
+    //                auto ready_str = std::get<Pio_bokz::STRING_SHOW>(el) + std::get<Pio_bokz::STATUS>(el);
+    //                std::cout << ready_str.toStdString() << std::endl;
+    //                string_show.push_back(helpers::format_qstring(ready_str, ready_str.size() + 1));
+    //            }
+    //        }
+    //        str_protocol.push_back(helpers::format_qstring(std::get<0>(data_description[num_list]),
+    //                                                       shift_description + shift_for_numbers + do_shift_left)
+    //                               + string_show + "\n");
+    //    }
+    int16_t ind_array = 0;
+    for (uint16_t num_list = 0; num_list < data_description.size(); ++num_list)
     {
-        uint16_t do_shift_left = 0;
-        if (std::get<Pio_bokz::STRING_SHOW>(list_data[num_list])[0] == '-')
-            do_shift_left = 1;
 
-        str_protocol.push_back(helpers::format_qstring(list_name[num_list],
+        QString string_show;
+        uint16_t do_shift_left = 0;
+        if (std::get<1>(data_description[num_list]) == "is_arr")
+        {
+            for (auto el : data_array[std::get<2>(data_description[num_list]).toStdString()])
+            {
+                auto ready_str = std::get<Pio_bokz::STRING_SHOW>(el) + std::get<Pio_bokz::STATUS>(el);
+                string_show.push_back(helpers::format_qstring(ready_str, -(ready_str.size() + 1)));
+            }
+            list_data.push_back(std::tuple<QString, double, QString>());
+            ind_array++;
+        }
+        else
+        {
+            string_show = std::get<Pio_bokz::STRING_SHOW>(list_data[num_list - ind_array]) + std::get<Pio_bokz::STATUS>(list_data[num_list - ind_array]);
+            if (std::get<Pio_bokz::STRING_SHOW>(list_data[num_list - ind_array])[0] == '-')
+                do_shift_left = 1;
+            //ind_array = 0;
+        }
+
+
+        str_protocol.push_back(helpers::format_qstring(std::get<0>(data_description[num_list]),
                                                        shift_description + shift_for_numbers + do_shift_left)
-                               + std::get<Pio_bokz::STRING_SHOW>(list_data[num_list])
-                + std::get<Pio_bokz::STATUS>(list_data[num_list]) + "\n");
+                               + string_show + "\n");
     }
+
     str_protocol.push_back("\n\n");
+    return str_protocol;
+}
+
+QString Bokz::set_post_data_from_mko_struct(std::vector<std::pair<QString, string> > keys, std::map<string, std::vector<std::tuple<QString, double, QString> > > data_array)
+{
+    QString str_protocol;
+    int16_t shift_for_numbers = -8;
+    int16_t shift_description = -50;
+    int16_t shift_value = -16;
+    str_protocol.push_back(helpers::format_qstring("", shift_description + shift_for_numbers));
+    for (auto key : keys)
+    {
+        str_protocol.push_back(helpers::format_qstring(key.first, shift_value));
+        std::cout << key.second << " "<< data_array[key.second].size() << std::endl;
+    }
+    str_protocol.push_back("\n");
+
+    for (uint16_t num_el = 0; num_el < data_array["locx"].size(); num_el++)
+    {
+        str_protocol.push_back(helpers::format_qstring(QString::number(num_el), shift_description + shift_for_numbers));
+        for (const auto& key : keys)
+        {
+            if (num_el < data_array[key.second].size())
+            {
+                auto string_show = std::get<Pio_bokz::STRING_SHOW>(data_array[key.second][num_el])
+                        + std::get<Pio_bokz::STATUS>(data_array[key.second][num_el]);
+                str_protocol.push_back(helpers::format_qstring(string_show, shift_value));
+            }
+            else
+            {
+                str_protocol.push_back("");
+            }
+        }
+        str_protocol.push_back("\n");
+    }
     return str_protocol;
 }
 

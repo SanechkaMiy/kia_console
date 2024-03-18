@@ -11,7 +11,6 @@ LIBS += -ldl
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-DEFINES += kipc
 INCLUDEPATH += $$PWD/../../kia_gui/source
 DEPENDPATH += $$PWD/../../kia_gui/source
 SOURCES += \
@@ -124,7 +123,7 @@ DEPENDPATH += $$PWD/../../../../../usr/local/include
 
 #INCLUDEPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
 #DEPENDPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
-CONFIG += kipc
+#CONFIG += kipc
 kipc {
 unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib64/ -lpqxx
 

@@ -45,13 +45,17 @@ uint16_t BokzM60::shtmi1(uint16_t parametr)
             + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
-    //m_pio_bokz->decrypt_shtmi1(m_kia_data->m_data_mpi->m_data_word);
-    m_pio_bokz->decrypt(M60_SHTMI1, m_kia_data->m_data_mpi->m_data_word);
+    std::vector<RAW_DATA> list_raw_data;
+    RAW_DATA raw_data;
+    memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+    list_raw_data.push_back(raw_data);
+    m_pio_bokz->decrypt(M60_SHTMI1, list_raw_data);
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_SHTMI1].data_description, m_kia_mko_struct->m_data[M60_SHTMI1].data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_SHTMI1].data_description,
+                                                        m_kia_mko_struct->m_data[M60_SHTMI1].data));
         //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1.shtmi1_list_name, m_kia_mko_struct->st_shtmi1.shtmi1_list_data));
         str_protocol.push_back("\n\n");
     }
@@ -114,20 +118,23 @@ uint16_t BokzM60::shtmi2(uint16_t parametr)
         }
         printf("\n");
     }
-    m_pio_bokz->decrypt_shtmi2(m_kia_data->m_data_mpi->m_data_word);
-    m_pio_bokz->decrypt(M60_SHTMI2, m_kia_data->m_data_mpi->m_data_word);
+    std::vector<RAW_DATA> list_raw_data;
+    RAW_DATA raw_data;
+    memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+    list_raw_data.push_back(raw_data);
+    m_pio_bokz->decrypt(M60_SHTMI2, list_raw_data);
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_SHTMI2].data_description, m_kia_mko_struct->m_data[M60_SHTMI2].data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_SHTMI2].data_description,
+                                                        m_kia_mko_struct->m_data[M60_SHTMI2].data));
 
         //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi2.shtmi2_list_name, m_kia_mko_struct->st_shtmi2.shtmi2_list_data));
 
         str_protocol.push_back("\n\n");
     }
     emit send_data_to_db(M60_SHTMI2, "prepare_insert_into_shtmi2", m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_mko_struct->m_data[M60_SHTMI2]);
-    //emit send_data_to_db_bokz(M60_SHTMI2, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, M60_SHTMI2, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, M60_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -155,8 +162,11 @@ uint16_t BokzM60::mshior(uint16_t parametr)
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
 
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
-
-    m_pio_bokz->decrypt(M60_MSHIOR, m_kia_data->m_data_mpi->m_data_word);
+    std::vector<RAW_DATA> list_raw_data;
+    RAW_DATA raw_data;
+    memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+    list_raw_data.push_back(raw_data);
+    m_pio_bokz->decrypt(M60_MSHIOR, list_raw_data);
     std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]) = std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]])
             + " (" + QString::number((int)(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]
                                      - std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]))) +  ")";
@@ -204,6 +214,11 @@ uint16_t BokzM60::dtmi_or_dtmi_loc(uint16_t parametr)
     uint16_t count_to_exchange = 9;
     if ((parametr & EP_NOFULLEXCHANGE) != 0)
         count_to_exchange = 1;
+
+
+
+    std::vector<RAW_DATA> list_raw_data(count_to_exchange);
+
     while (count_dtmi_dtmi_loc < count_to_exchange)
     {
         m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
@@ -215,40 +230,47 @@ uint16_t BokzM60::dtmi_or_dtmi_loc(uint16_t parametr)
             }
             printf("\n");
         }
-        getDataToDTMIOrDTMILoc(count_dtmi_dtmi_loc);
+        RAW_DATA raw_data;
+        memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+        list_raw_data[count_dtmi_dtmi_loc] = raw_data;
+        //getDataToDTMIOrDTMILoc(count_dtmi_dtmi_loc);
         ++count_dtmi_dtmi_loc;
     }
     QString str_protocol;
+    std::pair<int16_t, QString> key_arr = {M60_NONE, ""};
+    std::vector<std::pair<QString,std::string>> keys;
     if (m_kia_data->m_data_db->struct_id_dop == "loc")
     {
-        if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
-        {
-            m_pio_bokz->parse_dtmi_loc();
-            set_data_to_device_protocol(str_protocol);
-            str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_dtmi_loc.dtmi_loc_list_name, m_kia_mko_struct->st_dtmi_loc.dtmi_loc_list_data));
-            str_protocol.push_back("\n\n");
+        key_arr = {M60_DTMI_LOC, "prepare_insert_into_dtmiloc"};
+        keys = {{"X", "locx"}, {"Y", "locy"}, {"B", "locb"}, {"C", "locs"}};
 
-        }
-        emit send_data_to_db_bokz(M60_DTMI_LOC, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
-        save_to_specific_protocol(str_protocol, M60_DTMI_LOC, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
-        save_to_protocol(str_to_protocol, parametr);
-        save_to_specific_protocol(str_protocol, M60_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
     }
     else
     {
-        if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
-        {
-            m_pio_bokz->parse_dtmi(m_kia_data->m_data_bokz->m_type_orient);
-            set_data_to_device_protocol(str_protocol);
-            str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_dtmi.dtmi_list_name, m_kia_mko_struct->st_dtmi.dtmi_list_data));
-            str_protocol.push_back("\n\n");
+        key_arr = {M60_DTMI, "prepare_insert_into_dtmi"};
+        keys = {{"X", "locx"}, {"Y", "locy"}, {"B", "locb"}, {"C", "locs"}};
 
-        }
-        emit send_data_to_db_bokz(M60_DTMI, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
-        save_to_specific_protocol(str_protocol, M60_DTMI, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
-        save_to_protocol(str_to_protocol, parametr);
-        save_to_specific_protocol(str_protocol, M60_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
     }
+    m_kia_mko_struct->m_data[key_arr.first].data_array.clear();
+    m_pio_bokz->decrypt(key_arr.first, list_raw_data);
+    if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
+    {
+
+        set_data_to_device_protocol(str_protocol);
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[key_arr.first].data_description,
+                               m_kia_mko_struct->m_data[key_arr.first].data,
+                m_kia_mko_struct->m_data[key_arr.first].data_array));
+
+        str_protocol.push_back(set_post_data_from_mko_struct(keys, m_kia_mko_struct->m_data[key_arr.first].data_array));
+        str_protocol.push_back("\n\n");
+
+    }
+
+    emit send_data_to_db(key_arr.first, key_arr.second, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi],
+            m_kia_mko_struct->m_data[key_arr.first]);
+    save_to_specific_protocol(str_protocol, key_arr.first, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
+    save_to_protocol(str_to_protocol, parametr);
+    save_to_specific_protocol(str_protocol, M60_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
 
     return m_kia_data->m_data_mpi->m_status_exchange;
@@ -291,10 +313,13 @@ uint16_t BokzM60::chkd(uint16_t parametr)
 
 void BokzM60::getDataToDTMIOrDTMILoc(uint16_t& count_dtmi_or_dtmi_loc)
 {
-    if (m_kia_data->m_data_db->struct_id_dop == "loc")
-        m_pio_bokz->decrypt_dtmi_loc(m_kia_data->m_data_mpi->m_data_word, count_dtmi_or_dtmi_loc);
-    else
-        m_pio_bokz->decrypt_dtmi(m_kia_data->m_data_mpi->m_data_word, count_dtmi_or_dtmi_loc);
+    //    if (m_kia_data->m_data_db->struct_id_dop == "loc")
+    //        //m_pio_bokz->decrypt_dtmi_loc(m_kia_data->m_data_mpi->m_data_word, count_dtmi_or_dtmi_loc);
+    //    else
+    //    {
+    //        //m_pio_bokz->decrypt_dtmi(m_kia_data->m_data_mpi->m_data_word, count_dtmi_or_dtmi_loc);
+    //        //m_pio_bokz->decrypt(M60_DTMI, m_kia_data->m_data_mpi->m_data_word, count_dtmi_or_dtmi_loc);
+    //    }
 }
 
 void BokzM60::save_to_protocol(QString str_to_protocol, uint16_t parametr)

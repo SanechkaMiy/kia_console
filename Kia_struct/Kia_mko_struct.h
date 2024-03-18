@@ -2074,8 +2074,11 @@ struct RAW_DATA
 #pragma pack(push, 1)
 struct DATA
 {
-    QStringList data_description;
+    std::vector<std::tuple<QString, QString, QString>> data_description;
     std::vector<std::tuple<QString, double, QString>> data;
+
+    std::map<std::string, std::vector<std::tuple<QString, double, QString>>> data_array;
+    std::vector<std::tuple<QString, QString, QString>> data_description_array;
 }; Q_DECLARE_METATYPE(DATA)
 #pragma pack(pop)
 struct Kia_mko_struct

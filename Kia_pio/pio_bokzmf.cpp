@@ -1370,7 +1370,7 @@ void Pio_bokzmf::parse_dtmi(uint16_t type_orient)
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.m_cur), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.m_cur, 0, 100));
 }
 
-void Pio_bokzmf::decrypt(uint16_t key_arr, array<uint16_t, constants::packetSize> dataWord, uint16_t num_arr)
+void Pio_bokzmf::decrypt(uint16_t key_arr, std::vector<RAW_DATA> raw_data, uint16_t num_arr)
 {
 
 }
