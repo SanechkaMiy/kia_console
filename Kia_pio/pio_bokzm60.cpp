@@ -320,9 +320,10 @@ float Pio_bokzm60::uint32_to_float(uint32_t value)
 
 void Pio_bokzm60::load_array_param_from_json()
 {
-    std::vector<std::pair<std::string, uint16_t>> path_json = {std::make_pair("data_m60_mshior.json", M60_MSHIOR), std::make_pair("data_m60_shtmi1.json", M60_SHTMI1),
-                                                               std::make_pair("data_m60_shtmi2.json", M60_SHTMI2), std::make_pair("data_m60_dtmi.json", M60_DTMI),
-                                                               std::make_pair("data_m60_dtmiloc.json", M60_DTMI_LOC)};
+    std::string path = "../kia_console/Kia_resource/";
+    std::vector<std::pair<std::string, uint16_t>> path_json = {std::make_pair(path + "data_m60_mshior.json", M60_MSHIOR), std::make_pair(path + "data_m60_shtmi1.json", M60_SHTMI1),
+                                                               std::make_pair(path + "data_m60_shtmi2.json", M60_SHTMI2), std::make_pair(path + "data_m60_dtmi.json", M60_DTMI),
+                                                               std::make_pair(path + "data_m60_dtmiloc.json", M60_DTMI_LOC)};
     for (auto path : path_json)
     {
         std::ifstream f(path.first, std::ifstream::in);
