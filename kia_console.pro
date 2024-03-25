@@ -102,24 +102,6 @@ DEPENDPATH += Kia_cyclogram/
 INCLUDEPATH += ../../lib/BiLib_20231123_1653
 DEPENDPATH += ../../lib/BiLib_20231123_1653
 
-#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lCppLinuxSerial
-
-#INCLUDEPATH += $$PWD/../../../../../usr/local/include
-#DEPENDPATH += $$PWD/../../../../../usr/local/include
-
-#unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libCppLinuxSerial.a
-
-#unix:!macx: LIBS += -L$$PWD/../../../../../usr/lib64/ -lftdi1
-
-#INCLUDEPATH += $$PWD/../../../../../usr/include
-#DEPENDPATH += $$PWD/../../../../../usr/include
-
-
-#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lftd2xx
-
-#INCLUDEPATH += $$PWD/../../../../../usr/local/include
-#DEPENDPATH += $$PWD/../../../../../usr/local/include
-
 #unix:!macx: LIBS += -L$$PWD/../../../../../opt/matrox_imaging/mil/lib/ -lmil
 
 #INCLUDEPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
@@ -131,13 +113,6 @@ INCLUDEPATH += $$PWD/../../libpqxx/include
 DEPENDPATH += $$PWD/../../libpqxx/include
 
 unix:!macx: PRE_TARGETDEPS += $$PWD/../../libpqxx/build/src/libpqxx.a
-#    unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lpqxx
-
-#    INCLUDEPATH += $$PWD/../../../../../usr/local/include
-#    DEPENDPATH += $$PWD/../../../../../usr/local/include
-
-#    unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libpqxx.a
-#}
 
 
 unix:!macx: LIBS += -L$$PWD/../../../../../usr/pgsql-13/lib/ -lpq
