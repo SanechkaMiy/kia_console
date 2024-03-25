@@ -151,7 +151,7 @@ void Timer::closeTimerThread()
 
     m_stop_timer = false;
     //m_start_timer.get();
-        std::cout <<"stop default timer" << std::endl;
+    std::cout <<"stop default timer" << std::endl;
 }
 
 void Timer::change_interval(int32_t shift)

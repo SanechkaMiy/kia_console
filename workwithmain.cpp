@@ -6,9 +6,14 @@ WorkWithMain::WorkWithMain(int nPort) :
 {
     QThread::currentThread()->setPriority(QThread::HighPriority);
 //    m_run_mko = new QProcess();
+<<<<<<< HEAD
 //    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source ../kia_console/Kia_resource/autostarttmk.sh\"\"");
 //    m_run_mko->waitForStarted();
     std::this_thread::sleep_for(1000ms);
+=======
+//    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source autostarttmk.sh\"\"");
+//    m_run_mko->waitForStarted();
+>>>>>>> main
     start_tcp_server(nPort);
     set_kia_settings();
     start_kia_gui();
