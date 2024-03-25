@@ -100,7 +100,7 @@ void Timer::start()
             else
                 m_interval_divider = m_kia_settings->m_timer_interval;
             //std::cout <<  m_kia_settings->m_data_for_db->bshv[m_num_timer] << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] /  m_divider << std::endl;
-            std::cout << m_interval_divider << " " << delta / m_divider << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] << std::endl;
+            //std::cout << m_interval_divider << " " << delta / m_divider << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] << std::endl;
             m_count++;
             m_cv.notify_all();
         }
