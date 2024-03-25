@@ -5,9 +5,9 @@ WorkWithMain::WorkWithMain(int nPort) :
     m_kia_timers(new Kia_timers())
 {
     QThread::currentThread()->setPriority(QThread::HighPriority);
-    m_run_mko = new QProcess();
-    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source autostarttmk.sh\"\"");
-    m_run_mko->waitForStarted();
+//    m_run_mko = new QProcess();
+//    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source autostarttmk.sh\"\"");
+//    m_run_mko->waitForStarted();
     start_tcp_server(nPort);
     set_kia_settings();
     //start_kia_gui();
@@ -94,7 +94,7 @@ WorkWithMain::~WorkWithMain()
     std::cout << "close db connection" << std::endl;
     m_kia_protocol->close_dir_for_protocols();
     std::cout << "close dir for protocols" << std::endl;
-    m_run_mko->terminate();
+    //m_run_mko->terminate();
 }
 
 

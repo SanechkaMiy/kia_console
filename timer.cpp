@@ -97,6 +97,8 @@ void Timer::start()
             auto delta = (m_now_time - m_curr_time) / m_to_ms;
             if (delta <= (m_kia_settings->m_timer_interval + m_shift_interval))
                 m_interval_divider = m_kia_settings->m_timer_interval - delta / m_divider;
+            else
+                m_interval_divider = m_kia_settings->m_timer_interval;
             //std::cout <<  m_kia_settings->m_data_for_db->bshv[m_num_timer] << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] /  m_divider << std::endl;
             //std::cout << m_interval_divider << " " << delta / m_divider << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] << std::endl;
             m_count++;
@@ -149,7 +151,7 @@ void Timer::closeTimerThread()
 
     m_stop_timer = false;
     //m_start_timer.get();
-        std::cout <<"stop default timer" << std::endl;
+    std::cout <<"stop default timer" << std::endl;
 }
 
 void Timer::change_interval(int32_t shift)

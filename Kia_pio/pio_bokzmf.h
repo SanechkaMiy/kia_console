@@ -16,7 +16,7 @@ public:
     void decrypt_dtmi(array<uint16_t, constants::packetSize> dataWord, uint16_t count) override;
     void parse_dtmi_loc() override;
     void parse_dtmi(uint16_t type_orient) override;
-        void decrypt(uint16_t key_arr, std::vector<RAW_DATA> raw_data, uint16_t num_arr = 0) override;
+    void decrypt(uint16_t key_arr, std::vector<RAW_DATA> raw_data, uint16_t num_arr = 0) override;
     void decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_shtmi2(array<uint16_t, constants::packetSize> dataWord) override;
     void decrypt_mshior(array<uint16_t, constants::packetSize> dataWord, int32_t& bshv) override;

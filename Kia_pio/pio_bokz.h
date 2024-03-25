@@ -46,10 +46,10 @@ public:
     };
     enum TYPE_ARR
     {
-       TA_NONE = -1,
-       TA_FLOAT = 0,
+        TA_NONE = -1,
+        TA_FLOAT = 0,
         TA_UINT16 = 1,
-
+        TA_DIV_UINT16 = 2
     };
 
     Pio_bokz();
