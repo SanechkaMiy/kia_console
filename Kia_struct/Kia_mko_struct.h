@@ -2067,7 +2067,7 @@ const static uint32_t packet_size = 34;
 #pragma pack(push, 1)
 struct RAW_DATA
 {
-    std::array<uint16_t, packet_size> data;
+    std::array<uint8_t, packet_size * 2> data;
 };
 #pragma pack(pop)
 

@@ -51,7 +51,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    ../../../../../usr/local/lib/BiLib_20231123_1653/BiLibNE.h \
+    ../../lib/BiLib_20231123_1653/BiLibNE.h \
     ../../kia_gui/source/Kia_enums.h \
     Kia_bokz/bokzmf.h \
     Kia_cyclogram/kia_cyclogram.h \
@@ -99,46 +99,45 @@ DEPENDPATH += Kia_bi/
 INCLUDEPATH += Kia_cyclogram/
 DEPENDPATH += Kia_cyclogram/
 
-INCLUDEPATH += ../../../../../usr/local/lib/BiLib_20231123_1653
-DEPENDPATH += ../../../../../usr/local/lib/BiLib_20231123_1653
+INCLUDEPATH += ../../lib/BiLib_20231123_1653
+DEPENDPATH += ../../lib/BiLib_20231123_1653
 
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lCppLinuxSerial
+#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lCppLinuxSerial
 
-INCLUDEPATH += $$PWD/../../../../../usr/local/include
-DEPENDPATH += $$PWD/../../../../../usr/local/include
+#INCLUDEPATH += $$PWD/../../../../../usr/local/include
+#DEPENDPATH += $$PWD/../../../../../usr/local/include
 
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libCppLinuxSerial.a
+#unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libCppLinuxSerial.a
 
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/lib64/ -lftdi1
+#unix:!macx: LIBS += -L$$PWD/../../../../../usr/lib64/ -lftdi1
 
-INCLUDEPATH += $$PWD/../../../../../usr/include
-DEPENDPATH += $$PWD/../../../../../usr/include
+#INCLUDEPATH += $$PWD/../../../../../usr/include
+#DEPENDPATH += $$PWD/../../../../../usr/include
 
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lftd2xx
 
-INCLUDEPATH += $$PWD/../../../../../usr/local/include
-DEPENDPATH += $$PWD/../../../../../usr/local/include
+#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lftd2xx
+
+#INCLUDEPATH += $$PWD/../../../../../usr/local/include
+#DEPENDPATH += $$PWD/../../../../../usr/local/include
 
 #unix:!macx: LIBS += -L$$PWD/../../../../../opt/matrox_imaging/mil/lib/ -lmil
 
 #INCLUDEPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
 #DEPENDPATH += $$PWD/../../../../../opt/matrox_imaging/mil/include
-#CONFIG += kipc
-kipc {
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib64/ -lpqxx
 
-INCLUDEPATH += $$PWD/../../../../../usr/local/include
-DEPENDPATH += $$PWD/../../../../../usr/local/include
+unix:!macx: LIBS += -L$$PWD/../../libpqxx/build/src/ -lpqxx
 
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib64/libpqxx.a
-} else {
-    unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lpqxx
+INCLUDEPATH += $$PWD/../../libpqxx/include
+DEPENDPATH += $$PWD/../../libpqxx/include
 
-    INCLUDEPATH += $$PWD/../../../../../usr/local/include
-    DEPENDPATH += $$PWD/../../../../../usr/local/include
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../libpqxx/build/src/libpqxx.a
+#    unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lpqxx
 
-    unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libpqxx.a
-}
+#    INCLUDEPATH += $$PWD/../../../../../usr/local/include
+#    DEPENDPATH += $$PWD/../../../../../usr/local/include
+
+#    unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/local/lib/libpqxx.a
+#}
 
 
 unix:!macx: LIBS += -L$$PWD/../../../../../usr/pgsql-13/lib/ -lpq
@@ -147,3 +146,20 @@ INCLUDEPATH += $$PWD/../../../../../usr/pgsql-13/include
 DEPENDPATH += $$PWD/../../../../../usr/pgsql-13/include
 
 unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/pgsql-13/lib/libpq.a
+
+unix:!macx: LIBS += -L$$PWD/../../ftdi/ -lftd2xx
+
+INCLUDEPATH += $$PWD/../../ftdi/include
+DEPENDPATH += $$PWD/../../ftdi/include
+
+INCLUDEPATH += $$PWD/../../json-develop/include
+DEPENDPATH += $$PWD/../../json-develop/include
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../ftdi/libftd2xx.a
+
+unix:!macx: LIBS += -L$$PWD/../../serial_port/CppLinuxSerial-master/build/src/ -lCppLinuxSerial
+
+INCLUDEPATH += $$PWD/../../serial_port/CppLinuxSerial-master/include
+DEPENDPATH += $$PWD/../../serial_port/CppLinuxSerial-master/include
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../serial_port/CppLinuxSerial-master/build/src/libCppLinuxSerial.a

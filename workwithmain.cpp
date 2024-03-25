@@ -5,12 +5,13 @@ WorkWithMain::WorkWithMain(int nPort) :
     m_kia_timers(new Kia_timers())
 {
     QThread::currentThread()->setPriority(QThread::HighPriority);
-    m_run_mko = new QProcess();
-    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source autostarttmk.sh\"\"");
-    m_run_mko->waitForStarted();
+//    m_run_mko = new QProcess();
+//    m_run_mko->start("bash", QStringList() << "-c" << "\"\"source ../kia_console/Kia_resource/autostarttmk.sh\"\"");
+//    m_run_mko->waitForStarted();
+    std::this_thread::sleep_for(1000ms);
     start_tcp_server(nPort);
     set_kia_settings();
-    //start_kia_gui();
+    start_kia_gui();
 
 
 }
@@ -18,7 +19,7 @@ WorkWithMain::WorkWithMain(int nPort) :
 void WorkWithMain::set_kia_settings()
 {
     kia_init();
-
+    std::cout << "kia_init" << std::endl;
     m_kia_settings->m_data_for_db->experiment_id = helpers::currentDateTime();
 
     m_kia_protocol.reset(new Kia_protocol(m_kia_settings));
@@ -94,7 +95,7 @@ WorkWithMain::~WorkWithMain()
     std::cout << "close db connection" << std::endl;
     m_kia_protocol->close_dir_for_protocols();
     std::cout << "close dir for protocols" << std::endl;
-    m_run_mko->terminate();
+    //m_run_mko->terminate();
 }
 
 
@@ -757,7 +758,6 @@ void WorkWithMain::kia_init()
 
     Kia_port m_kia_port(m_kia_settings);
     m_kia_port.check_used_bi_ports(m_kia_settings->m_type_bi);
-
     m_kia_settings->m_data_for_db->bshv.resize(m_kia_settings->m_data_for_bi->m_count_bi);
     m_kia_settings->m_count_bokz = m_kia_settings->m_data_for_bi->m_count_bi * m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi];
 
@@ -872,7 +872,7 @@ void WorkWithMain::start_kia_gui()
 {
     QStringList arguments;
     m_process = new QProcess();
-    m_process->start("bash", QStringList() << "-c" << "\"\"source /home/alexander/Project/kia/kia_gui_run.sh\"\"");
+    m_process->start("bash", QStringList() << "-c" << "\"\"source ../../kia_gui_run.sh\"\"");
     m_process->waitForStarted();
 }
 

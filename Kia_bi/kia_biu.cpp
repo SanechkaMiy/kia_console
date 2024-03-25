@@ -215,7 +215,7 @@ uint16_t Kia_biu::init_bi()
     int16_t (*init)(void);
     int16_t (*getDeviceID)(uint16_t);
     int16_t (*config)(int16_t);
-    m_handle = dlopen ("/usr/local/lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
+    m_handle = dlopen ("../../lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
     setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
     printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
     init = (int16_t(*)(void))dlsym(m_handle, "Init");
