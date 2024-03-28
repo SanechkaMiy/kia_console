@@ -56,7 +56,6 @@ uint16_t BokzM60::shtmi1(uint16_t parametr)
         set_data_to_device_protocol(str_protocol);
         str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[M60_SHTMI1].data_description,
                                                         m_kia_mko_struct->m_data[M60_SHTMI1].data));
-        //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1.shtmi1_list_name, m_kia_mko_struct->st_shtmi1.shtmi1_list_data));
         str_protocol.push_back("\n\n");
     }
     emit send_data_to_db(M60_SHTMI1, "prepare_insert_into_shtmi1", m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], m_kia_mko_struct->m_data[M60_SHTMI1]);
@@ -233,7 +232,6 @@ uint16_t BokzM60::dtmi_or_dtmi_loc(uint16_t parametr)
         RAW_DATA raw_data;
         memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
         list_raw_data[count_dtmi_dtmi_loc] = raw_data;
-        //getDataToDTMIOrDTMILoc(count_dtmi_dtmi_loc);
         ++count_dtmi_dtmi_loc;
     }
     QString str_protocol;
@@ -1326,14 +1324,14 @@ void BokzM60::send_status_info()
     QStringList data_status;
     data_status.push_back(QString::number(ST_ST1));
     data_status.push_back(QString::number(m_num_bokz));
-    auto st1 = static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["st1"]]));
+    auto st1 = m_kia_data->m_data_mpi->m_data_word[2];
     data_status.push_back(QString("0x%1").arg(QString::number(st1, 16), 4, '0') );
     data_status.push_back(QString::number(m_kia_data->m_data_bokz->m_type_orient));
     emit send_to_client(SEND_STATUS_INFO, data_status);
     data_status.clear();
     data_status.push_back(QString::number(ST_ST2));
     data_status.push_back(QString::number(m_num_bokz));
-    auto st2 = static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["st2"]]));
+    auto st2 = m_kia_data->m_data_mpi->m_data_word[3];
     data_status.push_back(QString("0x%1").arg(QString::number(st2, 16), 4, '0') );
     emit send_to_client(SEND_STATUS_INFO, data_status);
 }
@@ -1428,6 +1426,7 @@ void BokzM60::check_orientation()
     auto qo1 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo1"]]);
     auto qo2 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo2"]]);
     auto qo3 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["qo3"]]);
+    auto t = static_cast<int>(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[M60_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]));
     m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(qo0, 2)
                                               + pow(qo1, 2)
                                               + pow(qo2, 2)
@@ -1454,7 +1453,7 @@ void BokzM60::check_orientation()
             for (uint16_t qa_index = 0; qa_index < constants::packetSize; ++qa_index)
                 m_kia_data->m_data_mpi->m_qa[qa_index] = m_kia_data->m_data_mpi->m_data_word[qa_index + 12];
 
-            if ((m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] - m_kia_mko_struct->st_mshior.T) != 1)
+            if ((m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] - t) != 1)
             {
                 m_kia_data->m_data_bokz->m_count_fail[SVREM]++;
             }

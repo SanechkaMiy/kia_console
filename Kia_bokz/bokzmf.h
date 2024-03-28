@@ -113,6 +113,7 @@ private:
     std::map<uint16_t, std::function<uint16_t(QStringList value, uint16_t parametr)>> m_func_upn;
     std::map<uint16_t, std::function<uint16_t(uint16_t parametr)>> m_map_chpn;
 
+    std::map<uint16_t, std::map<std::string, uint16_t>> m_index_mpi_array;
 };
 
 #endif // BOKZMF_H

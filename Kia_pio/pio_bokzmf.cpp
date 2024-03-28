@@ -4,11 +4,13 @@ extern "C"
 #include "Kia_pio/crc.c"
 }
 Pio_bokzmf::Pio_bokzmf(std::shared_ptr<Kia_mko_struct> kia_mko_struct,
-                       std::shared_ptr<Kia_settings> kia_settings) :
-    m_kia_mko_struct(kia_mko_struct),
-    m_kia_settings(kia_settings)
+                       std::shared_ptr<Kia_settings> kia_settings)
 {
-
+    m_kia_mko_struct = kia_mko_struct;
+    m_kia_settings = kia_settings;
+    load_array_param_from_json();
+    create_list_to_prepare_data();
+    create_list_for_mpi_arrays();
 }
 
 
@@ -1370,9 +1372,44 @@ void Pio_bokzmf::parse_dtmi(uint16_t type_orient)
     m_kia_mko_struct->st_dtmi_mf.dtmi_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.m_cur), m_kia_mko_struct->st_dtmi_mf.dtmi_12_mf.m_cur, 0, 100));
 }
 
-void Pio_bokzmf::decrypt(uint16_t key_arr, std::vector<RAW_DATA> raw_data, uint16_t num_arr)
+void Pio_bokzmf::decrypt(uint16_t key_arr, std::vector<RAW_DATA> raw_data)
 {
+    auto start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    std::vector<uint8_t> temp_data;
+    uint16_t ind_data_manage = 0;
+    uint16_t num_data = 0;
+    for (uint16_t num_raw_data = 0; num_raw_data < raw_data.size(); num_raw_data++)
+    {
+        uint16_t num_el = 0;
+        m_calculated_cs = calculate_cs(raw_data[num_raw_data].data);
+        while(num_el < raw_data[num_raw_data].data.size())
+        {
+            temp_data.clear();
+            for (uint16_t ind = num_el; ind < num_el + std::get<COUNT_EL_IN_ARR>(m_data_manage[key_arr][ind_data_manage]); ind++)
+            {
+                temp_data.push_back(raw_data[num_raw_data].data[ind]);
+            }
+            //std::cout << ind_data_manage << std::endl;
+            int16_t type_data = std::get<0>(std::get<DM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage]));
+            std::string name_arr = std::get<1>(std::get<DM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage]));
+            int16_t type_arr = std::get<2>(std::get<DM_TYPE_DATA>(m_data_manage[key_arr][ind_data_manage]));
+            if (type_data != ITS_REZERV)
+            {
+                //std::cout << ind_data_manage << " " << num_data << std::endl;
+                m_prepare_data[type_data](key_arr, std::make_pair(type_arr, name_arr), num_data, temp_data,
+                        std::get<RANGE_VALUE>(m_data_manage[key_arr][ind_data_manage]),
+                        std::get<COEF_TO_SCALE>(m_data_manage[key_arr][ind_data_manage]),
+                        std::get<TYPE_FORMAT>(m_data_manage[key_arr][ind_data_manage]),
+                        std::get<DO_SWAP>(m_data_manage[key_arr][ind_data_manage]));
+                num_data++;
+            }
 
+            num_el = num_el + std::get<COUNT_EL_IN_ARR>(m_data_manage[key_arr][ind_data_manage]);
+            ind_data_manage = ind_data_manage + 1;
+        }
+    }
+    auto end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    std::cout << end - start << std::endl;
 }
 
 void Pio_bokzmf::dtmi_2_3_4_5_6_7_converter(DTMIRaw_2_3_4_5_6_7_MF &dtmiRaw_2_3_4_5_6_7)
@@ -1394,12 +1431,792 @@ void Pio_bokzmf::dtmi_2_3_4_5_6_7_converter(DTMIRaw_2_3_4_5_6_7_MF &dtmiRaw_2_3_
     dtmiRaw_2_3_4_5_6_7.RsLoc_4_b = swapHex(dtmiRaw_2_3_4_5_6_7.RsLoc_4_b);
 }
 
-uint16_t Pio_bokzmf::calculate_cs(array<uint16_t, constants::packetSize> dataWord)
+void Pio_bokzmf::load_array_param_from_json()
 {
-    std::array<uint16_t, 31> temp;
-    memcpy(&temp, &dataWord[2], sizeof(temp));
-    return Crc16(temp.data(), temp.size());
+    std::string path = "../kia_console/Kia_resource/";
+    std::vector<std::pair<std::string, uint16_t>> path_json = {std::make_pair(path + "data_mf_shtmi1.json", MF_SHTMI1), std::make_pair(path + "data_mf_shtmi2.json", MF_SHTMI2),
+                                                               std::make_pair(path + "data_mf_mshior.json", MF_MSHIOR), std::make_pair(path + "data_mf_dtmi.json", MF_DTMI)};//, std::make_pair(path + "data_mf_dtmi.json", MF_DTMI),
+    //std::make_pair(path + "data_mf_mloc.json", MF_MLOC)
+    for (auto path : path_json)
+    {
+        std::ifstream f(path.first, std::ifstream::in);
+        json j;
+        f >> j;
+        uint16_t count_if_el_is_array = 0;
+        for (uint16_t ind = 0; ind < j.size(); ind++)
+        {
+            QString type_data;
+            if (j[std::to_string(ind)].contains("type_data"))
+            {
+                type_data = QString::fromStdString(j[std::to_string(ind)]["type_data"]);
+                count_if_el_is_array++;
+            }
+            add_to_list_description(path.second, QString::fromStdString(j[std::to_string(ind)]["№ СД"]),
+                    QString::fromStdString(j[std::to_string(ind)]["Наименование параметра"]),
+                    type_data,
+                    QString::fromStdString(j[std::to_string(ind)]["Условное обозначение"]));
+        }
+        m_kia_mko_struct->m_data[path.second].data.resize(m_kia_mko_struct->m_data[path.second].data_description.size() - count_if_el_is_array);
+        f.close();
+    }
 }
+
+void Pio_bokzmf::create_list_for_mpi_arrays()
+{
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT32, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(FLOAT, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(FLOAT, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(FLOAT, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    for (uint16_t i = 0; i < 9; i++)
+    {
+        m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(0, 65535),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(VER, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI1].push_back(std::make_tuple(std::make_tuple(CS, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT32, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 5; i++)
+    {
+        m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT32, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 10; i++)
+    {
+        m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    for (uint16_t i = 0; i < 6; i++)
+    {
+        m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 2; i++)
+    {
+        m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_SHTMI2].push_back(std::make_tuple(std::make_tuple(CS, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_kia_mko_struct->m_data[MF_MSHIOR].data.resize(m_kia_mko_struct->m_data[MF_MSHIOR].data_description.size() + 3);
+
+    m_index_mpi_array[MF_MSHIOR]["st1"] = 0;
+    m_index_mpi_array[MF_MSHIOR]["st2"] = 1;
+    m_index_mpi_array[MF_MSHIOR]["t"] = 2;
+    m_index_mpi_array[MF_MSHIOR]["qo0"] = 4;
+    m_index_mpi_array[MF_MSHIOR]["qo1"] = 5;
+    m_index_mpi_array[MF_MSHIOR]["qo2"] = 6;
+    m_index_mpi_array[MF_MSHIOR]["qo3"] = 7;
+    m_index_mpi_array[MF_MSHIOR]["alpha"] = m_kia_mko_struct->m_data[MF_MSHIOR].data_description.size();
+    m_index_mpi_array[MF_MSHIOR]["delta"] = m_kia_mko_struct->m_data[MF_MSHIOR].data_description.size() + 1;
+    m_index_mpi_array[MF_MSHIOR]["azimuth"] = m_kia_mko_struct->m_data[MF_MSHIOR].data_description.size() + 2;
+
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT32, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 4; i++)
+    {
+        m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(FLOAT, "", TA_NONE), 4, std::make_pair(-1, 1),
+                                                           1, TDF_FLOAT, std::make_pair(false, true)));
+    }
+
+    for (uint16_t i = 0; i < 3; i++)
+    {
+        m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(FLOAT, "", TA_NONE), 4, std::make_pair(-0.1, 0.1),
+                                                           1, TDF_FLOAT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 4; i++)
+    {
+        m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    for (uint16_t i = 0; i < 6; i++)
+    {
+        m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    for (uint16_t i = 0; i < 6; i++)
+    {
+        m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                           1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_MSHIOR].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                       1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "nAr", TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT32, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 5; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    for (uint16_t i = 0; i < 4; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT32, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+    for (uint16_t i = 0; i < 4; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(FLOAT, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_FLOAT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 8; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "cs", TA_CS), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+
+
+    std::array<std::string, 3> loc_name = {"rsloc0x", "rsloc0y", "rsloc0b"};
+
+    for (uint16_t i = 0; i < 15 * 6; i++)
+    {
+        if (i % 15 == 0)
+        {
+            m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                             1, TDF_HEX, std::make_pair(false, true)));
+            m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                             1, TDF_HEX, std::make_pair(false, true)));
+
+            m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "nAr", TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                             1, TDF_HEX, std::make_pair(false, true)));
+        }
+
+        if (i != 0 && i % 45 == 0)
+        {
+            loc_name[0] = "rsloc1x";
+            loc_name[1] = "rsloc1y";
+            loc_name[2] = "rsloc1b";
+        }
+        //        2,3
+        //        4,5
+        //        6,7
+        //        8,9
+        //        10,11
+        //        12,13
+        //        14,15
+        //        16,17
+        //        18,19
+        //        20,21
+        //        22,23
+        //        24,25
+        //        26,27
+        //        28,29,
+        //        30,31
+        std::string val;
+        val = loc_name[i % loc_name.size()];
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, val, TA_FLOAT), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_FLOAT, std::make_pair(true, true)));
+
+        if (i % 15 == 0)
+        {
+            m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "cs", TA_CS), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                             1, TDF_INT, std::make_pair(false, true)));
+        }
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "nAr", TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    string loc_s = "rsloc0s";
+    for (uint16_t i = 0; i < 30; i++)
+    {
+
+        if (i != 0 && i % 15 == 0)
+        {
+            loc_s = "rsloc1s";
+        }
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, loc_s, TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+
+
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "cs", TA_CS), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "nAr", TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    std::array<std::string, 2> xcyc_name = {"xc", "yc"};
+    for (uint16_t i = 0; i < 30; i++)
+    {
+
+        std::string val;
+        val = xcyc_name[i % 2];
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, val, TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+    }
+
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "cs", TA_CS), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "nAr", TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    std::array<std::string, 2> mean_frag = {"meanfrag", "sigmafrag"};
+    for (uint16_t i = 0; i < 30; i++)
+    {
+
+        std::string val;
+        val = xcyc_name[i % 2];
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, val, TA_FLOAT), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+    }
+
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "cs", TA_CS), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "nAr", TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 15; i++)
+    {
+
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "thfrag", TA_FLOAT), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+    }
+
+    for (uint16_t i = 0; i < 4; i++)
+    {
+
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "objfrag", TA_DIV_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+    }
+
+    for (uint16_t i = 0; i < 4; i++)
+    {
+
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "multxy", TA_DIV_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+    }
+
+    for (uint16_t i = 0; i < 7; i++)
+    {
+
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "zip", TA_DIV_UINT16_AND_DIV_ON_ARR_NAME), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "cs", TA_CS), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "nAr", TA_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_HEX, std::make_pair(false, true)));
+
+
+    for (uint16_t i = 0; i < 6; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    for (uint16_t i = 0; i < 8; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_HEX, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(FLOAT, "", TA_NONE), 4, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_FLOAT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 2; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 4; i++)
+    {
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT8, "", TA_NONE), 1, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(false, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+
+    for (uint16_t i = 0; i < 16; i++)
+    {
+
+        m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "histpix", TA_DIV_UINT16), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                         1, TDF_INT, std::make_pair(true, true)));
+    }
+
+    m_data_manage[MF_DTMI].push_back(std::make_tuple(std::make_tuple(ARR, "cs", TA_CS), 2, std::make_pair(-m_max_double_value, m_max_double_value),
+                                                     1, TDF_INT, std::make_pair(false, true)));
+}
+
+void Pio_bokzmf::create_list_to_prepare_data()
+{
+    auto add_to_int16_t = [this](int16_t key_arr, std::pair<int16_t, std::string> type_name_arr, uint16_t& num_data, std::vector<uint8_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
+    {
+        int16_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+        QString is_norma;
+        if (temp * scale >= range.first && temp * scale <= range.second)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+
+        auto format_str = get_format_str(type_format, static_cast<int16_t>(temp * scale));
+
+        m_kia_mko_struct->m_data[key_arr].data[num_data] = std::make_tuple(format_str, temp * scale, is_norma);
+    };
+    m_prepare_data.push_back(add_to_int16_t);
+
+    auto add_to_int32_t = [this](int16_t key_arr, std::pair<int16_t, std::string> type_name_arr, uint16_t& num_data, std::vector<uint8_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
+    {
+        int32_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+
+        if (do_proc.first)
+            temp = swapHex(temp);
+
+        QString is_norma;
+        if (temp * scale >= range.first && temp * scale <= range.second)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+
+        auto format_str = QString::number(static_cast<int32_t>(temp * scale));
+        m_kia_mko_struct->m_data[key_arr].data[num_data] = std::make_tuple(format_str, temp * scale, is_norma);
+    };
+    m_prepare_data.push_back(add_to_int32_t);
+
+    auto add_to_float = [this](int16_t key_arr, std::pair<int16_t, std::string> type_name_arr, uint16_t& num_data, std::vector<uint8_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
+    {
+        int32_t temp = 0;
+        memcpy(&temp, &value[0], sizeof(temp));
+        if (do_proc.first)
+            temp = swapHex(temp);
+        float temp_float = 0;
+        if (do_proc.second)
+            temp_float = uint32_to_float(temp);
+        QString is_norma;
+        if (temp_float * scale >= range.first && temp_float * scale <= range.second)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+        auto format_str = QString::number(static_cast<float>(temp_float * scale), 'f',4);
+        m_kia_mko_struct->m_data[key_arr].data[num_data] = std::make_tuple(format_str, temp_float * scale, is_norma);
+    };
+    m_prepare_data.push_back(add_to_float);
+
+    auto add_to_int8_t = [this](int16_t key_arr, std::pair<int16_t, std::string> type_name_arr, uint16_t& num_data, std::vector<uint8_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
+    {
+        for (auto el : value)
+        {
+            QString is_norma;
+            if (el * scale >= range.first && el * scale <= range.second)
+            {
+                is_norma.clear();
+            }
+            else
+            {
+                is_norma = "(не норма)";
+            }
+            auto format_str = get_format_str(type_format, static_cast<int8_t>(el * scale));
+            m_kia_mko_struct->m_data[key_arr].data[num_data] = std::make_tuple(format_str, el * scale, is_norma);
+        }
+    };
+    m_prepare_data.push_back(add_to_int8_t);
+
+    auto convert_to_ver = [this](int16_t key_arr, std::pair<int16_t, std::string> type_name_arr, uint16_t& num_data, std::vector<uint8_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
+    {
+        uint16_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+
+        QString is_norma;
+        if (temp * scale >= range.first && temp * scale <= range.second)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+        auto ver1 = (temp >> 12);
+        auto ver2 = ((temp & 0x0fff) >> 8);
+        auto ver3 = ((temp & 0x00ff));
+
+        m_kia_mko_struct->m_data[key_arr].data[num_data] = std::make_tuple(QString::number(ver1)
+                                                                           + "." + QString::number(ver2)
+                                                                           + "." + QString::number(ver3), temp * scale, is_norma);
+    };
+    m_prepare_data.push_back(convert_to_ver);
+
+    auto convert_cs = [this](int16_t key_arr, std::pair<int16_t, std::string> type_name_arr, uint16_t& num_data, std::vector<uint8_t> value, std::pair<double, double> range, double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
+    {
+        uint16_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+
+        QString is_norma;
+        if (temp * scale == m_calculated_cs)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+
+        m_kia_mko_struct->m_data[key_arr].data[num_data] = std::make_tuple(QString::number(temp * scale) + "(" + QString::number(m_calculated_cs) + ")",
+                                                                           temp * scale, is_norma);
+    };
+    m_prepare_data.push_back(convert_cs);
+
+    std::vector<std::function<std::vector<std::pair<std::string, std::tuple<QString, double, QString>>> (std::vector<uint8_t> value, std::string name_arr, std::pair<bool, bool> do_proc, std::pair<double, double> range, double scale, uint16_t type_format)>> list_to_prepare_data_for_arr;
+    auto arr_float = [this](std::vector<uint8_t> value, std::string name_arr, std::pair<bool, bool> do_proc, std::pair<double, double> range, double scale, uint16_t type_format)
+    {
+        std::vector<std::pair<std::string, std::tuple<QString, double, QString>>> data;
+        int32_t temp = 0;
+        memcpy(&temp, &value[0], sizeof(temp));
+        if (do_proc.first)
+            temp = swapHex(temp);
+        float temp_float = 0.0;
+        if (do_proc.second)
+            temp_float = uint32_to_float(temp);
+        QString is_norma;
+        if (temp_float * scale >= range.first && temp_float * scale <= range.second)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+        auto format_str = QString::number(static_cast<float>(temp_float * scale), 'f',4);
+        std::cout << name_arr << " " <<  format_str.toStdString() << std::endl;
+        data.push_back(std::make_pair(name_arr, make_tuple(format_str, temp_float * scale, is_norma)));
+        return data;
+    };
+    list_to_prepare_data_for_arr.push_back(arr_float);
+
+    auto arr_uint16 = [this](std::vector<uint8_t> value, std::string name_arr, std::pair<bool, bool> do_proc, std::pair<double, double> range, double scale, uint16_t type_format)
+    {
+        int16_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+
+        std::vector<std::pair<std::string, std::tuple<QString, double, QString>>> data;
+        QString is_norma;
+        if (temp * scale >= range.first && temp * scale <= range.second)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+
+        auto format_str = get_format_str(type_format, static_cast<int16_t>(temp * scale));
+        data.push_back(std::make_pair(name_arr, make_tuple(format_str, temp * scale, is_norma)));
+        return data;
+    };
+    list_to_prepare_data_for_arr.push_back(arr_uint16);
+
+    auto arr_uint8 = [this](std::vector<uint8_t> value, std::string name_arr, std::pair<bool, bool> do_proc, std::pair<double, double> range, double scale, uint16_t type_format)
+    {
+        std::vector<std::pair<std::string, std::tuple<QString, double, QString>>> data;
+        for (auto el : value)
+        {
+            QString is_norma;
+            if (el * scale >= range.first && el * scale <= range.second)
+            {
+                is_norma.clear();
+            }
+            else
+            {
+                is_norma = "(не норма)";
+            }
+            auto format_str = get_format_str(type_format, static_cast<int8_t>(el * scale));
+            data.push_back(std::make_pair(name_arr, make_tuple(format_str, el * scale, is_norma)));
+        }
+
+
+        return data;
+    };
+    list_to_prepare_data_for_arr.push_back(arr_uint8);
+
+    auto arr_div_uint16 = [this](std::vector<uint8_t> value, std::string name_arr, std::pair<bool, bool> do_proc, std::pair<double, double> range, double scale, uint16_t type_format)
+    {
+        std::vector<std::pair<std::string, std::tuple<QString, double, QString>>> data;
+        int16_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+        auto div_array = helpers::split_data_from_word(temp);
+        for (auto el_arr : div_array)
+        {
+            QString is_norma;
+            if (el_arr * scale >= range.first && el_arr * scale <= range.second)
+            {
+                is_norma.clear();
+            }
+            else
+            {
+                is_norma = "(не норма)";
+            }
+
+            auto format_str = get_format_str(type_format, static_cast<int16_t>(el_arr * scale));
+            std::cout << name_arr << " " <<  format_str.toStdString() << std::endl;
+            data.push_back(std::make_pair(name_arr, make_tuple(format_str, el_arr * scale, is_norma)));
+        }
+        return data;
+    };
+    list_to_prepare_data_for_arr.push_back(arr_div_uint16);
+
+    auto arr_cs = [this](std::vector<uint8_t> value, std::string name_arr, std::pair<bool, bool> do_proc, std::pair<double, double> range, double scale, uint16_t type_format)
+    {
+        std::vector<std::pair<std::string, std::tuple<QString, double, QString>>> data;
+        int16_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+        QString is_norma;
+        if (temp * scale == m_calculated_cs)
+        {
+            is_norma.clear();
+        }
+        else
+        {
+            is_norma = "(не норма)";
+        }
+
+        auto format_str = QString::number(temp * scale) + "(" + QString::number(m_calculated_cs) + ")";
+        data.push_back(std::make_pair(name_arr, make_tuple(format_str, temp * scale, is_norma)));
+        return data;
+    };
+    list_to_prepare_data_for_arr.push_back(arr_cs);
+
+    auto arr_div_uint16_with_dif_name = [this](std::vector<uint8_t> value, std::string name_arr, std::pair<bool, bool> do_proc, std::pair<double, double> range, double scale, uint16_t type_format)
+    {
+        std::vector<std::pair<std::string, std::tuple<QString, double, QString>>> data;
+        int16_t temp;
+        memcpy(&temp, &value[0], sizeof(temp));
+        auto div_array = helpers::split_data_from_word(temp);
+        for (uint16_t num_arr = 0; num_arr < div_array.size(); num_arr++)
+        {
+            std::string add_name;
+            QString is_norma;
+            if (div_array[num_arr] * scale >= range.first && num_arr * scale <= range.second)
+            {
+                is_norma.clear();
+            }
+            else
+            {
+                is_norma = "(не норма)";
+            }
+            if (num_arr % 2 == 0)
+            {
+                add_name = name_arr + "_x";
+            }
+            else
+            {
+                add_name = name_arr + "_y";
+            }
+            auto format_str = get_format_str(type_format, static_cast<int16_t>(div_array[num_arr] * scale));
+            data.push_back(std::make_pair(add_name, make_tuple(format_str, div_array[num_arr] * scale, is_norma)));
+        }
+        return data;
+    };
+    list_to_prepare_data_for_arr.push_back(arr_div_uint16_with_dif_name);
+
+    auto add_to_arr = [this, list_to_prepare_data_for_arr](int16_t key_arr, std::pair<int16_t, std::string> type_name_arr, uint16_t& num_data, std::vector<uint8_t> value, std::pair<double, double> range,
+            double scale, uint16_t type_format, std::pair<bool, bool> do_proc)
+    {
+        auto data = list_to_prepare_data_for_arr[type_name_arr.first](value, type_name_arr.second, do_proc, range, scale, type_format);
+        for (const auto& el : data)
+            m_kia_mko_struct->m_data[key_arr].data_array[el.first].push_back(el.second);
+        num_data--;
+    };
+    m_prepare_data.push_back(add_to_arr);
+}
+
 
 void Pio_bokzmf::decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord)
 {
@@ -1762,7 +2579,8 @@ void Pio_bokzmf::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord,
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior_mf.KC2, 16), 4, '0'), m_kia_mko_struct->st_mshior_mf.KC2, -m_max_double_value, m_max_double_value));
 
     m_kia_mko_struct->st_mshior_mf.T = (mshiorRaw.T);
-    m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.T) + " (" + QString::number((int)(bshv / m_kia_settings->m_freq_bokz - m_kia_mko_struct->st_mshior_mf.T)) +  ")", m_kia_mko_struct->st_mshior_mf.T, 0, 2e30));
+    m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.T)
+                                                                              + " (" + QString::number((int)(bshv / m_kia_settings->m_freq_bokz - m_kia_mko_struct->st_mshior_mf.T)) +  ")", m_kia_mko_struct->st_mshior_mf.T, 0, 2e30));
     m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc.shift_for_numbers)
                                                               + "Время привязки информации");
 
@@ -1952,17 +2770,9 @@ void Pio_bokzmf::decrypt_chkd(array<uint16_t, constants::packetSize> dataWord, u
 
 
 
-std::map<uint16_t, std::map<string, uint16_t> > Pio_bokzmf::get_index_mpi_array()
+Pio_bokzmf::~Pio_bokzmf()
 {
-    return m_index_mpi_array;;
-}
 
-
-template<typename T>
-T Pio_bokzmf::swapHex(T value)
-{
-    value = ((value & 0x0000ffff) << 16) | ((value & 0xffff) >> 16);
-    return value;
 }
 
 float Pio_bokzmf::uint32_to_float(uint32_t value)
@@ -1971,9 +2781,16 @@ float Pio_bokzmf::uint32_to_float(uint32_t value)
     return result;
 }
 
-Pio_bokzmf::~Pio_bokzmf()
+uint16_t Pio_bokzmf::calculate_cs(array<uint8_t, constants::packetSize * 2> dataWord)
 {
-
+    std::array<uint16_t, 31> temp;
+    memcpy(&temp, &dataWord[2 * 2], sizeof(temp));
+    return Crc16(temp.data(), temp.size());
 }
 
-
+uint16_t Pio_bokzmf::calculate_cs(array<uint16_t, constants::packetSize> dataWord)
+{
+    std::array<uint16_t, 31> temp;
+    memcpy(&temp, &dataWord[2 * 2], sizeof(temp));
+    return Crc16(temp.data(), temp.size());
+}

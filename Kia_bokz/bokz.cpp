@@ -220,14 +220,17 @@ QString Bokz::set_post_data_from_mko_struct(std::vector<std::pair<QString, strin
     int16_t shift_description = -50;
     int16_t shift_value = -16;
     str_protocol.push_back(helpers::format_qstring("", shift_description + shift_for_numbers));
+    uint16_t max_size = 0;
     for (auto key : keys)
     {
         str_protocol.push_back(helpers::format_qstring(key.first, shift_value));
         std::cout << key.second << " "<< data_array[key.second].size() << std::endl;
+        if (data_array[key.second].size() > max_size)
+            max_size = data_array[key.second].size();
     }
     str_protocol.push_back("\n");
 
-    for (uint16_t num_el = 0; num_el < data_array["locx"].size(); num_el++)
+    for (uint16_t num_el = 0; num_el < max_size; num_el++)
     {
         str_protocol.push_back(helpers::format_qstring(QString::number(num_el), shift_description + shift_for_numbers));
         for (const auto& key : keys)

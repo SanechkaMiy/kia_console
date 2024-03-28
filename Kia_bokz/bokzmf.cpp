@@ -14,7 +14,7 @@ void Bokzmf::set_bokz_settings()
     m_kia_data.reset(new Kia_data());
     m_kia_mko_struct.reset(new Kia_mko_struct());
     m_pio_bokz.reset(new Pio_bokzmf(m_kia_mko_struct, m_kia_settings));
-    m_kia_data->m_data_bokz->m_type_orient = TO_NO;
+    m_index_mpi_array = m_pio_bokz->get_index_mpi_array();
     create_count_of_exc_fail();
 }
 
@@ -64,13 +64,19 @@ uint16_t Bokzmf::shtmi1(uint16_t parametr)
             + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
-
+    std::vector<RAW_DATA> list_raw_data;
+    RAW_DATA raw_data;
+    memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+    list_raw_data.push_back(raw_data);
+    m_pio_bokz->decrypt(MF_SHTMI1, list_raw_data);
     m_pio_bokz->decrypt_shtmi1(m_kia_data->m_data_mpi->m_data_word);
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name, m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[MF_SHTMI1].data_description,
+                                                        m_kia_mko_struct->m_data[MF_SHTMI1].data));
+        //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name, m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data));
         str_protocol.push_back("\n\n");
     }
     emit send_data_to_db_bokz(MF_SHTMI1, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
@@ -100,12 +106,19 @@ uint16_t Bokzmf::shtmi2(uint16_t parametr)
             + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
+    std::vector<RAW_DATA> list_raw_data;
+    RAW_DATA raw_data;
+    memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+    list_raw_data.push_back(raw_data);
+    m_pio_bokz->decrypt(MF_SHTMI2, list_raw_data);
     m_pio_bokz->decrypt_shtmi2(m_kia_data->m_data_mpi->m_data_word);
     QString str_protocol;
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name, m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[MF_SHTMI2].data_description,
+                                                        m_kia_mko_struct->m_data[MF_SHTMI2].data));
+        //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name, m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data));
         str_protocol.push_back("\n\n");
     }
     emit send_data_to_db_bokz(MF_SHTMI2, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
@@ -135,18 +148,30 @@ uint16_t Bokzmf::mshior(uint16_t parametr)
             + QString("Передаем ")
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
+    std::vector<RAW_DATA> list_raw_data;
+    RAW_DATA raw_data;
+    memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+    list_raw_data.push_back(raw_data);
+    m_pio_bokz->decrypt(MF_MSHIOR, list_raw_data);
+    std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["t"]]) = std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["t"]])
+            + " (" + QString::number((int)(m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] / m_kia_settings->m_freq_bokz
+                                     - std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["t"]]))) +  ")";
     m_pio_bokz->decrypt_mshior(m_kia_data->m_data_mpi->m_data_word, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi]);
     QString str_protocol;
-    check_orientation();
-    send_status_info();
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
+        check_orientation();
+
+        send_status_info();
+
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_mshior_mf.mshior_list_name, m_kia_mko_struct->st_mshior_mf.mshior_list_data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[MF_MSHIOR].data_description,
+                                                        m_kia_mko_struct->m_data[MF_MSHIOR].data));
+        //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_mshior_mf.mshior_list_name, m_kia_mko_struct->st_mshior_mf.mshior_list_data));
 
         str_protocol.push_back("\n\n");
 
-        post_status_proc(m_kia_mko_struct->st_mshior_mf.KC1, m_kia_mko_struct->st_mshior_mf.KC2, str_protocol);
+        post_status_proc(m_kia_data->m_data_mpi->m_data_word[2], m_kia_data->m_data_mpi->m_data_word[3], str_protocol);
 
     }
     emit send_data_to_db_bokz(MF_MSHIOR, m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi], *m_kia_mko_struct.get());
@@ -178,10 +203,25 @@ uint16_t Bokzmf::dtmi_or_dtmi_loc(uint16_t parametr)
             + QString::fromStdString(m_kia_data->m_data_db->struct_id_desc);
     uint16_t count_to_exchange = 12;
     if ((parametr & EP_NOFULLEXCHANGE) != 0)
-        count_to_exchange = 1;
+        count_to_exchange = 12;
+    std::vector<RAW_DATA> list_raw_data(count_to_exchange);
+//    while (count_dtmi_dtmi_loc < count_to_exchange)
+//    {
+
+//        m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
+//        for (int i = 0; i <= 3; i++)
+//        {
+//            for (int j = 0; j<=7; j++)
+//            {
+//                printf("%04x  ", m_kia_data->m_data_mpi->m_data_word[i * 8 + j]);
+//            }
+//            printf("\n");
+//        }
+//        m_pio_bokz->decrypt_dtmi(m_kia_data->m_data_mpi->m_data_word, count_dtmi_dtmi_loc);
+//        ++count_dtmi_dtmi_loc;
+//    }
     while (count_dtmi_dtmi_loc < count_to_exchange)
     {
-
         m_kia_data->m_data_mpi->m_status_exchange = start_exchage(parametr);
         for (int i = 0; i <= 3; i++)
         {
@@ -191,15 +231,26 @@ uint16_t Bokzmf::dtmi_or_dtmi_loc(uint16_t parametr)
             }
             printf("\n");
         }
-        m_pio_bokz->decrypt_dtmi(m_kia_data->m_data_mpi->m_data_word, count_dtmi_dtmi_loc);
+        RAW_DATA raw_data;
+        memcpy(&raw_data, &m_kia_data->m_data_mpi->m_data_word, sizeof(raw_data));
+        list_raw_data[count_dtmi_dtmi_loc] = raw_data;
         ++count_dtmi_dtmi_loc;
     }
+
+    m_kia_mko_struct->m_data[MF_DTMI].data_array.clear();
+    m_pio_bokz->decrypt(MF_DTMI, list_raw_data);
+    std::vector<std::pair<QString,std::string>> keys;
     QString str_protocol;
+    keys = {{"X", "rsloc0x"}, {"Y", "rsloc0y"}, {"B", "rsloc0b"}, {"C", "rsloc0s"}};
     if (m_kia_data->m_data_mpi->m_status_exchange == KiaS_SUCCESS)
     {
-        m_pio_bokz->parse_dtmi(m_kia_data->m_data_bokz->m_type_orient);
+        //m_pio_bokz->parse_dtmi(m_kia_data->m_data_bokz->m_type_orient);
         set_data_to_device_protocol(str_protocol);
-        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_dtmi_mf.dtmi_list_name, m_kia_mko_struct->st_dtmi_mf.dtmi_list_data));
+        str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->m_data[MF_DTMI].data_description,
+                               m_kia_mko_struct->m_data[MF_DTMI].data,
+                m_kia_mko_struct->m_data[MF_DTMI].data_array));
+        str_protocol.push_back(set_post_data_from_mko_struct(keys, m_kia_mko_struct->m_data[MF_DTMI].data_array));
+        //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_dtmi_mf.dtmi_list_name, m_kia_mko_struct->st_dtmi_mf.dtmi_list_data));
         str_protocol.push_back("\n\n");
 
     }
@@ -784,13 +835,15 @@ void Bokzmf::send_status_info()
     QStringList data_status;
     data_status.push_back(QString::number(ST_ST1));
     data_status.push_back(QString::number(m_num_bokz));
-    data_status.push_back(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior_mf.KC1, 16), 4, '0') );
+    auto st1 = m_kia_data->m_data_mpi->m_data_word[2];
+    data_status.push_back(QString("0x%1").arg(QString::number(st1, 16), 4, '0') );
     data_status.push_back(QString::number(m_kia_data->m_data_bokz->m_type_orient));
     emit send_to_client(SEND_STATUS_INFO, data_status);
     data_status.clear();
     data_status.push_back(QString::number(ST_ST2));
     data_status.push_back(QString::number(m_num_bokz));
-    data_status.push_back(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior_mf.KC2, 16), 4, '0') );
+    auto st2 = m_kia_data->m_data_mpi->m_data_word[3];
+    data_status.push_back(QString("0x%1").arg(QString::number(st2, 16), 4, '0') );
     emit send_to_client(SEND_STATUS_INFO, data_status);
 }
 
@@ -798,9 +851,18 @@ void Bokzmf::check_orientation()
 {
     const uint16_t norm_qaor = 1;
     const uint16_t max_or_is_not_def = 100;
-    std::tie(m_kia_data->m_data_db->m_alpha, m_kia_data->m_data_db->m_delta, m_kia_data->m_data_db->m_azimuth) =
-            math_alpha_delta_azimut(m_kia_mko_struct->st_mshior_mf.Qo0, m_kia_mko_struct->st_mshior.Qo1, m_kia_mko_struct->st_mshior_mf.Qo2, m_kia_mko_struct->st_mshior_mf.Qo3);
-    m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(m_kia_mko_struct->st_mshior.Qo0,2) + pow(m_kia_mko_struct->st_mshior.Qo1,2) + pow(m_kia_mko_struct->st_mshior.Qo2, 2)  + pow(m_kia_mko_struct->st_mshior.Qo3,2));
+    auto qo0 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["qo0"]]);
+    auto qo1 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["qo1"]]);
+    auto qo2 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["qo2"]]);
+    auto qo3 = std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["qo3"]]);
+    auto t = static_cast<int>(std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[M60_MSHIOR]["t"]]));
+    m_kia_data->m_data_db->m_norm_qaor = sqrt(pow(qo0, 2)
+                                              + pow(qo1, 2)
+                                              + pow(qo2, 2)
+                                              + pow(qo3,2));
+
+    auto [alpha, delta, azimuth] = math_alpha_delta_azimut(qo0, qo1, qo2, qo3);
+
     switch(m_kia_data->m_data_mpi->m_data_word[2] & 0xf000)
     {
     case 0x2000:
@@ -816,7 +878,7 @@ void Bokzmf::check_orientation()
         for (uint16_t qa_index = 0; qa_index < constants::packetSize; ++qa_index)
             m_kia_data->m_data_mpi->m_qa[qa_index] = m_kia_data->m_data_mpi->m_data_word[qa_index + 12];
 
-        if ((m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] - m_kia_mko_struct->st_mshior.T) != 1)
+        if ((m_kia_settings->m_data_for_db->bshv[m_kia_data->m_data_bi->m_num_used_bi] / m_kia_settings->m_freq_bokz - t) != 1)
         {
             m_kia_data->m_data_bokz->m_count_fail[SVREM]++;
         }
