@@ -94,12 +94,11 @@ void Kia_port::check_used_bi_usb_ports()
         for(uint16_t i = 0; i < 5; i++)
         {
             m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
-            std::cout << m_kia_settings->m_data_for_bi->m_count_bi << std::endl;
+
             if (m_kia_settings->m_data_for_bi->m_count_bi > 0)
                 break;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
-        //m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
         if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)
         {
             m_kia_settings->m_data_for_bi->m_count_bi  = 1;
