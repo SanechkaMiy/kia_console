@@ -89,12 +89,21 @@ void Kia_port::check_used_bi_usb_ports()
         }
 
         setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
-
         printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
         init = (int16_t(*)(void))dlsym(m_handle, "Init");
-        m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
-        if (m_kia_settings->m_data_for_bi->m_count_bi == 0)
+        for(uint16_t i = 0; i < 5; i++)
+        {
+            m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
+            std::cout << m_kia_settings->m_data_for_bi->m_count_bi << std::endl;
+            if (m_kia_settings->m_data_for_bi->m_count_bi > 0)
+                break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+        //m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
+        if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)
+        {
             m_kia_settings->m_data_for_bi->m_count_bi  = 1;
+        }
         m_kia_settings->m_data_for_bi->m_num_bi.resize(m_kia_settings->m_data_for_bi->m_count_bi);
         int16_t (*close)(void);
         close = (int16_t(*)(void))dlsym(m_handle, "Close");
