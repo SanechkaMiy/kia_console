@@ -78,25 +78,38 @@ void Kia_port::check_num_com_port(const uint16_t &num_port)
 
 void Kia_port::check_used_bi_usb_ports()
 {
-    int16_t (*setSerialPrefix)(char*);
-    int16_t (*init)(void);
-    int16_t (*close)(void);
+    std::thread th_check_bi = std::thread([&]()
+    {
+        int16_t (*setSerialPrefix)(char*);
+        int16_t (*init)(void);
+        auto handle = dlopen ("../../lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
 
-    auto handle = dlopen ("../../lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
+        if (!handle) {
+            printf("have problem!\n");
+        }
 
-    if (!handle) {
-        printf("have problem!");
-    }
+        setSerialPrefix = (int16_t(*)(char*))dlsym(handle, "SetSerialPrefix");
+        printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
+        init = (int16_t(*)(void))dlsym(handle, "Init");
+        int16_t (*close)(void);
+        close = (int16_t(*)(void))dlsym(handle, "Close");
 
-    setSerialPrefix = (int16_t(*)(char*))dlsym(handle, "SetSerialPrefix");
-    printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
-    init = (int16_t(*)(void))dlsym(handle, "Init");
-    m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
-    close = (int16_t(*)(void))dlsym(handle, "Close");
-    auto result = (*close)();
-    printf("Close: %d\n", result);
-    dlclose(handle);
-    std::cout << m_kia_settings->m_data_for_bi->m_count_bi << std::endl;
+        m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
+
+
+        m_kia_settings->m_data_for_bi->m_bi_is_used = CS_IS_ON;
+
+        if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)
+        {
+            m_kia_settings->m_data_for_bi->m_bi_is_used = CS_IS_OFF;
+            m_kia_settings->m_data_for_bi->m_count_bi  = 1;
+        }
+        m_kia_settings->m_data_for_bi->m_num_bi.resize(m_kia_settings->m_data_for_bi->m_count_bi);
+
+        (*close)();
+        dlclose(handle);
+    });
+    th_check_bi.join();
 
 
     if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)

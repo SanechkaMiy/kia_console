@@ -180,6 +180,7 @@ struct Data_for_bi
     bool m_is_bkpik;
     std::vector<int> m_num_bi;
     int m_count_bi;
+    uint16_t m_bi_is_used {CS_IS_OFF};
     std::array<int, constants::count_type_bi> m_count_channel_bi = {3, 2};//0 - БКПИК; 1 - БИ;
     uint16_t m_num_used_bi;
     std::vector<uint8_t> m_commandR;

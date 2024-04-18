@@ -929,6 +929,7 @@ void WorkWithMain::send_kia_initial_settings()
 {
     QStringList settings;
     settings.push_back(QString::number(m_kia_settings->m_data_for_bi->m_count_bi));
+    settings.push_back(QString::number(m_kia_settings->m_data_for_bi->m_bi_is_used));
     emit send_to_client(SET_KIA_GUI_SETTINGS, settings);
 }
 
