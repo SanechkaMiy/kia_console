@@ -78,38 +78,30 @@ void Kia_port::check_num_com_port(const uint16_t &num_port)
 
 void Kia_port::check_used_bi_usb_ports()
 {
-    std::thread th_check_bi = std::thread([&]()
+    int16_t (*setSerialPrefix)(char*);
+    int16_t (*init)(void);
+    int16_t (*close)(void);
+
+    auto handle = dlopen ("../../lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
+
+    if (!handle) {
+        printf("have problem!");
+    }
+
+    setSerialPrefix = (int16_t(*)(char*))dlsym(handle, "SetSerialPrefix");
+    printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
+    init = (int16_t(*)(void))dlsym(handle, "Init");
+    m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
+    close = (int16_t(*)(void))dlsym(handle, "Close");
+    auto result = (*close)();
+    printf("Close: %d\n", result);
+    dlclose(handle);
+    std::cout << m_kia_settings->m_data_for_bi->m_count_bi << std::endl;
+
+
+    if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)
     {
-        int16_t (*setSerialPrefix)(char*);
-        int16_t (*init)(void);
-        m_handle = dlopen ("../../lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
-
-        if (!m_handle) {
-            printf("have problem!");
-        }
-
-        setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
-        printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
-        init = (int16_t(*)(void))dlsym(m_handle, "Init");
-        for(uint16_t i = 0; i < 5; i++)
-        {
-            m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
-
-            if (m_kia_settings->m_data_for_bi->m_count_bi > 0)
-                break;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        }
-        if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)
-        {
-            m_kia_settings->m_data_for_bi->m_count_bi  = 1;
-        }
-        m_kia_settings->m_data_for_bi->m_num_bi.resize(m_kia_settings->m_data_for_bi->m_count_bi);
-        int16_t (*close)(void);
-        close = (int16_t(*)(void))dlsym(m_handle, "Close");
-        auto result = (*close)();
-        printf("Close: %d\n", result);
-        dlclose(m_handle);
-    });
-    th_check_bi.join();
-
+        m_kia_settings->m_data_for_bi->m_count_bi  = 1;
+    }
+    m_kia_settings->m_data_for_bi->m_num_bi.resize(m_kia_settings->m_data_for_bi->m_count_bi);
 }
