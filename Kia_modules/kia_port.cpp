@@ -82,33 +82,32 @@ void Kia_port::check_used_bi_usb_ports()
     {
         int16_t (*setSerialPrefix)(char*);
         int16_t (*init)(void);
-        m_handle = dlopen ("../../lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
+        auto handle = dlopen ("../../lib/BiLib_20231123_1653/BiLibNE.so", RTLD_LAZY);
 
-        if (!m_handle) {
-            printf("have problem!");
+        if (!handle) {
+            printf("have problem!\n");
         }
 
-        setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
+        setSerialPrefix = (int16_t(*)(char*))dlsym(handle, "SetSerialPrefix");
         printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
-        init = (int16_t(*)(void))dlsym(m_handle, "Init");
-        for(uint16_t i = 0; i < 5; i++)
-        {
-            m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
+        init = (int16_t(*)(void))dlsym(handle, "Init");
+        int16_t (*close)(void);
+        close = (int16_t(*)(void))dlsym(handle, "Close");
 
-            if (m_kia_settings->m_data_for_bi->m_count_bi > 0)
-                break;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        }
+        m_kia_settings->m_data_for_bi->m_count_bi = (*init)();
+
+
+        m_kia_settings->m_data_for_bi->m_bi_is_used = CS_IS_ON;
+
         if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)
         {
+            m_kia_settings->m_data_for_bi->m_bi_is_used = CS_IS_OFF;
             m_kia_settings->m_data_for_bi->m_count_bi  = 1;
         }
         m_kia_settings->m_data_for_bi->m_num_bi.resize(m_kia_settings->m_data_for_bi->m_count_bi);
-        int16_t (*close)(void);
-        close = (int16_t(*)(void))dlsym(m_handle, "Close");
-        auto result = (*close)();
-        printf("Close: %d\n", result);
-        dlclose(m_handle);
+
+        (*close)();
+        dlclose(handle);
     });
     th_check_bi.join();
 

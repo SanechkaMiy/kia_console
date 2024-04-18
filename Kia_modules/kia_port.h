@@ -26,23 +26,8 @@ private:
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::shared_ptr <mn::CppLinuxSerial::SerialPort> m_serial_port;
     std::atomic_bool m_com_is_used = true;
-    void *m_handle;
 };
 
 #endif // KIA_PORT_H
 
 
-//A.h
-
-
-//B.h
-//include <A.h>
-
-//B.c
-
-
-//C.h
-
-//D.h
-
-//E.h
