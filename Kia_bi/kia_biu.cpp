@@ -3,14 +3,14 @@
 Kia_biu::Kia_biu(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_settings(kia_settings)
 {
-    m_num_bi = num_bi;
+    m_kia_bi_data.m_num_bi.first = num_bi;
     set_bi_settings();
     init_bi();
     get_synch_status();
 
-    for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]; ++num_ch)
+    for (uint16_t num_ch = 0; num_ch < m_kia_bi_data.m_count_channel; ++num_ch)
     {
-        on_1s_bi(num_ch, num_ch);
+         on_1s_bi(num_ch, num_ch);
     }
 
     set_sinchronize_event();
@@ -19,9 +19,9 @@ Kia_biu::Kia_biu(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings) :
 }
 
 
-std::vector<int64_t> m_count(constants::max_count_bi);
-std::vector<std::condition_variable> m_cv(constants::max_count_bi);
-std::vector<std::mutex> m(constants::max_count_bi);
+std::vector<int64_t> m_count(max_count_bi);
+std::vector<std::condition_variable> m_cv(max_count_bi);
+std::vector<std::mutex> m(max_count_bi);
 
 
 void Kia_biu::set_sec_mark_period(uint16_t sec_mark_period)
@@ -29,25 +29,25 @@ void Kia_biu::set_sec_mark_period(uint16_t sec_mark_period)
 
     int16_t (*set_period)(int16_t, uint16_t);
     set_period = (int16_t(*)(int16_t, uint16_t))dlsym(m_handle,"SetSecMarkPeriod");
-    printf("SetSecMarkPeriod: %d\n", (*set_period)(m_device_id, sec_mark_period));
+    printf("SetSecMarkPeriod: %d\n", (*set_period)(m_kia_bi_data.m_num_bi.second, sec_mark_period));
 }
 
 void Kia_biu::wait_for_event()
 {
     std::mutex m;
     std::unique_lock lk(m);
-    auto mw_count = m_count[m_num_bi];
-    m_cv[m_num_bi].wait(lk, [this, &mw_count]
+    auto mw_count = m_count[m_kia_bi_data.m_num_bi.first];
+    m_cv[m_kia_bi_data.m_num_bi.first].wait(lk, [this, &mw_count]
     {
-        return mw_count != m_count[m_num_bi];
+        return mw_count != m_count[m_kia_bi_data.m_num_bi.first];
     });
 }
 
 void Kia_biu::stop_event()
 {
-    std::lock_guard lock(m[m_num_bi]);
-    m_count[m_num_bi]++;
-    m_cv[m_num_bi].notify_all();
+    std::lock_guard lock(m[m_kia_bi_data.m_num_bi.first]);
+    m_count[m_kia_bi_data.m_num_bi.first]++;
+    m_cv[m_kia_bi_data.m_num_bi.first].notify_all();
 }
 
 void Kia_biu::set_relay_command(uint16_t relay_command)
@@ -56,14 +56,14 @@ void Kia_biu::set_relay_command(uint16_t relay_command)
     //set_relay_command_pulse_time(100);
     int16_t (*set_relay_com)(int16_t,uint16_t);
     set_relay_com = (int16_t(*)(int16_t,uint16_t))dlsym(m_handle,"SetRelayCommand");
-    printf("SetRelayCommand: %d\n", (*set_relay_com)(m_device_id, relay_command));
+    printf("SetRelayCommand: %d\n", (*set_relay_com)(m_kia_bi_data.m_num_bi.second, relay_command));
 }
 
 void Kia_biu::set_relay_polarity(uint16_t relay_command)
 {
     int16_t (*set_relay_pol)(int16_t,uint16_t);
     set_relay_pol = (int16_t(*)(int16_t,uint16_t))dlsym(m_handle,"SetRelayPolarity");
-    printf("SetRelayPolarity: %d\n", (*set_relay_pol)(m_device_id, relay_command));
+    printf("SetRelayPolarity: %d\n", (*set_relay_pol)(m_kia_bi_data.m_num_bi.second, relay_command));
     get_relay_polarity();
 }
 
@@ -71,7 +71,7 @@ void Kia_biu::set_relay_command_pulse_time(uint16_t relay_command)
 {
     int16_t (*set_relay_pul_time)(int16_t,uint16_t);
     set_relay_pul_time = (int16_t(*)(int16_t,uint16_t))dlsym(m_handle,"SetRelayCommandPulseTime");
-    printf("SetRelayCommandPulseTime: %d\n", (*set_relay_pul_time)(m_device_id, relay_command));
+    printf("SetRelayCommandPulseTime: %d\n", (*set_relay_pul_time)(m_kia_bi_data.m_num_bi.second, relay_command));
     get_relay_command_pulse_time();
 }
 
@@ -128,7 +128,7 @@ void Kia_biu::get_relay_polarity()
     uint16_t relay_command = 0x0000;
     int16_t (*get_relay_pol)(int16_t,uint16_t*);
     get_relay_pol = (int16_t(*)(int16_t,uint16_t*))dlsym(m_handle,"GetRelayPolarity");
-    printf("GetRelayPolarity: %d\n", (*get_relay_pol)(m_device_id, &relay_command));
+    printf("GetRelayPolarity: %d\n", (*get_relay_pol)(m_kia_bi_data.m_num_bi.second, &relay_command));
     printf("%04x\n", relay_command);
 }
 
@@ -137,7 +137,7 @@ void Kia_biu::get_relay_command_pulse_time()
     uint16_t relay_command = 0x0000;
     int16_t (*get_relay_pul_time)(int16_t,uint16_t*);
     get_relay_pul_time = (int16_t(*)(int16_t,uint16_t*))dlsym(m_handle,"GetRelayCommandPulseTime");
-    printf("GetRelayCommandPulseTime: %d\n", (*get_relay_pul_time)(m_device_id, &relay_command));
+    printf("GetRelayCommandPulseTime: %d\n", (*get_relay_pul_time)(m_kia_bi_data.m_num_bi.second, &relay_command));
     printf("%d\n", relay_command);
 }
 
@@ -150,46 +150,42 @@ void Kia_biu::parse_data(uint16_t num_ch, DevTelemetry *dev_tel)
     m_td_on_ch[num_ch].push_back(dev_tel->Temperature1g4);
     m_td_on_ch[num_ch].push_back(dev_tel->Temperature1g5);
     m_td_on_ch[num_ch].push_back(dev_tel->Temperature1g6);
-    m_kia_data->m_data_bi->m_kc[num_ch] = dev_tel->LinkControl;
+    m_kia_bi_data.m_kc[num_ch] = dev_tel->LinkControl;
+    m_kia_bi_data.m_kp[num_ch] = dev_tel->PrimaryPower;
 
-    m_kia_data->m_data_bi->m_kp[num_ch] = dev_tel->PrimaryPower;
+    m_kia_bi_data.m_td[num_ch] = m_td_on_ch[num_ch][m_kia_bi_data.m_term_group[num_ch] - 1];
+    std::vector<uint16_t> raw_data;
+    raw_data.push_back(dev_tel->PowerVoltageRaw);
+    raw_data.push_back(dev_tel->VIPVoltageRaw);
+    raw_data.push_back(dev_tel->DeviceFider1ARaw);
+    raw_data.push_back(dev_tel->DeviceFider2ARaw);
+    raw_data.push_back(dev_tel->ImitatorFider1ARaw);
+    raw_data.push_back(dev_tel->ImitatorFider2ARaw);
+    raw_data.push_back(dev_tel->Temperature1Raw);
+    raw_data.push_back(dev_tel->Temperature2Raw);
+    raw_data.push_back(dev_tel->Temperature3Raw);
+    raw_data.push_back(dev_tel->Temperature4Raw);
+    raw_data.push_back(dev_tel->DeviceVoltage1ARaw);
+    raw_data.push_back(dev_tel->DeviceVoltage2ARaw);
+    raw_data.push_back(dev_tel->ImitatorVoltage1ARaw);
+    raw_data.push_back(dev_tel->ImitatorVoltage2ARaw);
 
-    m_kia_data->m_data_bi->m_td[num_ch] = m_td_on_ch[num_ch][m_kia_data->m_data_bi->m_term_group[num_ch] - 1];
-
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->PowerVoltageRaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->VIPVoltageRaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->DeviceFider1ARaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->DeviceFider2ARaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->ImitatorFider1ARaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->ImitatorFider2ARaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->Temperature1Raw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->Temperature2Raw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->Temperature3Raw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->Temperature4Raw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->DeviceVoltage1ARaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->DeviceVoltage2ARaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->ImitatorVoltage1ARaw);
-    m_kia_data->m_data_bi->m_raw_data.push_back(dev_tel->ImitatorVoltage2ARaw);
-
-    m_kia_data->m_data_db->data = QString('\\') + QString('\\') + "x";
-    for (unsigned int i = 0; i < m_kia_data->m_data_bi->m_raw_data.size(); i++)
+    m_kia_bi_data.hex_data = QString('\\') + QString('\\') + "x";
+    for (unsigned int i = 0; i < raw_data.size(); i++)
     {
-        m_kia_data->m_data_db->data = m_kia_data->m_data_db->data + QString("%1").arg(QString::number(m_kia_data->m_data_bi->m_raw_data[i], 16), 4, '0').toUpper();
+        m_kia_bi_data.hex_data = m_kia_bi_data.hex_data + QString("%1").arg(QString::number(raw_data[i], 16), 4, '0').toUpper();
     }
 }
 
 void Kia_biu::set_bi_settings()
 {
-
-    m_kia_data.reset(new Kia_data());
-    m_kia_data->m_data_bi->m_term_group.resize(m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]);
-    std::fill(m_kia_data->m_data_bi->m_term_group.begin(), m_kia_data->m_data_bi->m_term_group.end(), 1);
-    m_kia_data->m_data_bi->m_1s.resize(m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]);
-    m_kia_data->m_data_bi->m_kc.resize(m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]);
-    m_kia_data->m_data_bi->m_kp.resize(m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]);
-    m_kia_data->m_data_bi->m_td.resize(m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]);
-    m_td_on_ch.resize(m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]);
-
+    m_kia_bi_data.m_term_group.resize(m_kia_bi_data.m_count_channel);
+    std::fill(m_kia_bi_data.m_term_group.begin(), m_kia_bi_data.m_term_group.end(), 1);
+    m_kia_bi_data.m_1s.resize(m_kia_bi_data.m_count_channel);
+    m_kia_bi_data.m_kc.resize(m_kia_bi_data.m_count_channel);
+    m_kia_bi_data.m_kp.resize(m_kia_bi_data.m_count_channel);
+    m_kia_bi_data.m_td.resize(m_kia_bi_data.m_count_channel);
+    m_td_on_ch.resize(m_kia_bi_data.m_count_channel);
 }
 
 void Kia_biu::create_bi_telemetry_list()
@@ -209,6 +205,24 @@ Kia_biu::~Kia_biu()
     close_bi();
 }
 
+void Kia_biu::init(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings)
+{
+    m_kia_settings = kia_settings;
+    m_kia_bi_data.m_num_bi.first = num_bi;
+    set_bi_settings();
+    init_bi();
+    get_synch_status();
+
+    for (uint16_t num_ch = 0; num_ch < m_kia_bi_data.m_count_channel; ++num_ch)
+    {
+         on_1s_bi(num_ch, num_ch);
+    }
+
+    set_sinchronize_event();
+    set_sec_mark_pulse_time(50);
+    start_1s_mark();
+}
+
 uint16_t Kia_biu::init_bi()
 {
     int16_t (*setSerialPrefix)(char*);
@@ -219,20 +233,18 @@ uint16_t Kia_biu::init_bi()
     setSerialPrefix = (int16_t(*)(char*))dlsym(m_handle, "SetSerialPrefix");
     printf("setSerialPrefix: %d\n", (*setSerialPrefix)("BI_U"));
     init = (int16_t(*)(void))dlsym(m_handle, "Init");
-    m_count_dev = (*init)();
-    auto result =  m_count_dev;
-    printf("Init: %d\n", m_count_dev);
+    auto result = (*init)();
+    printf("Init: %d\n", result);
 
     if (!m_handle) {
         printf("have problem!");
     }
 
     getDeviceID = (int16_t(*)(uint16_t))dlsym(m_handle, "GetDeviceID");
-    m_device_id = (*getDeviceID)(m_num_bi);
-    m_kia_settings->m_data_for_bi->m_num_bi[m_num_bi] = m_device_id;
-    printf("GetDeviceID: %d\n", m_device_id);
+    m_kia_bi_data.m_num_bi.second = (*getDeviceID)(m_kia_bi_data.m_num_bi.first);
+    printf("GetDeviceID: %d\n", m_kia_bi_data.m_num_bi.second);
     config = (int16_t(*)(int16_t))dlsym(m_handle, "Config");
-    printf("Config: %d\n", (*config)(m_device_id));
+    printf("Config: %d\n", (*config)(m_kia_bi_data.m_num_bi.second));
 
     get_master_state();
 
@@ -247,19 +259,19 @@ void Kia_biu::set_sinchronize_event()
     int16_t (*set_sinch_event)(int16_t, void (Kia_biu::*)());
     set_sinch_event = (int16_t(*)(int16_t, void (Kia_biu::*)()))dlsym(m_handle, "SetSinchronizeEvent");
 
-    switch(m_num_bi)
+    switch(m_kia_bi_data.m_num_bi.first)
     {
     case 0:
-        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_0));
+        printf("SinchronizeEvent %d: %d\n", m_kia_bi_data.m_num_bi.second, (*set_sinch_event)(m_kia_bi_data.m_num_bi.second, &Kia_biu::wait_1s_biu_0));
         break;
     case 1:
-        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_1));
+        printf("SinchronizeEvent %d: %d\n", m_kia_bi_data.m_num_bi.second, (*set_sinch_event)(m_kia_bi_data.m_num_bi.second, &Kia_biu::wait_1s_biu_1));
         break;
     case 2:
-        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_2));
+        printf("SinchronizeEvent %d: %d\n", m_kia_bi_data.m_num_bi.second, (*set_sinch_event)(m_kia_bi_data.m_num_bi.second, &Kia_biu::wait_1s_biu_2));
         break;
     case 3:
-        printf("SinchronizeEvent %d: %d\n", m_device_id, (*set_sinch_event)(m_device_id, &Kia_biu::wait_1s_biu_3));
+        printf("SinchronizeEvent %d: %d\n", m_kia_bi_data.m_num_bi.second, (*set_sinch_event)(m_kia_bi_data.m_num_bi.second, &Kia_biu::wait_1s_biu_3));
         break;
     };
 
@@ -270,7 +282,7 @@ void Kia_biu::get_master_state()
 {
     int16_t (*getMasterState)(int16_t);
     getMasterState = (int16_t(*)(int16_t))dlsym(m_handle,"GetMasterState");
-    (*getMasterState)(m_device_id);
+    (*getMasterState)(m_kia_bi_data.m_num_bi.second);
 }
 
 void Kia_biu::start_1s_mark()
@@ -291,13 +303,12 @@ void Kia_biu::start_1s_mark()
         {
             //st.start();
             wait_for_event();
-            //std::cout << "num bi " << m_device_id << std::endl;
             if (m_stop_1s_mark)
             {
-                m_kia_data->m_data_db->m_datetime = helpers::currentDateTime();
+                m_kia_bi_data.m_date_time = helpers::currentDateTime();
                 get_sec_mark_telemetry();
                 send_telemetry();
-                emit send_data_to_db_bi(m_kia_settings->m_type_bi, m_num_bi);
+                emit send_data_to_db_bi(m_kia_settings->m_type_bi, m_kia_bi_data.m_num_bi.first);
             }
             //st.end();
         }
@@ -314,20 +325,18 @@ void Kia_biu::stop_1s_mark()
 
 void Kia_biu::send_telemetry()
 {
-    m_kia_data->m_data_bi->m_raw_data.clear();
     parse_data(0, m_devTel_1);
     parse_data(1, m_devTel_2);
     preset_telemetry(0, m_devTel_1);
     preset_telemetry(1, m_devTel_2);
-
 }
 
 void Kia_biu::preset_telemetry(uint16_t num_ch, struct DevTelemetry* dev_tel)
 {
     QStringList data_for_client;
-    data_for_client.push_back(QString::number(m_num_bi));
+    data_for_client.push_back(QString::number(m_kia_bi_data.m_num_bi.first));
     data_for_client.push_back(QString::number(num_ch));
-    data_for_client.push_back("Зав №" + QString::number(m_device_id));
+    data_for_client.push_back("Зав №" + QString::number(m_kia_bi_data.m_num_bi.second));
     data_for_client.push_back(QString::number(dev_tel->LinkControl));
     data_for_client.push_back(QString::number(dev_tel->Consumption));
     data_for_client.push_back(QString::number(dev_tel->ProtectionModule));
@@ -343,9 +352,9 @@ void Kia_biu::preset_telemetry(uint16_t num_ch, struct DevTelemetry* dev_tel)
     if (dev_tel->Temperature1Raw == 0x7fff)
         td = "---";
     else
-        td = QString::number(m_td_on_ch[num_ch][m_kia_data->m_data_bi->m_term_group[num_ch] - 1]);
+        td = QString::number(m_td_on_ch[num_ch][m_kia_bi_data.m_term_group[num_ch] - 1]);
     data_for_client.push_back(td);
-    data_for_client.push_back(QString::number(m_kia_data->m_data_bi->m_1s[num_ch]));
+    data_for_client.push_back(QString::number(m_kia_bi_data.m_1s[num_ch]));
     for (uint16_t num_data = 1; num_data < 6; ++num_data)
     {
         if (data_for_client[num_data + 2] == "0")
@@ -361,21 +370,21 @@ void Kia_biu::set_power(uint16_t command)
 {
     int16_t (*setPowerStatus)(int32_t,uint16_t);
     setPowerStatus = (int16_t(*)(int32_t,uint16_t))dlsym(m_handle,"SetPowerStatus");
-    (*setPowerStatus)(m_device_id, command);
+    (*setPowerStatus)(m_kia_bi_data.m_num_bi.second, command);
 }
 
-void Kia_biu::get_power(uint16_t status_power)
+void Kia_biu::get_power(uint16_t& status_power)
 {
     int16_t (*getPowerStatus)(int32_t,uint16_t*);
     getPowerStatus = (int16_t(*)(int32_t,uint16_t*))dlsym(m_handle,"GetPowerStatus");
-    (*getPowerStatus)(m_device_id, &status_power);
+    (*getPowerStatus)(m_kia_bi_data.m_num_bi.second, &status_power);
 }
 
 void Kia_biu::set_synch_status(uint16_t synch_status)
 {
     int16_t (*set_synch)(int16_t,uint16_t);
     set_synch = (int16_t(*)(int16_t,uint16_t))dlsym(m_handle,"SetSynchStatus");
-    printf("SetSynchStatus: %d\n", (*set_synch)(m_device_id, synch_status));
+    printf("SetSynchStatus: %d\n", (*set_synch)(m_kia_bi_data.m_num_bi.second, synch_status));
 }
 
 void Kia_biu::get_synch_status()
@@ -383,7 +392,7 @@ void Kia_biu::get_synch_status()
     uint16_t synch_status = 100;
     int16_t (*get_synch)(uint16_t, uint16_t*);
     get_synch = (int16_t(*)(uint16_t, uint16_t*))dlsym(m_handle,"GetSynchStatus");
-    auto out = (*get_synch)(m_device_id, &synch_status);
+    auto out = (*get_synch)(m_kia_bi_data.m_num_bi.second, &synch_status);
     printf("get_synch %d\n", out);
     printf("get_ synch_status %d\n", synch_status);
 }
@@ -392,22 +401,22 @@ void Kia_biu::set_sec_mark_pulse_time(uint16_t sec_mark_pulse_time)
 {
     int16_t (*set_sec_mark_pulse_t)(int16_t,uint16_t);
     set_sec_mark_pulse_t = (int16_t(*)(int16_t,uint16_t))dlsym(m_handle,"SetSecMarkPulseTime");
-    (*set_sec_mark_pulse_t)(m_device_id, sec_mark_pulse_time);
-    printf("SetSecMarkPulseTime: %d\n", (*set_sec_mark_pulse_t)(m_device_id, sec_mark_pulse_time));
+    (*set_sec_mark_pulse_t)(m_kia_bi_data.m_num_bi.second, sec_mark_pulse_time);
+    printf("SetSecMarkPulseTime: %d\n", (*set_sec_mark_pulse_t)(m_kia_bi_data.m_num_bi.second, sec_mark_pulse_time));
 }
 
 void Kia_biu::get_sec_mark_telemetry()
 {
     int16_t (*getSecTelemetry)(int16_t, DevTelemetry*, DevTelemetry*);
     getSecTelemetry = (int16_t(*)(int16_t, DevTelemetry*, DevTelemetry*))dlsym(m_handle,"GetSecMarkTelemetry");
-    (*getSecTelemetry)(m_device_id, m_devTel_1, m_devTel_2);
+    (*getSecTelemetry)(m_kia_bi_data.m_num_bi.second, m_devTel_1, m_devTel_2);
     //    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
     //    printf("Consumption: %d\n", m_devTel_1->Consumption);
     //    printf("ProtectionModule: %d\n", m_devTel_1->ProtectionModule);
     //    printf("SecondaryPower: %d\n", m_devTel_1->SecondaryPower);
     //    printf("PrimaryPower: %d\n", m_devTel_1->PrimaryPower);
     //    (*getSecTelemetry)(1, m_devTel_1, m_devTel_2);
-    //    std::cout << "get sec " << m_device_id << std::endl;
+    //    std::cout << "get sec " << m_kia_bi_data.m_num_bi.second << std::endl;
     //    std::cout << "get sec " << 1 << std::endl;
     //    //printf("GetSecMarkTelemetry: %d\n", );
     //    printf("LinkControl: %d\n", m_devTel_1->LinkControl);
@@ -421,15 +430,15 @@ void Kia_biu::get_telemetry()
 {
     int16_t (*getTelemetry)(int16_t, DevTelemetry*, DevTelemetry*);
     getTelemetry = (int16_t(*)(int16_t, DevTelemetry*, DevTelemetry*))dlsym(m_handle,"GetTelemetry");
-    printf("getTel %d\n", (*getTelemetry)(m_device_id, m_devTel_1, m_devTel_2));
+    printf("getTel %d\n", (*getTelemetry)(m_kia_bi_data.m_num_bi.second, m_devTel_1, m_devTel_2));
     std::cout << m_devTel_1->Temperature1Ohm << std::endl;
 }
 
-void Kia_biu::get_sec_mark_status(uint16_t sec_mark_status)
+void Kia_biu::get_sec_mark_status(uint16_t& sec_mark_status)
 {
     int16_t (*get_sec_mark)(int16_t, uint16_t*);
     get_sec_mark = (int16_t(*)(int16_t, uint16_t*))dlsym(m_handle,"GetSecMarkStatus");
-    (*get_sec_mark)(m_device_id, &sec_mark_status);
+    (*get_sec_mark)(m_kia_bi_data.m_num_bi.second, &sec_mark_status);
     //printf("%04x\n", m_kia_data->m_data_bi->m_sec_mark_status);
 
 }
@@ -438,21 +447,21 @@ void Kia_biu::set_sec_mark_status(uint16_t &num_ch, uint16_t sec_mark_status)
 {
     int16_t (*set_synch)(int16_t,uint16_t);
     set_synch = (int16_t(*)(int16_t,uint16_t))dlsym(m_handle,"SetSecMarkStatus");
-    (*set_synch)(m_device_id, sec_mark_status);
-    printf("SetSecMarkStatus: %d\n", (*set_synch)(m_device_id, sec_mark_status));
+    (*set_synch)(m_kia_bi_data.m_num_bi.second, sec_mark_status);
+    printf("SetSecMarkStatus: %d\n", (*set_synch)(m_kia_bi_data.m_num_bi.second, sec_mark_status));
     switch(((sec_mark_status >> (num_ch * 2)) & 0x0003))
     {
     case BIS1M_BOTH_OFF:
-        m_kia_data->m_data_bi->m_1s[num_ch] = BIS1SM_BOTH_ON;
+        m_kia_bi_data.m_1s[num_ch] = BIS1SM_BOTH_ON;
         break;
     case BIS1SM_MAIN_ON:
-        m_kia_data->m_data_bi->m_1s[num_ch] = BIS1SM_REZERV_ON;
+        m_kia_bi_data.m_1s[num_ch] = BIS1SM_REZERV_ON;
         break;
     case BIS1SM_REZERV_ON:
-        m_kia_data->m_data_bi->m_1s[num_ch] = BIS1SM_MAIN_ON;
+        m_kia_bi_data.m_1s[num_ch] = BIS1SM_MAIN_ON;
         break;
     case BIS1SM_BOTH_ON:
-        m_kia_data->m_data_bi->m_1s[num_ch] = BIS1M_BOTH_OFF;
+        m_kia_bi_data.m_1s[num_ch] = BIS1M_BOTH_OFF;
         break;
     }
 }
@@ -461,7 +470,7 @@ uint16_t Kia_biu::close_bi()
 {
     int16_t (*done)(int16_t);
     done = (int16_t(*)(int16_t))dlsym(m_handle, "Done");
-    printf("Done: %d\n", (*done)(m_device_id));
+    printf("Done: %d\n", (*done)(m_kia_bi_data.m_num_bi.second));
     int16_t (*close)(void);
     close = (int16_t(*)(void))dlsym(m_handle, "Close");
     auto result = (*close)();
@@ -472,11 +481,12 @@ uint16_t Kia_biu::close_bi()
 
 uint16_t Kia_biu::on_power_bi(uint16_t& num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
-    get_power(m_power_status);
-    printf("power_status %04x\n", m_power_status);
+    uint16_t power_status = 0x0000;
+    get_power(power_status);
+    printf("power_status %04x\n", power_status);
     QString str_info_1s = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Включаем питание ");
     std::vector<uint16_t> on_power_arr = {0x0306, 0x3060};
-    m_off_1_ch = 0xffff;
+    auto m_off_1_ch = 0xffff;
     if (off_1_ch != 0)
     {
         m_off_1_ch = 0x0000;
@@ -488,96 +498,101 @@ uint16_t Kia_biu::on_power_bi(uint16_t& num_bokz, uint16_t &num_channel, uint16_
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
     save_to_protocol(num_bokz, str_info_1s, parametr);
-    m_power_status = m_power_status | (on_power_arr[num_channel] & m_off_1_ch);
-    set_power(m_power_status);
+    power_status = power_status | (on_power_arr[num_channel] & m_off_1_ch);
+    set_power(power_status);
     return IS_POWERED;
 }
 
 uint16_t Kia_biu::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
-    get_power(m_power_status);
+    uint16_t power_status = 0x0000;
+    get_power(power_status);
     QString str_info_1s = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Выключаем питание ");
     std::vector<uint16_t> off_power_arr = {0xfcf9, 0xcf9f};
-    m_off_1_ch = 0x0000;
+    uint16_t state_channel = 0x0000;
     if (off_1_ch != 0)
     {
-        m_off_1_ch = 0xffff;
+        state_channel = 0xffff;
         if (off_1_ch == 1)
             str_info_1s.push_back(QString("на резервный канал "));
         else
             str_info_1s.push_back(QString("на основной канал "));
-        m_off_1_ch = m_off_1_ch & (0x0204 << (num_channel * 4 + off_1_ch - 1));
+        state_channel = state_channel & (0x0204 << (num_channel * 4 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
     save_to_protocol(num_bokz, str_info_1s, parametr);
-    m_power_status = m_power_status & (off_power_arr[num_channel] | m_off_1_ch);
-    set_power(m_power_status);
+    power_status = power_status & (off_power_arr[num_channel] | state_channel);
+    set_power(power_status);
     return IS_NOT_POWERED;
 }
 
 void Kia_biu::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
-    get_sec_mark_status(m_sec_mark_status);
+    uint16_t sec_mark_status = 0x0000;
+    get_sec_mark_status(sec_mark_status);
     QString str_info_1s = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Включаем секундную метку ");
-    m_off_1_ch = 0xffff;
+    uint16_t state_channel = 0xffff;
     std::vector<uint16_t> on_1s = {0x0003, 0x000c};
     if (off_1_ch != 0)
     {
-        m_off_1_ch = 0x0000;
+        state_channel = 0x0000;
         if (off_1_ch == 1)
             str_info_1s.push_back(QString("на основной канал "));
         else
             str_info_1s.push_back(QString("на резервный канал "));
-        m_off_1_ch = m_off_1_ch | (0x01 << (num_channel * 2 + off_1_ch - 1));
+        state_channel = state_channel | (0x01 << (num_channel * 2 + off_1_ch - 1));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
     save_to_protocol(num_bokz, str_info_1s, parametr);
-    m_sec_mark_status = m_sec_mark_status | (on_1s[num_channel] & m_off_1_ch);
-    printf("%04x\n", m_sec_mark_status);
-    set_sec_mark_status(num_channel, m_sec_mark_status);
+    sec_mark_status = sec_mark_status | (on_1s[num_channel] & state_channel);
+    printf("%04x\n", sec_mark_status);
+    set_sec_mark_status(num_channel, sec_mark_status);
 }
 
 void Kia_biu::off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
-    get_sec_mark_status(m_sec_mark_status);
+    uint16_t sec_mark_status = 0x0000;
+    get_sec_mark_status(sec_mark_status);
     QString str_info_1s = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Выключаем секундную метку ");
     std::vector<uint16_t> off_1s = {0x000c, 0x0003};
-    m_off_1_ch = 0x0000;
+    uint16_t state_channel = 0x0000;
     if (off_1_ch != 0)
     {
-        m_off_1_ch = 0x0000;
+        state_channel = 0x0000;
         if (off_1_ch == 1)
             str_info_1s.push_back(QString("на основной канал "));
         else
             str_info_1s.push_back(QString("на резервный канал "));
-        m_off_1_ch = ~(m_off_1_ch | (0x01 << (num_channel * 2 + off_1_ch - 1)));
+        state_channel = ~(state_channel | (0x01 << (num_channel * 2 + off_1_ch - 1)));
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
     save_to_protocol(num_bokz, str_info_1s, parametr);
-    m_sec_mark_status = m_sec_mark_status & (off_1s[num_channel] | m_off_1_ch);
-    set_sec_mark_status(num_channel, m_sec_mark_status);
+    sec_mark_status = sec_mark_status & (off_1s[num_channel] | state_channel);
+    set_sec_mark_status(num_channel, sec_mark_status);
 }
 
 void Kia_biu::on_imitator_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
-    get_power(m_power_status);
+    uint16_t power_status = 0x0000;
+    get_power(power_status);
     std::vector<uint16_t> on_power_arr = {0x0C09, 0xC090};
-    m_power_status = m_power_status | (on_power_arr[num_channel]);
+    power_status = power_status | (on_power_arr[num_channel]);
     QString str_info_1s = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
             + QString("Включаем имитатор для канала №") + QString::number(num_channel + 1) + "\n";
     save_to_protocol(num_bokz, str_info_1s, parametr);
-    set_power(m_power_status);
+    set_power(power_status);
 }
 
 void Kia_biu::off_imitator_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch, uint16_t parametr)
 {
-    get_power(m_power_status);
+    uint16_t power_status = 0x0000;
+    get_power(power_status);
     std::vector<uint16_t> off_power_arr = {0xf3f6, 0x3f6f};
-    m_power_status = m_power_status & (off_power_arr[num_channel]);
+    power_status = power_status & (off_power_arr[num_channel]);
     QString str_info_1s = helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time)
             + QString("Выключаем имитатор для канала №") + QString::number(num_channel + 1) + "\n";
     save_to_protocol(num_bokz, str_info_1s, parametr);
-    set_power(m_power_status);
+    set_power(power_status);
 }
 
 void Kia_biu::on_contol_command(uint16_t &num_bokz, uint16_t &num_channel, uint16_t parametr)

@@ -31,6 +31,7 @@
 #include "kia_cyclogram_bokzm60.h"
 #include "kia_cyclogram_bokzmf.h"
 #include "Kia_modules/kia_db.h"
+
 class WorkWithMain : public QObject
 {
     Q_OBJECT

@@ -19,61 +19,15 @@ using namespace std;
 
 namespace constants
 {
-const uint16_t MAX_TMK_NUMBER =  7;
-constexpr const double tarTD[6][2] = {{4.465309361, 235.5450688},{4.456359845, 235.5186178},{4.447446551, 235.4922949},{4.438569256, 235.466099},{4.429727741, 235.4400294},{4.420921788, 235.4140852}};
-const static uint32_t FILTER_LENGTH= 10;
-const static uint16_t max_tmk_dev = MAX_TMK_NUMBER * 2 + 1;
+const static uint16_t max_tmk_dev = 15;
 const static uint32_t packetSize = 34;
 const static uint32_t protocol_count = 5;
 const static uint16_t count_type_bi = 2;
 const static uint16_t count_type_bokz = 6;
-const static uint16_t size_qa = 4;
-const static uint16_t size_w = 3;
 const static uint16_t m_count_lpi = 2;
 const static uint16_t max_avalable_address = 31;
-const static uint16_t max_count_param = 3;
-const static uint16_t max_count_bi = 4;
 const static uint16_t max_count_same_connection = 2;
-const uint32_t microsecond_in_second = 1000 * 1000;
 }
-
-
-#pragma pack(push, 1)
-struct Data_for_mpi
-{
-    uint16_t m_num_bokz = 0;
-    uint16_t m_code_word = 0;
-    uint16_t m_address = 0;
-    uint16_t m_word_data = 1;
-    uint16_t m_sub_address = 0;
-    uint16_t m_format = 0;
-    uint16_t m_direction = 0;
-    uint16_t m_base = 0;
-    uint16_t m_lpi = 0;
-    uint16_t m_nInt = 0;
-    uint16_t m_wResult = 0;
-    uint16_t m_mpi_result = 0;
-    uint16_t m_wOs = 0;
-    uint16_t m_status_exchange = 0;
-    uint16_t m_mpi_index = 0;
-
-    float m_epsilon;
-    std::array<float, 3> m_focus_data;
-    uint16_t m_texp;
-
-    array<uint16_t, constants::packetSize> m_data_to_exc;
-    array<uint16_t, constants::packetSize> m_data_word;
-    array<uint16_t, constants::packetSize> m_prev_data_word;
-    array<uint16_t, constants::packetSize> m_qa;
-    array<uint16_t, constants::packetSize> m_w;
-    array<uint16_t, constants::packetSize> m_data_upn;
-
-    uint16_t m_num_used_channel = 0;
-
-    QString m_is_error;
-
-};
-#pragma pack(pop)
 
 #pragma pack(push, 1)
 struct Data_for_bokz
@@ -97,10 +51,6 @@ struct Data_for_db
     string experiment_id;
     uint16_t serial_num;
     string m_datetime;
-    string struct_id;
-    string struct_id_dop;
-    string struct_id_desc;
-    string struct_id_dop_desc;
     string frame_name;
     string true_host;
     uint16_t subarray_id;
@@ -173,32 +123,12 @@ struct Format_for_description
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
-struct Data_for_bi
-{
-    std::vector<uint16_t> m_term_group;
-    bool m_is_bkpik;
-    std::vector<int> m_num_bi;
-    int m_count_bi;
-    uint16_t m_bi_is_used {CS_IS_OFF};
-    std::array<int, constants::count_type_bi> m_count_channel_bi = {3, 2};//0 - БКПИК; 1 - БИ;
-    uint16_t m_num_used_bi;
-    std::vector<uint8_t> m_commandR;
-    std::vector<uint16_t> m_raw_data;
-    std::vector<float> m_td;
-    std::vector<uint16_t> m_kc;
-    std::vector<uint16_t> m_kp;
-    std::vector<uint16_t> m_1s;
-    uint8_t m_is_channel_on = 0x3f;
-    uint8_t m_is_1s_on = 0x3f;
-    uint16_t m_is_powered = IS_NOT_POWERED;
-};
-#pragma pack(pop)
 
 #pragma pack(push, 1)
 struct Wait_and_param_for_cyclogram
 {
     std::vector<uint16_t> m_do_mpi_command_in_cyclogram;
+
     std::vector<uint16_t> m_do_cyclogram_in_tp;
     std::vector<uint16_t> m_count_to_do_cyclogram_in_tp;
 
@@ -208,9 +138,14 @@ struct Wait_and_param_for_cyclogram
     std::vector<std::vector<uint16_t>> m_do_cyclogram_in_do;
 
     std::vector<std::vector<uint16_t>> m_do_in_power_cycl;
+
     std::map<uint16_t, int32_t> m_wait_time_for_cyclogram;
+
     int16_t m_count_cyclogram_technical_run = 2;
-    std::vector<std::array<uint16_t, constants::max_count_param>> m_param_for_run_a_lot;
+
+    static constexpr uint16_t count_cyclogram_param = 3;
+
+    std::vector<std::array<uint16_t, count_cyclogram_param>> m_param_for_run_a_lot;
     int16_t m_count_do_dtmi_in_state_off = 2;
     int16_t m_shift_bshv = 100;
     std::vector<QString> m_is_error;
@@ -218,10 +153,15 @@ struct Wait_and_param_for_cyclogram
     uint16_t m_off_power_for_tp = 0;
 
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_mpi_command;
+
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_mpi_other_command;
+
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t cound_do_cyclogram, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_tp;
+
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_cyclograms_state_work;
+
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ai;
+
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>> m_cyclograms_ri;
 
     std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t >> m_cyclograms_power;
@@ -230,7 +170,6 @@ struct Wait_and_param_for_cyclogram
     std::vector<std::vector<std::tuple<std::function<uint16_t(uint16_t num_bokz, uint16_t parametr)>, QString, uint16_t>>> m_command_cycl_do;
 
     std::vector<std::tuple<QString, QString, uint16_t, uint16_t>> m_commands_to_pn;
-
 
 };
 #pragma pack(pop)
@@ -266,13 +205,11 @@ struct Kia_settings
         m_data_for_db.reset(new Data_for_db());
         m_flags_for_thread.reset(new Flags_for_thread());
         m_data_to_protocols.reset(new Data_to_protocols());
-        m_data_for_bi.reset(new Data_for_bi());
     }
     std::shared_ptr<Data_for_db> m_data_for_db;
     std::shared_ptr<Flags_for_thread> m_flags_for_thread;
     std::shared_ptr<Data_to_protocols> m_data_to_protocols;
     Format_for_description m_format_for_desc;
-    std::shared_ptr<Data_for_bi> m_data_for_bi;
     Frame_settings m_frame_settings;
     uint16_t m_type_bokz;
     uint16_t m_type_bi;
@@ -281,6 +218,10 @@ struct Kia_settings
     int m_freq_bokz;
     uint16_t m_is_con_to_internet = CS_IS_OFF;
     uint16_t m_is_con_to_tg = CS_IS_OFF;
+
+    std::vector<uint16_t> m_num_port;
+    uint16_t m_count_bi;
+    uint16_t m_bi_used{CS_IS_OFF};
 };
 #pragma pack(pop)
 
@@ -288,15 +229,11 @@ struct Kia_settings
 struct Kia_data
 {
     Kia_data()
-    {
-        m_data_mpi.reset(new Data_for_mpi());
+    {;
         m_data_db.reset(new Data_for_db());
-        m_data_bi.reset(new Data_for_bi());
         m_data_bokz.reset(new Data_for_bokz());
     }
-    std::shared_ptr<Data_for_mpi> m_data_mpi;
     std::shared_ptr<Data_for_db> m_data_db;
-    std::shared_ptr<Data_for_bi> m_data_bi;
     std::shared_ptr<Data_for_bokz> m_data_bokz;
 }; Q_DECLARE_METATYPE(Kia_data)
 #pragma pack(pop)

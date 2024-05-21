@@ -8,10 +8,19 @@
 #include "mainStruct.h"
 #include "Kia_modules/kia_db.h"
 #include "Kia_pio/pio_bokz.h"
+#include "Kia_bokz/bokz.h"
+#include "Kia_bi/kia_bi.h"
 class ParseToDB : public QObject
 {
     Q_OBJECT
 public:
+    struct Kia_data
+    {
+        Kia_mpi_data* mpi_data;
+        Bokz::Kia_data_bokz* data_bokz;
+        Kia_bi::Kia_bi_data* kia_bi_data;
+    };
+
     enum TYPE_DATA_MANAGE
     {
         TDM_TYPE_DATA = 0,
@@ -34,19 +43,13 @@ public:
     };
 
     ParseToDB(std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> kia_db,
-              std::shared_ptr<Kia_data> kia_data,
               std::shared_ptr<Kia_settings> kia_settings);
     ~ParseToDB();
+
+    void set_kia_data(Kia_data kia_data);
     void sendDataIntoMPI(uint16_t& num_bokz, int32_t &bshv);
 
     void send_data_to_db(uint16_t key_arr, string prepare_query, uint16_t num_bokz, int32_t bshv, DATA data_struct);
-
-    void sendDataIntoMSHIOR_M60(uint16_t& num_bokz, int32_t& bshv, MSHIOR &st_mshior);
-    void sendDataIntoSHTMI1_M60(uint16_t& num_bokz, int32_t& bshv, SHTMI1 &st_shtmi1);
-    void sendDataIntoSHTMI2_M60(uint16_t& num_bokz, int32_t &bshv, SHTMI2 &st_shmti2);
-    void sendDataIntoDTMILOC_M60(uint16_t& num_bokz, int32_t &bshv, DTMILoc &dtmiLoc);
-    void sendDataIntoDTMI_M60(uint16_t& num_bokz, int32_t &bshv, DTMI& dtmi);
-
 
     void sendDataIntoMSHIOR_MF(uint16_t& num_bokz, int32_t& bshv, MSHIOR_MF &st_mshior);
     void sendDataIntoSHTMI1_MF(uint16_t& num_bokz, int32_t& bshv, SHTMI1_MF &st_shtmi1);
@@ -77,10 +80,10 @@ public slots:
                               qint32 bshv, DATA data_struct);
 private:
     std::array<std::shared_ptr<Kia_db>, constants::max_count_same_connection> m_kia_db;
-    std::shared_ptr<Kia_data> m_kia_data;
+    //std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_settings> m_kia_settings;
+    Kia_data m_kia_data;
 
-    std::map<uint16_t, std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzm60;
     std::map<uint16_t, std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzmf;
 
     std::vector<std::function<void(uint16_t)>> m_func_to_send_bi;

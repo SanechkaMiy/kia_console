@@ -16,7 +16,6 @@ class BokzM60 : public Bokz
     Q_OBJECT
 public:
 
-
     enum TYPE_CHPN
     {
         TP_TEXP = 0,
@@ -114,6 +113,7 @@ private:
     uint16_t start_exchage(uint16_t parametr = EP_DOALL);
     uint16_t execute_protected_exchange(std::function<void()> func_mpi_command);
     void execute_exchange();
+    void check_and_count_fails();
     std::function<void()> m_set_control_word;
     void set_data_to_device_protocol(QString &str_protocol);
     std::shared_ptr<Kia_settings> m_kia_settings;
@@ -128,8 +128,9 @@ private:
 
     std::map<uint16_t, std::map<std::string, uint16_t>> m_index_mpi_array;
 
-
-
+    //mestnay hren'
+private:
+    std::array<float, 3> m_focus_data;
 };
 
 #endif // BOKZM60_H

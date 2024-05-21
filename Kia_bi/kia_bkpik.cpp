@@ -1,12 +1,12 @@
 #include "kia_bkpik.h"
 
-Kia_bkpik::Kia_bkpik(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings) :
+Kia_bkpik::Kia_bkpik(uint16_t num_bi, uint16_t num_port, std::shared_ptr<Kia_settings> kia_settings) :
     m_kia_settings(kia_settings)
 {
-    m_num_bi = num_bi;
+    m_kia_bi_data.m_num_bi.first = num_bi;
+    m_kia_bi_data.m_num_bi.second = num_port;
     set_bkpik_settings();
-    std::cout << "num port " << m_kia_settings->m_data_for_bi->m_num_bi[m_num_bi] << std::endl;
-    m_serial_port.reset(new mn::CppLinuxSerial::SerialPort("/dev/ttyS" + to_string(m_kia_settings->m_data_for_bi->m_num_bi[m_num_bi]), mn::CppLinuxSerial::BaudRate::B_9600));
+    m_serial_port.reset(new mn::CppLinuxSerial::SerialPort("/dev/ttyS" + to_string(m_kia_bi_data.m_num_bi.second), mn::CppLinuxSerial::BaudRate::B_9600));
     //serialPort->SetTimeout(100); // Block for up to 100ms to receive data
     m_serial_port->Open();
     std::vector<uint8_t> commandBKC = {0xf1};//
@@ -35,21 +35,21 @@ void Kia_bkpik::change_command_bkpik(std::vector<uint8_t> command)
     is_change_state = 0;
     for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_count_bokz; num_ch++)
     {
-        switch(((m_kia_data->m_data_bi->m_is_1s_on >> (num_ch * 2)) & 0x0003))
-        {
-        case BIS1M_BOTH_OFF:
-            m_kia_data->m_data_bi->m_1s[num_ch] = BIS1M_BOTH_OFF;
-            break;
-        case BIS1SM_MAIN_ON:
-            m_kia_data->m_data_bi->m_1s[num_ch] = BIS1SM_MAIN_ON;
-            break;
-        case BIS1SM_REZERV_ON:
-            m_kia_data->m_data_bi->m_1s[num_ch] = BIS1SM_REZERV_ON;
-            break;
-        case BIS1SM_BOTH_ON:
-            m_kia_data->m_data_bi->m_1s[num_ch] = BIS1SM_BOTH_ON;
-            break;
-        }
+//        switch(((m_kia_data->m_data_bi->m_is_1s_on >> (num_ch * 2)) & 0x0003))
+//        {
+//        case BIS1M_BOTH_OFF:
+//            m_kia_bi_data.m_1s[num_ch] = BIS1M_BOTH_OFF;
+//            break;
+//        case BIS1SM_MAIN_ON:
+//            m_kia_bi_data.m_1s[num_ch] = BIS1SM_MAIN_ON;
+//            break;
+//        case BIS1SM_REZERV_ON:
+//            m_kia_bi_data.m_1s[num_ch] = BIS1SM_REZERV_ON;
+//            break;
+//        case BIS1SM_BOTH_ON:
+//            m_kia_bi_data.m_1s[num_ch] = BIS1SM_BOTH_ON;
+//            break;
+//        }
     }
 }
 
@@ -83,13 +83,13 @@ void Kia_bkpik::start_1s_mark_bkpik()
                 commandR.clear();
                 while (buffer.size() >= command_size)
                 {
-                    m_kia_data->m_data_bi->m_commandR = buffer;
-                    m_kia_data->m_data_bi->m_commandR.resize(command_size);
+                    //m_kia_data->m_data_bi->m_commandR = buffer;
+                    //m_kia_data->m_data_bi->m_commandR.resize(command_size);
                     m_count++;
                     m_cv.notify_all();
-                    m_kia_data->m_data_db->m_datetime = helpers::currentDateTime();
+                    //m_kia_data->m_data_db->m_datetime = helpers::currentDateTime();
                     send_telemetry();
-                    emit send_data_to_db_bi(m_kia_settings->m_type_bi, m_num_bi);
+                    emit send_data_to_db_bi(m_kia_settings->m_type_bi, m_kia_bi_data.m_num_bi.first);
                     buffer.erase(buffer.begin(), buffer.begin() + command_size);
                 }
             }
@@ -98,6 +98,11 @@ void Kia_bkpik::start_1s_mark_bkpik()
             is_change_state++;
         }
     });
+}
+
+void Kia_bkpik::init(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings)
+{
+
 }
 
 void Kia_bkpik::stop_1s_mark()
@@ -112,19 +117,19 @@ void Kia_bkpik::send_telemetry()
     QStringList data_for_client;
     for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_count_bokz; ++num_ch)
     {
-        data_for_client.push_back(QString::number(m_num_bi));
+        data_for_client.push_back(QString::number(m_kia_bi_data.m_num_bi.first));
         data_for_client.push_back(QString::number(num_ch));
-        data_for_client.push_back(QString::number(m_kia_data->m_data_bi->m_kp[num_ch]));
-        data_for_client.push_back(QString::number(m_kia_data->m_data_bi->m_kc[num_ch]));
-        data_for_client.push_back(QString::number(m_kia_data->m_data_bi->m_td[num_ch]));
-        data_for_client.push_back(QString::number(m_kia_data->m_data_bi->m_1s[num_ch]));
+        data_for_client.push_back(QString::number(m_kia_bi_data.m_kp[num_ch]));
+        data_for_client.push_back(QString::number(m_kia_bi_data.m_kc[num_ch]));
+        data_for_client.push_back(QString::number(m_kia_bi_data.m_td[num_ch]));
+        data_for_client.push_back(QString::number(m_kia_bi_data.m_1s[num_ch]));
         emit send_to_client(SEND_DATA_TO_STATE_WINDOW, data_for_client);
         data_for_client.clear();
     }
-    m_kia_data->m_data_db->data = QString('\\') + QString('\\') + "x";
-    for (unsigned int i = 0; i < m_kia_data->m_data_bi->m_commandR.size(); i++)
+    m_kia_bi_data.hex_data = QString('\\') + QString('\\') + "x";
+    //for (unsigned int i = 0; i < m_kia_data->m_data_bi->m_commandR.size(); i++)
     {
-        m_kia_data->m_data_db->data = m_kia_data->m_data_db->data + QString("%1").arg(QString::number(m_kia_data->m_data_bi->m_commandR[i], 16), 4, '0').toUpper();
+        //m_kia_bi_data.hex_data = m_kia_bi_data.hex_data + QString("%1").arg(QString::number(m_kia_data->m_data_bi->m_commandR[i], 16), 4, '0').toUpper();
     }
 }
 
@@ -173,13 +178,12 @@ void Kia_bkpik::create_bi_telemetry_list()
 
 void Kia_bkpik::set_bkpik_settings()
 {
-    m_kia_data.reset(new Kia_data());
-    m_kia_data->m_data_bi->m_term_group.resize(m_kia_settings->m_count_bokz);
-    std::fill(m_kia_data->m_data_bi->m_term_group.begin(), m_kia_data->m_data_bi->m_term_group.end(), 1);
-    m_kia_data->m_data_bi->m_1s.resize(m_kia_settings->m_count_bokz);
-    m_kia_data->m_data_bi->m_kc.resize(m_kia_settings->m_count_bokz);
-    m_kia_data->m_data_bi->m_kp.resize(m_kia_settings->m_count_bokz);
-    m_kia_data->m_data_bi->m_td.resize(m_kia_settings->m_count_bokz);
+    m_kia_bi_data.m_term_group.resize(m_kia_settings->m_count_bokz);
+    std::fill(m_kia_bi_data.m_term_group.begin(), m_kia_bi_data.m_term_group.end(), 1);
+    m_kia_bi_data.m_1s.resize(m_kia_settings->m_count_bokz);
+    m_kia_bi_data.m_kc.resize(m_kia_settings->m_count_bokz);
+    m_kia_bi_data.m_kp.resize(m_kia_settings->m_count_bokz);
+    m_kia_bi_data.m_td.resize(m_kia_settings->m_count_bokz);
 
 }
 
@@ -200,8 +204,8 @@ uint16_t Kia_bkpik::on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint1
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
     //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
-    m_kia_data->m_data_bi->m_is_channel_on = m_kia_data->m_data_bi->m_is_channel_on & (on_power_arr[num_channel] | m_off_1_ch);
-    change_command_bkpik({0x01, m_kia_data->m_data_bi->m_is_channel_on});//0x3c для БОКЗ М60; 0x33 для БОКЗ М60/1000
+    //m_kia_data->m_data_bi->m_is_channel_on = m_kia_data->m_data_bi->m_is_channel_on & (on_power_arr[num_channel] | m_off_1_ch);
+    //change_command_bkpik({0x01, m_kia_data->m_data_bi->m_is_channel_on});//0x3c для БОКЗ М60; 0x33 для БОКЗ М60/1000
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
 }
 
@@ -221,8 +225,8 @@ uint16_t Kia_bkpik::off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
     //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
-    m_kia_data->m_data_bi->m_is_channel_on = m_kia_data->m_data_bi->m_is_channel_on | (off_power_arr[num_channel] & m_off_1_ch);
-    change_command_bkpik({0x01, m_kia_data->m_data_bi->m_is_channel_on});
+    //m_kia_data->m_data_bi->m_is_channel_on = m_kia_data->m_data_bi->m_is_channel_on | (off_power_arr[num_channel] & m_off_1_ch);
+    //change_command_bkpik({0x01, m_kia_data->m_data_bi->m_is_channel_on});
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
 }
 
@@ -242,9 +246,9 @@ void Kia_bkpik::on_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off
     }
     str_info_1s.push_back("для канала №" + QString::number(num_channel + 1) + "\n");
     //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
-    m_kia_data->m_data_bi->m_is_1s_on = m_kia_data->m_data_bi->m_is_1s_on & (on_power_arr[num_channel] | m_off_1_ch);
-    printf("on %04x\n", m_kia_data->m_data_bi->m_is_1s_on);
-    change_command_bkpik({0x02, m_kia_data->m_data_bi->m_is_1s_on});//0x3c для БОКЗ М60; 0x33 для БОКЗ М60/1000
+    //m_kia_data->m_data_bi->m_is_1s_on = m_kia_data->m_data_bi->m_is_1s_on & (on_power_arr[num_channel] | m_off_1_ch);
+    //printf("on %04x\n", m_kia_data->m_data_bi->m_is_1s_on);
+    //change_command_bkpik({0x02, m_kia_data->m_data_bi->m_is_1s_on});//0x3c для БОКЗ М60; 0x33 для БОКЗ М60/1000
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
 }
 
@@ -264,9 +268,9 @@ void Kia_bkpik::off_1s_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t of
     }
     str_info_1s.push_back("для прибора №" + QString::number(num_channel + 1) + "\n");
     //m_kia_protocol->save_and_out_to_system_error_ai_protocols(num_bokz, str_info_1s, parametr);
-    m_kia_data->m_data_bi->m_is_1s_on = m_kia_data->m_data_bi->m_is_1s_on | (off_power_arr[num_channel] & m_off_1_ch);
-    printf("off %04x\n", m_kia_data->m_data_bi->m_is_1s_on);
-    change_command_bkpik({0x02, m_kia_data->m_data_bi->m_is_1s_on});
+    //m_kia_data->m_data_bi->m_is_1s_on = m_kia_data->m_data_bi->m_is_1s_on | (off_power_arr[num_channel] & m_off_1_ch);
+    //printf("off %04x\n", m_kia_data->m_data_bi->m_is_1s_on);
+    //change_command_bkpik({0x02, m_kia_data->m_data_bi->m_is_1s_on});
     m_kia_settings->m_flags_for_thread->m_mtx.unlock();
 }
 

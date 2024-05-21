@@ -21,13 +21,16 @@ class Kia_bkpik : public Kia_bi
 {
     Q_OBJECT
 public:
-    Kia_bkpik(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings);
+    Kia_bkpik(uint16_t num_bi, uint16_t num_port, std::shared_ptr<Kia_settings> kia_settings);
     ~Kia_bkpik();
     std::condition_variable& getEvent();
     int64_t inSleep();
     void change_command_bkpik(std::vector<uint8_t> command);
 
     void start_1s_mark_bkpik();
+
+    void init(uint16_t num_bi, std::shared_ptr<Kia_settings> kia_settings) override;
+
     uint16_t on_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t off_1_ch = 0, uint16_t parametr = EP_DOALL) override;
     uint16_t off_power_bi(uint16_t &num_bokz, uint16_t &num_channel, uint16_t parametr = EP_DOALL, uint16_t off_1_ch = 0) override;
 

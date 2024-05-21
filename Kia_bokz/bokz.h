@@ -32,7 +32,33 @@ public:
         TO_NO_ORIENT = 3
     };
 
+    struct Kia_data_bokz
+    {
+        uint16_t m_num_bokz{};
+        uint16_t m_is_used_bokz{CS_IS_OFF};
+        uint16_t m_num_used_channel{};
+        uint16_t m_num_used_bi{};
+        uint16_t m_is_powered{IS_NOT_POWERED};
+        std::string m_date_time{};
+        std::pair<std::string, std::string> struct_id{};
+        std::pair<std::string, std::string> struct_id_dop{};
+        std::vector<uint32_t> m_count_fail;
+        std::vector<std::pair<QString, uint32_t>> m_count_fail_descr;
 
+        std::vector<std::tuple<uint16_t, uint16_t, QStringList>> m_chpn_data;
+
+        std::vector<std::tuple<std::function<void(uint16_t parametr)>, QString, uint16_t>> m_func_type_frames;
+        std::vector<std::pair<std::function<void(uint16_t type_frame, uint16_t parametr)>, QString>> m_func_type_frame_recieve;
+
+        QString hex_data;
+
+        uint16_t m_state_in_cyclogram = KCS_SUCCES;
+        uint16_t m_type_orient = 0;
+
+        array<uint16_t, constants::packetSize> m_qa;
+        array<uint16_t, constants::packetSize> m_w;
+        array<uint16_t, constants::packetSize> m_data_upn;
+    };
 
     virtual void set_bokz_settings() = 0;
 
@@ -81,8 +107,7 @@ public:
     double asinm(double x);
 
 
-    Kia_protocol_parametrs parse_mko_protocols(std::shared_ptr<Kia_data> kia_data,
-                                               int32_t bshv, uint16_t num_bokz);
+    Kia_protocol_parametrs parse_mko_protocols(int32_t bshv, uint16_t num_bokz);
 
     QString set_data_from_mko_struct(QStringList list_name, std::vector<std::tuple<QString, double, double, double>> list_data);
     QString set_data_from_mko_struct(std::vector<std::tuple<QString, QString, QString>> data_description,
@@ -95,12 +120,13 @@ public:
     std::shared_ptr<Kia_data> m_kia_data;
     std::shared_ptr<Kia_mko_struct> m_kia_mko_struct;
     std::shared_ptr<Pio_bokz> m_pio_bokz;
-    uint16_t m_is_used_bokz = CS_IS_OFF;
-    uint16_t m_num_bokz;
 
     std::condition_variable m_cv;
     uint32_t m_count_exchange = 0;
 
+    //
+    Kia_mpi_data m_mpi_data;
+    Kia_data_bokz m_data_bokz;
     virtual ~Bokz(){    cout<<"destructor bokz"<<endl;};
 signals:
     void send_to_client(quint16, QStringList);
@@ -113,7 +139,7 @@ signals:
     void send_data_to_db_for_frames(quint16, qint32);
     void send_data_to_db_for_mpi(quint16, qint32);
 
-    void do_exchange(Kia_data*);
+    void do_exchange(Kia_mpi_data*, uint16_t);
 
     void do_frame(Kia_frame_parametrs*);
 private:

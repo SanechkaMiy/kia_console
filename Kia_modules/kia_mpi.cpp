@@ -1,7 +1,16 @@
 #include "kia_mpi.h"
 
+
+
 Kia_mpi::Kia_mpi()
 {
+    enum MPI_FORMAT
+    {
+        TYPE_COMMAND = 0,
+        DATA = 1,
+        NUM_DEV = 2
+    };
+
     m_mpi_thread = std::async([this]()
     {
         init();
@@ -9,14 +18,14 @@ Kia_mpi::Kia_mpi()
         while(m_mpi_stop)
         {
             wait_for_event();
-            if (m_data.front().first == "stop_mpi")
+            if (std::get<TYPE_COMMAND>(m_data.front()) == "stop_mpi")
             {
                 close();
                 break;
             }
-            if (m_data.front().first == "exchange")
+            if (std::get<TYPE_COMMAND>(m_data.front()) == "exchange")
             {
-                execute_exchange(m_data.front().second);
+                execute_exchange(std::get<DATA>(m_data.front()), std::get<NUM_DEV>(m_data.front()));
             }
             m_data.pop();
         }
@@ -27,8 +36,8 @@ Kia_mpi::Kia_mpi()
 Kia_mpi::~Kia_mpi()
 {
     std::lock_guard lock(m_mtx);
-    Kia_data kia_data;
-    m_data.push(std::make_pair("stop_mpi", &kia_data));
+    Kia_mpi_data kia_data;
+    m_data.push(std::make_tuple("stop_mpi", &kia_data, 0));
     m_cv.notify_all();
     m_mpi_stop = false;
     m_mpi_thread.get();
@@ -79,62 +88,54 @@ void Kia_mpi::wait_for_event()
     });
 }
 
-void Kia_mpi::execute_exchange(Kia_data* kia_data)
+void Kia_mpi::execute_exchange(Kia_mpi_data* mpi_data, uint16_t num_bokz)
 {
-    reset(kia_data);
-    tmkselect(kia_data->m_data_mpi->m_mpi_index);
-    kia_data->m_data_db->send_time = helpers::currentDateTime();
-    bcdefbus(kia_data->m_data_mpi->m_lpi);
-    bcdefbase(kia_data->m_data_mpi->m_base);
-    bcputw(0, kia_data->m_data_mpi->m_code_word);
-    if (kia_data->m_data_mpi->m_format == DATA_BC_RT)
-        bcputblk(1, kia_data->m_data_mpi->m_data_to_exc.data(), kia_data->m_data_mpi->m_data_to_exc.size() - 1);
-    kia_data->m_data_db->m_datetime = helpers::currentDateTime();
-    bcstart(kia_data->m_data_mpi->m_base, kia_data->m_data_mpi->m_format);
-    tmkwaitevents(1 << kia_data->m_data_mpi->m_mpi_index, 1000);
+    reset(mpi_data);
+    tmkselect(mpi_data->m_mpi_index);
+    mpi_data->send_time = helpers::currentDateTime();
+    bcdefbus(mpi_data->m_lpi);
+    bcdefbase(mpi_data->m_base);
+    bcputw(0, mpi_data->m_code_word);
+    if (mpi_data->m_format == DATA_BC_RT)
+        bcputblk(1, mpi_data->m_data_for_exchange.data(), mpi_data->m_data_for_exchange.size() - 1);
+
+    bcstart(mpi_data->m_base, mpi_data->m_format);
+    tmkwaitevents(1 << mpi_data->m_mpi_index, 1000);
     TTmkEventData tmkEvD;
     tmkgetevd(&tmkEvD);
-    kia_data->m_data_mpi->m_wResult = tmkEvD.bc.wResult;
-    kia_data->m_data_mpi->m_nInt = tmkEvD.nInt;
-    kia_data->m_data_db->waw1 = tmkEvD.bc.wAW1;
-    kia_data->m_data_db->waw1 = tmkEvD.bc.wAW2;
-    if ((kia_data->m_data_mpi->m_wResult == 0) && (kia_data->m_data_mpi->m_nInt == 1))//Есть ли ошибка обмена
+    mpi_data->m_wResult = tmkEvD.bc.wResult;
+    mpi_data->m_nInt = tmkEvD.nInt;
+    if ((mpi_data->m_wResult == 0) && (mpi_data->m_nInt == 1))//Есть ли ошибка обмена
     {
-        kia_data->m_data_mpi->m_status_exchange = KiaS_SUCCESS;
+        mpi_data->m_status_exchange = {KiaS_SUCCESS, " - УСПЕХ"};
     }
     else
     {
-        kia_data->m_data_bokz->m_count_fail[0]++;
-        kia_data->m_data_mpi->m_status_exchange = KiaS_FAIL;
+        mpi_data->m_status_exchange = {KiaS_FAIL, " - ОШИБКА"};
     }
-    kia_data->m_data_mpi->m_status_exchange = KiaS_SUCCESS;//-убрать..
-    bcgetblk(0, kia_data->m_data_mpi->m_data_word.data(), constants::packetSize);
+    bcgetblk(0, mpi_data->m_data_word.data(), constants::packetSize);
 
-    kia_data->m_data_db->receive_time = helpers::currentDateTime();
-    if (kia_data->m_data_mpi->m_format == DATA_BC_RT)
-        kia_data->m_data_mpi->m_wOs = kia_data->m_data_mpi->m_data_word[kia_data->m_data_mpi->m_word_data + 1];
+    mpi_data->receive_time = helpers::currentDateTime();
+    if (mpi_data->m_format == DATA_BC_RT)
+        mpi_data->m_answer_word = mpi_data->m_data_word[mpi_data->m_word_data + 1];
     else
-        kia_data->m_data_mpi->m_wOs = kia_data->m_data_mpi->m_data_word[1];
-    if ((kia_data->m_data_mpi->m_wOs & (0x0001 << 15)) == 1)
-    {
-        kia_data->m_data_bokz->m_count_fail[4]++;
-    }
+        mpi_data->m_answer_word  = mpi_data->m_data_word[1];
     emit changed_lpi();
-    emit end_exchange(kia_data->m_data_mpi->m_num_bokz);
+    emit end_exchange(num_bokz);
 }
 
-void Kia_mpi::do_exchange(Kia_data* kia_data)
+void Kia_mpi::do_exchange(Kia_mpi_data *mpi_data, uint16_t num_bokz)
 {
     std::lock_guard lock(m_mtx);
-    m_data.push(std::make_pair("exchange", kia_data));
+    m_data.push(std::make_tuple("exchange", mpi_data, num_bokz));
     m_cv.notify_all();
 }
-void Kia_mpi::reset(Kia_data* kia_data)
+void Kia_mpi::reset(Kia_mpi_data *mpi_data)
 {
     array<uint16_t, constants::packetSize> data_to_reset;
     data_to_reset.fill(0x0a00);
-    bcdefbus(kia_data->m_data_mpi->m_lpi);
-    bcdefbase(kia_data->m_data_mpi->m_base);
+    bcdefbus(mpi_data->m_lpi);
+    bcdefbase(mpi_data->m_base);
     bcputblk(0, data_to_reset.data(), data_to_reset.size());
 }
 

@@ -65,15 +65,15 @@ void Kia_synch_timer::start_synch_timer()
         {
             wait_for_event(m_timer);
             m_kia_settings->m_data_for_db->bshv[m_num_timer]++;
-            for (uint16_t num_ch = 0; num_ch < m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]; ++num_ch)
+            for (uint16_t num_ch = 0; num_ch < m_kia_bi->m_kia_bi_data.m_count_channel; ++num_ch)
             {
                 bshv_for_table.push_back(QString::number(ST_BSHV));
-                bshv_for_table.push_back(QString::number(num_ch + m_num_timer * m_kia_settings->m_data_for_bi->m_count_channel_bi[m_kia_settings->m_type_bi]));
+                bshv_for_table.push_back(QString::number(num_ch + m_num_timer * m_kia_bi->m_kia_bi_data.m_count_channel));
                 bshv_for_table.push_back(QString::number(m_kia_settings->m_data_for_db->bshv[m_num_timer]));
                 emit send_to_client(SEND_STATUS_INFO, bshv_for_table);
                 bshv_for_table.clear();
             }
-            list_status_1s_mark.push_back(QString::number(m_kia_bi->m_num_bi));
+            list_status_1s_mark.push_back(QString::number(m_kia_bi->m_kia_bi_data.m_num_bi.first));
             emit send_to_client(SET_STATUS_1S_MARK, list_status_1s_mark);
             list_status_1s_mark.clear();
         }

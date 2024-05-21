@@ -52,7 +52,6 @@ private:
     std::shared_ptr<Kia_settings> m_kia_settings;
     std::condition_variable m_cv;
     std::thread m_thread{};
-    std::array<int32_t, constants::FILTER_LENGTH> m_arr_for_synch;
     float m_sum_filter_el = 0;
     int  t_sleepforparam;
     int32_t m_interval_divider;
