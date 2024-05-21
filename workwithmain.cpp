@@ -7,7 +7,7 @@ WorkWithMain::WorkWithMain(int nPort) :
     QThread::currentThread()->setPriority(QThread::HighPriority);
     start_tcp_server(nPort);
     set_kia_settings();
-    //start_kia_gui();
+    start_kia_gui();
 
 
 }

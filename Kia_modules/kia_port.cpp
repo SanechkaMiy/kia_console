@@ -113,4 +113,10 @@ void Kia_port::check_used_bi_usb_ports()
     });
     th_check_bi.join();
 
+
+    if (m_kia_settings->m_data_for_bi->m_count_bi <= 0)
+    {
+        m_kia_settings->m_data_for_bi->m_count_bi  = 1;
+    }
+    m_kia_settings->m_data_for_bi->m_num_bi.resize(m_kia_settings->m_data_for_bi->m_count_bi);
 }
