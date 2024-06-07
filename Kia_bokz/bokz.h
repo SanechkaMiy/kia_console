@@ -127,6 +127,8 @@ public:
     //
     Kia_mpi_data m_mpi_data;
     Kia_data_bokz m_data_bokz;
+
+    std::map<uint16_t, std::map<std::string, uint16_t>> m_index_mpi_array;
     virtual ~Bokz(){    cout<<"destructor bokz"<<endl;};
 signals:
     void send_to_client(quint16, QStringList);

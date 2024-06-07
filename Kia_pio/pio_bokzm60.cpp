@@ -225,6 +225,14 @@ void Pio_bokzm60::create_list_for_mpi_arrays()
     m_data_manage[M60_SHTMI1].push_back(std::make_tuple(std::make_tuple(VER, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
                                                         1, TDF_INT, std::make_pair(true, true)));
 
+    m_index_mpi_array[M60_SHTMI1]["cc1"] = 0;
+    m_index_mpi_array[M60_SHTMI1]["cc2"] = 1;
+    m_index_mpi_array[M60_SHTMI1]["t"] = 2;
+    m_index_mpi_array[M60_SHTMI1]["st1"] = 3;
+    m_index_mpi_array[M60_SHTMI1]["st2"] = 4;
+    m_index_mpi_array[M60_SHTMI1]["sernum"] = 5;
+    m_index_mpi_array[M60_SHTMI1]["post"] = 6;
+
     m_data_manage[M60_SHTMI2].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
                                                         1, TDF_HEX, std::make_pair(true, true)));
     m_data_manage[M60_SHTMI2].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
@@ -266,17 +274,15 @@ void Pio_bokzm60::create_list_for_mpi_arrays()
         m_data_manage[M60_SHTMI2].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(0, 65535),
                                                             1, TDF_INT, std::make_pair(true, true)));
     }
+    m_index_mpi_array[M60_SHTMI2]["cc1"] = 0;
+    m_index_mpi_array[M60_SHTMI2]["cc2"] = 1;
+    m_index_mpi_array[M60_SHTMI2]["t"] = 2;
+    m_index_mpi_array[M60_SHTMI2]["st1"] = 3;
+    m_index_mpi_array[M60_SHTMI2]["st2"] = 4;
+    m_index_mpi_array[M60_SHTMI2]["sernum"] = 5;
+    m_index_mpi_array[M60_SHTMI2]["post"] = 6;
 
-    m_index_mpi_array[M60_MSHIOR]["st1"] = 0;
-    m_index_mpi_array[M60_MSHIOR]["st2"] = 1;
-    m_index_mpi_array[M60_MSHIOR]["t"] = 2;
-    m_index_mpi_array[M60_MSHIOR]["qo0"] = 6;
-    m_index_mpi_array[M60_MSHIOR]["qo1"] = 7;
-    m_index_mpi_array[M60_MSHIOR]["qo2"] = 8;
-    m_index_mpi_array[M60_MSHIOR]["qo3"] = 9;
-    m_index_mpi_array[M60_MSHIOR]["alpha"] = 13;
-    m_index_mpi_array[M60_MSHIOR]["delta"] = 14;
-    m_index_mpi_array[M60_MSHIOR]["azimuth"] = 15;
+
 
     m_kia_mko_struct->m_data[M60_MSHIOR].data.resize(m_kia_mko_struct->m_data[M60_MSHIOR].data_description.size() + 3);
 
@@ -322,6 +328,17 @@ void Pio_bokzm60::create_list_for_mpi_arrays()
         m_data_manage[M60_MSHIOR].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
                                                             1, TDF_HEX, std::make_pair(true, true)));
     }
+
+    m_index_mpi_array[M60_MSHIOR]["st1"] = 0;
+    m_index_mpi_array[M60_MSHIOR]["st2"] = 1;
+    m_index_mpi_array[M60_MSHIOR]["t"] = 2;
+    m_index_mpi_array[M60_MSHIOR]["qo0"] = 6;
+    m_index_mpi_array[M60_MSHIOR]["qo1"] = 7;
+    m_index_mpi_array[M60_MSHIOR]["qo2"] = 8;
+    m_index_mpi_array[M60_MSHIOR]["qo3"] = 9;
+    m_index_mpi_array[M60_MSHIOR]["alpha"] = 13;
+    m_index_mpi_array[M60_MSHIOR]["delta"] = 14;
+    m_index_mpi_array[M60_MSHIOR]["azimuth"] = 15;
 
     m_data_manage[M60_DTMI].push_back(std::make_tuple(std::make_tuple(ITS_REZERV, "", TA_NONE), 2, std::make_pair(-m_max_double_value, m_max_double_value),
                                                       1, TDF_HEX, std::make_pair(true, true)));

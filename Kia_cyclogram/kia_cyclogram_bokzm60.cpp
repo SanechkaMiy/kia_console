@@ -36,7 +36,7 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_state_on(uint16_t &num_bokz, uint16_t 
         if(m_bokz[num_bokz]->shtmi1() == KiaS_SUCCESS)
         {
             QString is_ready = "";
-            if ((m_bokz[num_bokz]->m_kia_mko_struct->st_shtmi1.POST & 0x0f00) == 0x0400)
+            if ((static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_SHTMI1].data[m_bokz[num_bokz]->m_index_mpi_array[M60_SHTMI1]["post"]])) & 0x0f00) == 0x0400)
             {
                 m_bokz[num_bokz]->m_mpi_data.m_status_exchange.first = KiaS_SUCCESS;
                 m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = "УСПЕХ!";
@@ -331,7 +331,7 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_1s_mark(uint16_t &num_bokz, uint16_t p
                 + QString("Тест секундной метки, получение ШТМИ 1 - ошибка!") + "\n";
         save_to_protocol(num_bokz, str_info_1s, parametr);
     }
-    else if ((m_bokz[num_bokz]->m_kia_mko_struct->st_shtmi1.POST & 0x0080) != KiaS_SUCCESS)
+    else if ((static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_SHTMI1].data[m_bokz[num_bokz]->m_index_mpi_array[M60_SHTMI1]["post"]])) & 0x0080) != KiaS_SUCCESS)
     {
         m_bokz[num_bokz]->m_mpi_data.m_status_exchange.first = KiaS_FAIL;
         m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - ОШИБКА!";
@@ -348,7 +348,7 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_1s_mark(uint16_t &num_bokz, uint16_t p
     {
         save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Тест секундной метки, получение ШТМИ 1 - ошибка!") + "\n", parametr);
     }
-    else if ((m_bokz[num_bokz]->m_kia_mko_struct->st_shtmi1.POST & 0x0080) == KiaS_SUCCESS)
+    else if ((static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_SHTMI1].data[m_bokz[num_bokz]->m_index_mpi_array[M60_SHTMI1]["post"]])) & 0x0080) == KiaS_SUCCESS)
     {
         m_bokz[num_bokz]->m_mpi_data.m_status_exchange.first = KiaS_FAIL;
         m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - ОШИБКА!";
@@ -365,7 +365,7 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_1s_mark(uint16_t &num_bokz, uint16_t p
     {
         save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Тест секундной метки, получение ШТМИ 1 - ошибка!") + "\n", parametr);
     }
-    else if ((m_bokz[num_bokz]->m_kia_mko_struct->st_shtmi1.POST & 0x0080) == KiaS_SUCCESS)
+    else if ((static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_SHTMI1].data[m_bokz[num_bokz]->m_index_mpi_array[M60_SHTMI1]["post"]])) & 0x0080) == KiaS_SUCCESS)
     {
         m_bokz[num_bokz]->m_mpi_data.m_status_exchange.first = KiaS_FAIL;
         m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - ОШИБКА!";
@@ -519,12 +519,12 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_test_synchro(uint16_t &num_bokz, uint1
     preset_before_exchange(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz]);
     m_bokz[num_bokz]->mshior();
     save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Изменяю время привязки на ") + QString::number(m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_shift_bshv) + "\n", parametr);
-    m_kia_settings->m_data_for_db->bshv[m_bokz[num_bokz]->m_data_bokz.m_num_used_bi] = m_bokz[num_bokz]->m_kia_mko_struct->st_mshior.T + m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_shift_bshv;
+    m_kia_settings->m_data_for_db->bshv[m_bokz[num_bokz]->m_data_bokz.m_num_used_bi] = static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_MSHIOR].data[m_bokz[num_bokz]->m_index_mpi_array[M60_MSHIOR]["t"]])) + m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_shift_bshv;
     wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
     m_bokz[num_bokz]->synchro();
     wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
     m_bokz[num_bokz]->mshior();
-    if ((m_kia_settings->m_data_for_db->bshv[m_bokz[num_bokz]->m_data_bokz.m_num_used_bi] - m_bokz[num_bokz]->m_kia_mko_struct->st_mshior.T) == 1)
+    if ((m_kia_settings->m_data_for_db->bshv[m_bokz[num_bokz]->m_data_bokz.m_num_used_bi] - static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_MSHIOR].data[m_bokz[num_bokz]->m_index_mpi_array[M60_MSHIOR]["t"]]))) == 1)
     {
         m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - УСПЕХ!";
         save_to_protocol(num_bokz, helpers::format_qstring(QString::fromStdString(helpers::currentDateTime()), m_kia_settings->m_format_for_desc.shift_date_time) + QString("Норма привязки по времени выполняется и равняется 1!") + "\n", parametr);
@@ -579,7 +579,7 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_zkr(uint16_t &num_bokz, uint16_t param
         m_bokz[num_bokz]->command_openkr();
         wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
         m_bokz[num_bokz]->shtmi2();
-        if ((m_bokz[num_bokz]->m_kia_mko_struct->st_shtmi2.KC1 & 0x000f) == 0x0004)
+        if ((static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_SHTMI2].data[m_bokz[num_bokz]->m_index_mpi_array[M60_SHTMI2]["st1"]])) & 0x000f) == 0x0004)
         {
 
             m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - УСПЕХ!";
@@ -594,7 +594,7 @@ uint16_t Kia_cyclogram_bokzm60::cyclogram_zkr(uint16_t &num_bokz, uint16_t param
         m_bokz[num_bokz]->command_zkr();
         wait_some_time(num_bokz, m_kia_settings->m_freq_bokz);
         m_bokz[num_bokz]->shtmi2();
-        if ((m_bokz[num_bokz]->m_kia_mko_struct->st_shtmi2.KC1 & 0x000f) == 0x0002)
+        if ((static_cast<uint16_t>(std::get<Pio_bokz::DOUBLE_VALUE>(m_bokz[num_bokz]->m_kia_mko_struct->m_data[M60_SHTMI2].data[m_bokz[num_bokz]->m_index_mpi_array[M60_SHTMI2]["st1"]])) & 0x000f) == 0x0002)
         {
 
             m_kia_data_cyclogram->m_wait_and_param_for_cyclogram->m_is_error[num_bokz] = " - УСПЕХ!";
