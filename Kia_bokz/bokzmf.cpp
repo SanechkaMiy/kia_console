@@ -9,6 +9,11 @@ Bokzmf::Bokzmf(uint16_t num_bokz, std::shared_ptr<Kia_settings> kia_settings) :
     set_type_chpn_func();
 }
 
+void Bokzmf::init()
+{
+
+}
+
 void Bokzmf::set_bokz_settings()
 {
     m_kia_data.reset(new Kia_data());
@@ -77,7 +82,7 @@ uint16_t Bokzmf::shtmi1(uint16_t parametr)
         //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_name, m_kia_mko_struct->st_shtmi1_mf.shtmi1_list_data));
         str_protocol.push_back("\n\n");
     }
-    emit send_data_to_db_bokz(MF_SHTMI1, m_data_bokz.m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db_bokz(MF_SHTMI1, m_data_bokz.m_num_bokz, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]), *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, MF_SHTMI1, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, MF_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -118,7 +123,7 @@ uint16_t Bokzmf::shtmi2(uint16_t parametr)
         //str_protocol.push_back(set_data_from_mko_struct(m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_name, m_kia_mko_struct->st_shtmi2_mf.shtmi2_list_data));
         str_protocol.push_back("\n\n");
     }
-    emit send_data_to_db_bokz(MF_SHTMI2, m_data_bokz.m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db_bokz(MF_SHTMI2, m_data_bokz.m_num_bokz, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]), *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, MF_SHTMI2, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, MF_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -150,9 +155,9 @@ uint16_t Bokzmf::mshior(uint16_t parametr)
     list_raw_data.push_back(raw_data);
     m_pio_bokz->decrypt(MF_MSHIOR, list_raw_data);
     std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["t"]]) = std::get<Pio_bokz::STRING_SHOW>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["t"]])
-            + " (" + QString::number((int)(m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi] / m_kia_settings->m_freq_bokz
+            + " (" + QString::number((int)(*(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]) / m_data_bokz.m_freq_bokz
                                      - std::get<Pio_bokz::DOUBLE_VALUE>(m_kia_mko_struct->m_data[MF_MSHIOR].data[m_index_mpi_array[MF_MSHIOR]["t"]]))) +  ")";
-    m_pio_bokz->decrypt_mshior(m_mpi_data.m_data_word, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi]);
+    m_pio_bokz->decrypt_mshior(m_mpi_data.m_data_word, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]));
     QString str_protocol;
     if (m_mpi_data.m_status_exchange.first == KiaS_SUCCESS)
     {
@@ -170,7 +175,7 @@ uint16_t Bokzmf::mshior(uint16_t parametr)
         post_status_proc(m_mpi_data.m_data_word[2], m_mpi_data.m_data_word[3], str_protocol);
 
     }
-    emit send_data_to_db_bokz(MF_MSHIOR, m_data_bokz.m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db_bokz(MF_MSHIOR, m_data_bokz.m_num_bokz, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]), *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, MF_MSHIOR, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, MF_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -249,7 +254,7 @@ uint16_t Bokzmf::dtmi_or_dtmi_loc(uint16_t parametr)
         str_protocol.push_back("\n\n");
 
     }
-    emit send_data_to_db_bokz(MF_DTMI, m_data_bokz.m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db_bokz(MF_DTMI, m_data_bokz.m_num_bokz, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]), *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, MF_DTMI, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, MF_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -294,7 +299,7 @@ uint16_t Bokzmf::mloc(uint16_t parametr)
         str_protocol.push_back("\n\n");
 
     }
-    emit send_data_to_db_bokz(MF_MLOC, m_data_bokz.m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi], *m_kia_mko_struct.get());
+    emit send_data_to_db_bokz(MF_MLOC, m_data_bokz.m_num_bokz, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]), *m_kia_mko_struct.get());
     save_to_specific_protocol(str_protocol, MF_MLOC, SET_WINDOW_INFO_DEVICE_PROTOCOL, SP_DO_DEV, parametr);
     save_to_protocol(str_to_protocol, parametr);
     save_to_specific_protocol(str_protocol, MF_NONE, SET_INFO_TO_AI_WINDOW, SP_DO_AI, parametr);
@@ -742,8 +747,8 @@ uint16_t Bokzmf::do_frames(uint16_t type_recieve, uint16_t type_frame, uint16_t 
         //if (type_recieve < m_func_type_frame_recieve.size() && m_mpi_data.m_status_exchange.first == KiaS_SUCCESS)
         {
             m_func_type_frame_recieve[type_recieve](type_frame, parametr);
-            m_kia_data->m_data_db->frame_name = "frame_num_bokz_" + std::to_string(m_data_bokz.m_num_bokz) + "_" + std::to_string(m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi]);
-            //emit send_data_to_db_for_frames(m_data_bokz.m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi]);
+            m_kia_data->m_data_db->frame_name = "frame_num_bokz_" + std::to_string(m_data_bokz.m_num_bokz) + "_" + std::to_string(*(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]));
+            //emit send_data_to_db_for_frames(m_data_bokz.m_num_bokz, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]));
         }
     }
     return m_mpi_data.m_status_exchange.first;
@@ -858,7 +863,7 @@ void Bokzmf::check_orientation()
             for (uint16_t qa_index = 0; qa_index < constants::packetSize; ++qa_index)
                 m_data_bokz.m_qa[qa_index] = m_mpi_data.m_data_word[qa_index + 12];
 
-            if ((m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi] / m_kia_settings->m_freq_bokz - t) != 1)
+            if ((*(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]) / m_data_bokz.m_freq_bokz - t) != 1)
             {
                 m_data_bokz.m_count_fail[SVREM]++;
             }
@@ -1042,7 +1047,7 @@ void Bokzmf::execute_exchange()
     emit do_exchange(&m_mpi_data, m_data_bokz.m_num_bokz);
     wait_for_event();
     m_kia_settings->m_data_for_db->m_exchange_counter++;
-    auto data = parse_mko_protocols(m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi], m_data_bokz.m_num_bokz);
+    auto data = parse_mko_protocols(*(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]), m_data_bokz.m_num_bokz);
     emit send_to_save_protocol(data);
     send_mpi_data_to_db();
 }
@@ -1167,7 +1172,7 @@ void Bokzmf::send_mpi_data_to_db()
     {
         m_kia_data->m_data_db->data = m_kia_data->m_data_db->data + QString("%1").arg(QString::number(m_mpi_data.m_data_word[i], 16), 4, '0').toUpper();
     }
-    emit send_data_to_db_for_mpi(m_data_bokz.m_num_bokz, m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi]);
+    emit send_data_to_db_for_mpi(m_data_bokz.m_num_bokz, *(m_data_bokz.bshv[m_data_bokz.m_num_used_bi]));
 }
 
 void Bokzmf::save_to_protocol(QString str_to_protocol, uint16_t parametr)
@@ -1211,7 +1216,7 @@ void Bokzmf::set_data_to_device_protocol(QString &str_protocol)
     str_protocol.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers + 1, '-')
                            + helpers::format_qstring(" " + QString::fromStdString(m_data_bokz.struct_id.second) + " ", m_kia_settings->m_format_for_desc.shift_description,'-') + '\n');
     str_protocol.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
-                           + helpers::format_qstring("БШВ", m_kia_settings->m_format_for_desc.shift_description) + QString::number(m_kia_settings->m_data_for_db->bshv[m_data_bokz.m_num_used_bi]) + '\n');
+                           + helpers::format_qstring("БШВ", m_kia_settings->m_format_for_desc.shift_description) + QString::number(*(m_data_bokz.bshv[m_data_bokz.m_num_used_bi])) + '\n');
     str_protocol.push_back(helpers::format_qstring("", m_kia_settings->m_format_for_desc.shift_for_numbers)
                            + helpers::format_qstring("Время", m_kia_settings->m_format_for_desc.shift_description) + QString::fromStdString(m_kia_data->m_data_db->m_datetime) + '\n');
 }

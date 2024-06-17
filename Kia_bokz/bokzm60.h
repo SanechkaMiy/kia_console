@@ -44,6 +44,9 @@ public:
     //using kia_info_p = shared_ptr <KiaInformationBot>;
     BokzM60(uint16_t num_bokz, std::shared_ptr<Kia_settings> kia_settings);
     ~BokzM60();
+
+    void init() override;
+
     void set_bokz_settings() override;
 
     uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,

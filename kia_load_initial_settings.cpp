@@ -15,6 +15,5 @@ void Kia_load_initial_settings::load_initial_settings()
 
     m_kia_settings->m_type_bokz = j["kia_settings"]["type_bokz"];
     m_kia_settings->m_type_bi = j["kia_settings"]["type_bi"];
-    m_kia_settings->m_freq_bokz = j["kia_settings"]["freq"];
 
 }

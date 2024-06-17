@@ -5,10 +5,8 @@ Timer::Timer(uint16_t num_timer, int32_t interval, int16_t divider, std::shared_
   , m_divider(divider)
   , m_kia_settings(kia_settings)
 {
-    m_num_timer = num_timer;
-    cout<<"start_timer " << m_num_timer <<endl;
-    m_kia_settings->m_timer_interval = m_interval / m_divider;
-    m_interval_divider = m_kia_settings->m_timer_interval;
+    m_kia_data_timer->m_timer_interval = m_interval / m_kia_data_timer->m_divider;
+    m_interval_divider = m_kia_data_timer->m_timer_interval;
     //    m_sum_filter_el = 0;
     //    m_dovInterval = 2;
     //    for(auto &el : m_arr_for_synch)
@@ -16,6 +14,14 @@ Timer::Timer(uint16_t num_timer, int32_t interval, int16_t divider, std::shared_
     //        el = m_interval;
     //        m_sum_filter_el += el;
     //    }
+}
+
+Timer::Timer(Kia_data_timer *kia_data_timer):
+    m_kia_data_timer(kia_data_timer)
+
+{
+    m_interval = m_kia_data_timer->m_timer_interval / m_kia_data_timer->m_divider;
+    m_interval_divider = m_kia_data_timer->m_timer_interval;
 }
 
 Timer::~Timer()
@@ -95,10 +101,10 @@ void Timer::start()
             }
 
             auto delta = (m_now_time - m_curr_time) / m_to_ms;
-            if (delta <= (m_kia_settings->m_timer_interval + m_shift_interval))
-                m_interval_divider = m_kia_settings->m_timer_interval - delta / m_divider;
+            if (delta <= (m_interval + m_shift_interval))
+                m_interval_divider = m_interval - delta / m_kia_data_timer->m_divider;
             else
-                m_interval_divider = m_kia_settings->m_timer_interval;
+                m_interval_divider = m_interval;
             //std::cout <<  m_kia_settings->m_data_for_db->bshv[m_num_timer] << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] /  m_divider << std::endl;
             //std::cout << m_interval_divider << " " << delta / m_divider << " " << m_kia_settings->m_data_for_db->bshv[m_num_timer] << std::endl;
             m_count++;
@@ -148,7 +154,6 @@ void Timer::synchronize()
 
 void Timer::closeTimerThread()
 {
-
     m_stop_timer = false;
     //m_start_timer.get();
     std::cout <<"stop default timer" << std::endl;
@@ -181,7 +186,7 @@ int Timer::getDelta()
 
 void Timer::change_divider(int32_t divider)
 {
-    m_divider = divider;
-    m_kia_settings->m_timer_interval = m_interval / divider;
-    m_interval_divider = m_kia_settings->m_timer_interval;
+    m_kia_data_timer->m_divider = divider;
+    m_interval = m_kia_data_timer->m_timer_interval / divider;
+    m_interval_divider = m_interval;
 }

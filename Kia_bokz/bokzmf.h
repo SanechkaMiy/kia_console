@@ -40,6 +40,9 @@ public:
     constexpr static uint16_t kd_size = 14;
 
     Bokzmf(uint16_t num_bokz, std::shared_ptr<Kia_settings> kia_settings);
+
+    void init() override;
+
     void set_bokz_settings() override;
 
     uint16_t debugging_command(uint16_t direction, uint16_t format, uint16_t sub_address, uint16_t word_data,

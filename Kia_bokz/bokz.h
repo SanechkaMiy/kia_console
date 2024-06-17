@@ -35,6 +35,7 @@ public:
     struct Kia_data_bokz
     {
         uint16_t m_num_bokz{};
+        uint16_t m_freq_bokz{};
         uint16_t m_is_used_bokz{CS_IS_OFF};
         uint16_t m_num_used_channel{};
         uint16_t m_num_used_bi{};
@@ -58,7 +59,11 @@ public:
         array<uint16_t, constants::packetSize> m_qa;
         array<uint16_t, constants::packetSize> m_w;
         array<uint16_t, constants::packetSize> m_data_upn;
+
+       // std::vector<std::shared_ptr<int32_t>> bshv;
+        std::vector<int32_t*> bshv;
     };
+    virtual void init() = 0;
 
     virtual void set_bokz_settings() = 0;
 

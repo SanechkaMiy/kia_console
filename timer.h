@@ -27,8 +27,13 @@ class Timer : public QObject
 {
     Q_OBJECT
 public:
-
+    struct Kia_data_timer
+    {
+        uint16_t m_timer_interval{1000};
+        int32_t m_divider{1};
+    };
     Timer(uint16_t num_timer, int32_t interval, int16_t divider, std::shared_ptr<Kia_settings> kia_settings);
+    Timer(Kia_data_timer* kia_data_timer);
     ~Timer();
 
     void start();
@@ -38,10 +43,15 @@ public:
     std::condition_variable& getEvent();
     int64_t inSleep();
     int64_t getBSHV();
+    uint16_t get_timer_interval()
+    {
+        return m_kia_data_timer->m_timer_interval;
+    }
     int getDelta();
 public slots:
     void change_divider(int32_t divider);
 private:
+    Kia_data_timer* m_kia_data_timer;
     uint16_t m_num_timer = 0;
     double m_start_time  = 0;
     double m_now_time  = 0;

@@ -67,7 +67,7 @@ void Pio_bokzm60::decrypt(uint16_t key_arr, std::vector<RAW_DATA> raw_data)
         }
     }
     auto end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-    std::cout << end - start << std::endl;
+    //std::cout << end - start << std::endl;
 }
 
 void Pio_bokzm60::decrypt_shtmi1(array<uint16_t, constants::packetSize> dataWord)
@@ -197,7 +197,8 @@ void Pio_bokzm60::create_list_for_mpi_arrays()
                                                         1, TDF_FLOAT, std::make_pair(true, true)));
 
     m_data_manage[M60_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(10, 1023),
-                                                        1, TDF_INT, std::make_pair(true, true)));
+
+                                                        +71, TDF_INT, std::make_pair(true, true)));
 
     m_data_manage[M60_SHTMI1].push_back(std::make_tuple(std::make_tuple(INT16, "", TA_NONE), 2, std::make_pair(0, 4095),
                                                         1, TDF_INT, std::make_pair(true, true)));

@@ -2578,11 +2578,11 @@ void Pio_bokzmf::decrypt_mshior(array<uint16_t, constants::packetSize> dataWord,
                                                               + "Код состояния 2 (Status2)");
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString("0x%1").arg(QString::number(m_kia_mko_struct->st_mshior_mf.KC2, 16), 4, '0'), m_kia_mko_struct->st_mshior_mf.KC2, -m_max_double_value, m_max_double_value));
 
-    m_kia_mko_struct->st_mshior_mf.T = (mshiorRaw.T);
-    m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.T)
-                                                                              + " (" + QString::number((int)(bshv / m_kia_settings->m_freq_bokz - m_kia_mko_struct->st_mshior_mf.T)) +  ")", m_kia_mko_struct->st_mshior_mf.T, 0, 2e30));
-    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc.shift_for_numbers)
-                                                              + "Время привязки информации");
+//    m_kia_mko_struct->st_mshior_mf.T = (mshiorRaw.T);
+//    m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.T)
+//                                                                              + " (" + QString::number((int)(bshv / m_kia_settings->m_freq_bokz - m_kia_mko_struct->st_mshior_mf.T)) +  ")", m_kia_mko_struct->st_mshior_mf.T, 0, 2e30));
+//    m_kia_mko_struct->st_mshior_mf.mshior_list_name.push_back(helpers::format_qstring("3,4", m_kia_settings->m_format_for_desc.shift_for_numbers)
+//                                                              + "Время привязки информации");
 
     m_kia_mko_struct->st_mshior_mf.Tms = (mshiorRaw.Tms);
     m_kia_mko_struct->st_mshior_mf.mshior_list_data.push_back(std::make_tuple(QString::number(m_kia_mko_struct->st_mshior_mf.Tms), m_kia_mko_struct->st_mshior_mf.Tms, 0, 1000));

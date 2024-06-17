@@ -57,7 +57,6 @@ struct Data_for_db
     uint16_t m_error_code;
     uint32_t m_exchange_counter = 0;
     string send_time;
-    std::vector<int32_t> bshv;
     uint16_t error_code;
     string receive_time;
     uint16_t waw1;
@@ -213,9 +212,7 @@ struct Kia_settings
     Frame_settings m_frame_settings;
     uint16_t m_type_bokz;
     uint16_t m_type_bi;
-    uint16_t m_timer_interval;
     int m_count_bokz;//0 - БОКЗМ60; 1 - БОКЗМ60/1000; 2 - БОКЗМР; 3 - АИС-2К; 4 - БОКЗНК.
-    int m_freq_bokz;
     uint16_t m_is_con_to_internet = CS_IS_OFF;
     uint16_t m_is_con_to_tg = CS_IS_OFF;
 

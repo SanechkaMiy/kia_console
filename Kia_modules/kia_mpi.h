@@ -22,6 +22,8 @@ struct Kia_mpi_data
     uint16_t m_wResult = 0;
     uint16_t m_answer_word;
     uint16_t m_mpi_index = 0;
+    uint16_t m_sub_array_id{0};
+    int32_t m_exchange_counter{0};
 
     std::pair<uint16_t, QString> m_status_exchange{};
 

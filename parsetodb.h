@@ -10,6 +10,7 @@
 #include "Kia_pio/pio_bokz.h"
 #include "Kia_bokz/bokz.h"
 #include "Kia_bi/kia_bi.h"
+#include "kia_synch_timer.h"
 class ParseToDB : public QObject
 {
     Q_OBJECT
@@ -19,6 +20,7 @@ public:
         Kia_mpi_data* mpi_data;
         Bokz::Kia_data_bokz* data_bokz;
         Kia_bi::Kia_bi_data* kia_bi_data;
+        Kia_synch_timer::Kia_data_synch_timer kia_data_synch_timer;
     };
 
     enum TYPE_DATA_MANAGE
@@ -61,7 +63,7 @@ public:
     std::string convert_array_to_json_string(T data);
 
     void send_to_bkpik(uint16_t& num_bi);
-    void send_to_bi(uint16_t& num_bi);
+    void send_to_bi(uint16_t& num_bi, int32_t bshv);
     string parse_td();
     string parse_kc_kp(uint16_t n);
     template<typename arr>
@@ -69,9 +71,7 @@ public:
     void send_to_frames(uint16_t& num_bokz, int32_t &bshv);
 public slots:
     void send_data_to_db_for_mpi(quint16 num_bokz, qint32 bshv);
-    void send_data_to_db_for_bokz(qint16 type_func, quint16 num_bokz,
-                                  qint32 bshv, Kia_mko_struct kia_mko_struct);
-    void send_data_to_db_for_bi(qint16 type_func, quint16 num_bi);
+    void send_data_to_db_for_bi(qint16 type_func, quint16 num_bi, const int32_t& bshv);
     void send_data_to_db_for_frames(quint16 num_bokz, qint32 bshv);
     void create_list_func_to_send_bokz();
     void create_list_func_to_send_bi();
@@ -86,7 +86,7 @@ private:
 
     std::map<uint16_t, std::function<void(uint16_t, int32_t, Kia_mko_struct)>> m_func_to_send_data_bokzmf;
 
-    std::vector<std::function<void(uint16_t)>> m_func_to_send_bi;
+    std::vector<std::function<void(uint16_t, const int32_t&)>> m_func_to_send_bi;
 
     void set_default_head_files(uint16_t num_bokz, std::string& data, int32_t bshv);
     void create_parse_list_data();

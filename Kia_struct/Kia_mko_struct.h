@@ -2084,11 +2084,6 @@ struct DATA
 struct Kia_mko_struct
 {
     std::map<uint16_t, DATA> m_data;
-    SHTMI1 st_shtmi1;
-    SHTMI2 st_shtmi2;
-    MSHIOR st_mshior;
-    DTMI st_dtmi;
-    DTMILoc st_dtmi_loc;
 
     SHTMI1_MF st_shtmi1_mf;
     SHTMI2_MF st_shtmi2_mf;

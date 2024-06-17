@@ -48,10 +48,10 @@ void ParseToDB::sendDataIntoMPI(uint16_t &num_bokz, int32_t &bshv)
                           "\"data\":\"%s\"}",
             m_kia_settings->m_data_for_db->experiment_id.c_str(), num_bokz,
             m_kia_data.data_bokz->m_date_time.c_str(), m_kia_data.data_bokz->struct_id.first.c_str(),
-            m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->subarray_id,
+            m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_data.mpi_data->m_sub_array_id,
             m_kia_settings->m_data_for_db->experiment_id.c_str(), bshv,
             m_kia_data.mpi_data->send_time.c_str(), m_kia_data.mpi_data->m_mpi_index,
-            m_kia_settings->m_data_for_db->m_exchange_counter, m_kia_data.mpi_data->m_lpi,
+            m_kia_data.mpi_data->m_exchange_counter, m_kia_data.mpi_data->m_lpi,
             m_kia_data.mpi_data->m_base, m_kia_data.mpi_data->m_address,
             m_kia_data.mpi_data->m_direction, m_kia_data.mpi_data->m_sub_address,
             m_kia_data.mpi_data->m_word_data, m_kia_data.mpi_data->m_format,
@@ -433,7 +433,7 @@ void ParseToDB::send_to_bkpik(uint16_t &num_bi)
     //    m_kia_db[TYPE_DATA]->insert_data(data_into_telemetry, "prepare_insert_telemetry");
 }
 
-void ParseToDB::send_to_bi(uint16_t &num_bi)
+void ParseToDB::send_to_bi(uint16_t &num_bi, int32_t bshv)
 {
     std::string std_kc;
     parse_data_bi(std_kc, m_kia_data.kia_bi_data->m_kc);
@@ -448,7 +448,7 @@ void ParseToDB::send_to_bi(uint16_t &num_bi)
                           "\"bshv\":%d,"
                           "\"serial_num\":%i,"
                           "\"data\":\"%s\"}", m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(),
-            m_kia_data.kia_bi_data->m_date_time.c_str(), m_kia_settings->m_data_for_db->bshv[num_bi], num_bi, m_kia_data.kia_bi_data->hex_data.toStdString().c_str());
+            m_kia_data.kia_bi_data->m_date_time.c_str(), bshv, num_bi, m_kia_data.kia_bi_data->hex_data.toStdString().c_str());
     char data_into_telemetry[512];
     sprintf(data_into_telemetry,"{""\"host_id\":\"%s\","
                                 "\"experiment_id\":\"%s\","
@@ -458,7 +458,7 @@ void ParseToDB::send_to_bi(uint16_t &num_bi)
                                 "\"kc\":\"%s\","
                                 "\"kp\":\"%s\","
                                 "\"td\":\"%s\"}", m_kia_settings->m_data_for_db->true_host.c_str(), m_kia_settings->m_data_for_db->experiment_id.c_str(),
-            m_kia_data.kia_bi_data->m_date_time.c_str(), m_kia_settings->m_data_for_db->bshv[num_bi], num_bi, std_kc.c_str(), std_kp.c_str(), std_td.c_str());
+            m_kia_data.kia_bi_data->m_date_time.c_str(), bshv, num_bi, std_kc.c_str(), std_kp.c_str(), std_td.c_str());
     //m_kia_db[TYPE_RAW]->insert_data(data_into_raw, "prepare_insert_raw");
     //m_kia_db[TYPE_DATA]->insert_data(data_into_telemetry, "prepare_insert_telemetry");
 }
@@ -551,23 +551,9 @@ void ParseToDB::send_data_to_db_for_mpi(quint16 num_bokz, qint32 bshv)
     sendDataIntoMPI(num_bokz, bshv);
 }
 
-void ParseToDB::send_data_to_db_for_bokz(qint16 type_func, quint16 num_bokz, qint32 bshv, Kia_mko_struct kia_mko_struct)
+void ParseToDB::send_data_to_db_for_bi(qint16 type_func, quint16 num_bi, const int32_t &bshv)
 {
-    switch(m_kia_settings->m_type_bokz)
-    {
-    case TYPE_BOKZ_BOKZM60:
-        break;
-    case TYPE_BOKZ_BOKZMF:
-        m_func_to_send_data_bokzmf[type_func](num_bokz, bshv, kia_mko_struct);
-        break;
-    }
-
-
-}
-
-void ParseToDB::send_data_to_db_for_bi(qint16 type_func, quint16 num_bi)
-{
-    m_func_to_send_bi[type_func](num_bi);
+    m_func_to_send_bi[type_func](num_bi, bshv);
 }
 
 void ParseToDB::send_data_to_db_for_frames(quint16 num_bokz, qint32 bshv)
@@ -612,17 +598,17 @@ void ParseToDB::create_list_func_to_send_bokz()
 
 void ParseToDB::create_list_func_to_send_bi()
 {
-    auto func_shtmi1_m60 = [this](uint16_t num_bi)
+    auto func_bkpik = [this](uint16_t num_bi, const int32_t& bshv)
     {
         send_to_bkpik(num_bi);
     };
-    m_func_to_send_bi.push_back(func_shtmi1_m60);
+    m_func_to_send_bi.push_back(func_bkpik);
 
-    auto func_shtmi2_m60 = [this](uint16_t num_bi)
+    auto func_biu = [this](uint16_t num_bi, const int32_t& bshv)
     {
-        send_to_bi(num_bi);
+        send_to_bi(num_bi, bshv);
     };
-    m_func_to_send_bi.push_back(func_shtmi2_m60);
+    m_func_to_send_bi.push_back(func_biu);
 }
 
 void ParseToDB::send_data_to_db_slot(qint16 type_func, QString prepare_query, quint16 num_bokz, qint32 bshv, DATA data_struct)

@@ -89,7 +89,7 @@ void Kia_bkpik::start_1s_mark_bkpik()
                     m_cv.notify_all();
                     //m_kia_data->m_data_db->m_datetime = helpers::currentDateTime();
                     send_telemetry();
-                    emit send_data_to_db_bi(m_kia_settings->m_type_bi, m_kia_bi_data.m_num_bi.first);
+                    //emit send_data_to_db_bi(m_kia_settings->m_type_bi, m_kia_bi_data.m_num_bi.first);
                     buffer.erase(buffer.begin(), buffer.begin() + command_size);
                 }
             }
